@@ -1,4 +1,4 @@
-package com.yotfr.weather.domain.model
+package com.yotfr.weather.domain.model.weather
 
 /**
  * @param[weatherDataPerDay] map the current day index of type Int to list of [WeatherData], which

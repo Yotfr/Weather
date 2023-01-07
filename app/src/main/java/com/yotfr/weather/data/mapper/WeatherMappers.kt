@@ -2,9 +2,9 @@ package com.yotfr.weather.data.mapper
 
 import com.yotfr.weather.data.remote.WeatherDataDto
 import com.yotfr.weather.data.remote.WeatherDto
-import com.yotfr.weather.domain.model.WeatherData
-import com.yotfr.weather.domain.model.WeatherInfo
-import com.yotfr.weather.domain.model.WeatherType
+import com.yotfr.weather.domain.model.weather.WeatherData
+import com.yotfr.weather.domain.model.weather.WeatherInfo
+import com.yotfr.weather.domain.model.weather.WeatherType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
