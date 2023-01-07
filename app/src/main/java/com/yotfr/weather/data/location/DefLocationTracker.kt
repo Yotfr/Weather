@@ -15,7 +15,7 @@ import kotlin.coroutines.resume
 class DefLocationTracker(
     private val locationClient: FusedLocationProviderClient,
     private val application: App
-): LocationTracker {
+) : LocationTracker {
     override suspend fun getCurrentLocation(): Location? {
         val hasAccessFineLocationPermission = ContextCompat.checkSelfPermission(
             application,
@@ -28,17 +28,17 @@ class DefLocationTracker(
 
         val locationManager = application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ||
-                locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        if(!hasAccessCoarseLocationPermission || !hasAccessFineLocationPermission || !isGpsEnabled) {
+            locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        if (!hasAccessCoarseLocationPermission || !hasAccessFineLocationPermission || !isGpsEnabled) {
             return null
         }
 
         return suspendCancellableCoroutine { continuation ->
             locationClient.lastLocation.apply {
-                if (isComplete){
+                if (isComplete) {
                     if (isSuccessful) {
                         continuation.resume(result)
-                    }else {
+                    } else {
                         continuation.resume(null)
                     }
                     return@suspendCancellableCoroutine
