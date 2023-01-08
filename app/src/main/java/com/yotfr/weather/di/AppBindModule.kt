@@ -19,4 +19,5 @@ abstract class AppBindModule {
     abstract fun bindWeatherRepositoryImpl_to_WeatherRepository(
         weatherRepositoryImpl: WeatherRepositoryImpl
     ): WeatherRepository
+
 }

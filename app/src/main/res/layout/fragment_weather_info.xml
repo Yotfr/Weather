@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/fragment_weather_info_weather_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginHorizontal="@dimen/medium_spacing"
+        android:layout_marginTop="@dimen/large_spacing">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/fragment_weather_info_tv_current_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="Today 15:00"
+                android:layout_margin="@dimen/medium_spacing"/>
+
+            <ImageView
+                android:id="@+id/fragment_weather_info_iv_weather_type_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:src="@drawable/ic_thunder"
+                app:layout_constraintTop_toBottomOf="@id/fragment_weather_info_tv_current_time"/>
+
+            <TextView
+                android:id="@+id/fragment_weather_info_tv_temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="20.1 C"
+                android:textSize="32sp"
+                app:layout_constraintTop_toBottomOf="@id/fragment_weather_info_iv_weather_type_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/fragment_weather_info_tv_weather_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Thunder"
+                android:textSize="20sp"
+                app:layout_constraintTop_toBottomOf="@id/fragment_weather_info_tv_temperature"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fragment_weather_info_tv_pressure"
+                app:icon="@drawable/ic_pressure"
+                app:iconTint="@color/black"
+                android:background="@android:color/transparent"
+                android:textColor="@color/black"
+                tools:text="1014hpa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/fragment_weather_info_tv_weather_type"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fragment_weather_info_tv_humidity"
+                app:icon="@drawable/ic_drop"
+                app:iconTint="@color/black"
+                android:background="@android:color/transparent"
+                android:textColor="@color/black"
+                tools:text="31%"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/fragment_weather_info_tv_weather_type"
+                app:layout_constraintStart_toEndOf="@id/fragment_weather_info_tv_pressure"
+                app:layout_constraintEnd_toStartOf="@id/fragment_weather_info_tv_wind_speed"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fragment_weather_info_tv_wind_speed"
+                app:icon="@drawable/ic_wind"
+                app:iconTint="@color/black"
+                android:background="@android:color/transparent"
+                android:textColor="@color/black"
+                tools:text="3km/h"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/fragment_weather_info_tv_weather_type"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragment_weather_info_rv_hourly_weather"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/fragment_weather_info_weather_card"
+        android:layout_marginHorizontal="@dimen/medium_spacing"
+        android:layout_marginTop="@dimen/medium_spacing"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

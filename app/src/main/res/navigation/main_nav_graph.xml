@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/weatherInfoFragment">
+
+    <fragment
+        android:id="@+id/weatherInfoFragment"
+        android:name="com.yotfr.weather.presentation.weather_info.WeatherInfoFragment"
+        android:label="WeatherInfoFragment" />
+</navigation>

@@ -6,6 +6,8 @@ import dagger.Module
     includes = [
         NetworkModule::class,
         LocationModule::class,
+        AppBindModule::class,
+        UseCasesModule::class,
         AppBindModule::class
     ]
 )
