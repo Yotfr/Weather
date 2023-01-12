@@ -2,7 +2,7 @@ package com.yotfr.weather.di
 
 import com.yotfr.weather.domain.location.LocationTracker
 import com.yotfr.weather.domain.repository.WeatherRepository
-import com.yotfr.weather.domain.usecase.LoadWeatherInfoUseCase
+import com.yotfr.weather.domain.usecases.LoadWeatherInfoUseCase
 import dagger.Module
 import dagger.Provides
 

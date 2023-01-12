@@ -17,7 +17,6 @@ import com.yotfr.weather.databinding.FragmentWeatherInfoBinding
 import com.yotfr.weather.presentation.utils.MarginItemDecoration
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.time.format.DateTimeFormatter
 
 class WeatherInfoFragment : Fragment(R.layout.fragment_weather_info) {
 
@@ -48,7 +47,52 @@ class WeatherInfoFragment : Fragment(R.layout.fragment_weather_info) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val todayLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        initializeAdapters()
+
+        processUiState()
+    }
+
+    private fun processUiState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collectLatest { state ->
+                    binding.apply {
+                        fragmentWeatherInfoTvCurrentTime.text = state.currentTime
+                        fragmentWeatherInfoIvWeatherTypeIcon.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                state.currentWeatherTypeIconRes
+                            )
+                        )
+                        fragmentWeatherInfoTvWeatherType.text = state.currentWeatherTypeDescription
+                        fragmentWeatherInfoTvTemperature.text = state.currentTemperature
+                        fragmentWeatherInfoTvPressure.text = state.currentPressure
+                        fragmentWeatherInfoTvHumidity.text = state.currentHumidity
+                        fragmentWeatherInfoTvWindSpeed.text = state.currentWindSpeed
+                        fragmentWeatherInfoTvTodayDate.text = getString(R.string.today)
+                        fragmentWeatherInfoTvTomorrowDate.text = getString(R.string.tomorrow)
+                        binding.fragmentWeatherInfoTvAfterTomorrowDate.text =
+                            state.dayAfterTomorrowDate
+                        binding.fragmentWeatherInfoTvInTwoDaysDate.text = state.inTwoDaysDate
+                        binding.fragmentWeatherInfoTvInThreeDaysDate.text = state.inThreeDaysDate
+                        binding.fragmentWeatherInfoTvInFourDaysDate.text = state.inFourDaysDate
+                        binding.fragmentWeatherInfoTvInFiveDaysDate.text = state.inFiveDaysDate
+                    }
+                    todayAdapter.submitList(state.hourlyWeatherListForToday)
+                    tomorrowAdapter.submitList(state.hourlyWeatherListForTomorrow)
+                    afterTomorrowAdapter.submitList(state.hourlyWeatherListForDayAfterTomorrow)
+                    inTwoDaysAdapter.submitList(state.hourlyWeatherListForInTwoDays)
+                    inThreeDaysAdapter.submitList(state.hourlyWeatherListForInThreeDays)
+                    inFourDaysAdapter.submitList(state.hourlyWeatherListForInFourDays)
+                    inFiveDaysAdapter.submitList(state.hourlyWeatherListForInFiveDays)
+                }
+            }
+        }
+    }
+
+    private fun initializeAdapters() {
+        val todayLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         todayAdapter = HourlyWeatherAdapter()
         binding.fragmentWeatherInfoRvTodayWeather.adapter = todayAdapter
         binding.fragmentWeatherInfoRvTodayWeather.layoutManager = todayLayoutManager
@@ -56,7 +100,8 @@ class WeatherInfoFragment : Fragment(R.layout.fragment_weather_info) {
             MarginItemDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing))
         )
 
-        val tomorrowLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val tomorrowLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         tomorrowAdapter = HourlyWeatherAdapter()
         binding.fragmentWeatherInfoRvTomorrowWeather.adapter = tomorrowAdapter
         binding.fragmentWeatherInfoRvTomorrowWeather.layoutManager = tomorrowLayoutManager
@@ -64,7 +109,8 @@ class WeatherInfoFragment : Fragment(R.layout.fragment_weather_info) {
             MarginItemDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing))
         )
 
-        val afterTomorrowLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val afterTomorrowLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         afterTomorrowAdapter = HourlyWeatherAdapter()
         binding.fragmentWeatherInfoRvAfterTomorrowWeather.adapter = afterTomorrowAdapter
         binding.fragmentWeatherInfoRvAfterTomorrowWeather.layoutManager = afterTomorrowLayoutManager
@@ -72,7 +118,8 @@ class WeatherInfoFragment : Fragment(R.layout.fragment_weather_info) {
             MarginItemDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing))
         )
 
-        val inTwoDaysLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val inTwoDaysLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         inTwoDaysAdapter = HourlyWeatherAdapter()
         binding.fragmentWeatherInfoRvInTwoDaysWeather.adapter = inTwoDaysAdapter
         binding.fragmentWeatherInfoRvInTwoDaysWeather.layoutManager = inTwoDaysLayoutManager
@@ -80,7 +127,8 @@ class WeatherInfoFragment : Fragment(R.layout.fragment_weather_info) {
             MarginItemDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing))
         )
 
-        val inThreeDaysLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val inThreeDaysLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         inThreeDaysAdapter = HourlyWeatherAdapter()
         binding.fragmentWeatherInfoRvInThreeDaysWeather.adapter = inThreeDaysAdapter
         binding.fragmentWeatherInfoRvInThreeDaysWeather.layoutManager = inThreeDaysLayoutManager
@@ -88,7 +136,8 @@ class WeatherInfoFragment : Fragment(R.layout.fragment_weather_info) {
             MarginItemDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing))
         )
 
-        val inFourDaysLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val inFourDaysLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         inFourDaysAdapter = HourlyWeatherAdapter()
         binding.fragmentWeatherInfoRvInFourDaysWeather.adapter = inFourDaysAdapter
         binding.fragmentWeatherInfoRvInFourDaysWeather.layoutManager = inFourDaysLayoutManager
@@ -96,77 +145,14 @@ class WeatherInfoFragment : Fragment(R.layout.fragment_weather_info) {
             MarginItemDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing))
         )
 
-        val inFiveDaysLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val inFiveDaysLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         inFiveDaysAdapter = HourlyWeatherAdapter()
         binding.fragmentWeatherInfoRvInFiveDaysWeather.adapter = inFiveDaysAdapter
         binding.fragmentWeatherInfoRvInFiveDaysWeather.layoutManager = inFiveDaysLayoutManager
         binding.fragmentWeatherInfoRvInFiveDaysWeather.addItemDecoration(
             MarginItemDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing))
         )
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collectLatest { state ->
-                    state.weatherInfo?.currentWeatherData?.let { weatherData ->
-                        binding.fragmentWeatherInfoTvCurrentTime.text = weatherData.time.format(
-                            DateTimeFormatter.ofPattern("HH:mm")
-                        )
-                        binding.fragmentWeatherInfoIvWeatherTypeIcon.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                weatherData.weatherType.iconRes
-                            )
-                        )
-                        binding.fragmentWeatherInfoTvWeatherType.text =
-                            weatherData.weatherType.weatherDesc
-                        binding.fragmentWeatherInfoTvTemperature.text =
-                            weatherData.temperature.toString()
-                        binding.fragmentWeatherInfoTvPressure.text = weatherData.pressure.toString()
-                        binding.fragmentWeatherInfoTvHumidity.text = weatherData.humidity.toString()
-                        binding.fragmentWeatherInfoTvWindSpeed.text =
-                            weatherData.windSpeed.toString()
-                    }
-                    state.weatherInfo?.detailedWeatherDataPerDay?.get(0)?.let { weatherDataList ->
-                        todayAdapter.submitList(weatherDataList)
-                        binding.fragmentWeatherInfoTvTodayDate.text = getString(R.string.today)
-                    }
-                    state.weatherInfo?.briefWeatherDataPerDay?.get(1)?.let { weatherDataList ->
-                        tomorrowAdapter.submitList(weatherDataList)
-                        binding.fragmentWeatherInfoTvTomorrowDate.text = getString(R.string.tomorrow)
-                    }
-                    state.weatherInfo?.briefWeatherDataPerDay?.get(2)?.let { weatherDataList ->
-                        afterTomorrowAdapter.submitList(weatherDataList)
-                        binding.fragmentWeatherInfoTvAfterTomorrowDate.text = weatherDataList[0].time.format(
-                            DateTimeFormatter.ofPattern("MMMM d")
-                        )
-                    }
-                    state.weatherInfo?.briefWeatherDataPerDay?.get(3)?.let { weatherDataList ->
-                        inTwoDaysAdapter.submitList(weatherDataList)
-                        binding.fragmentWeatherInfoTvInTwoDaysDate.text = weatherDataList[0].time.format(
-                            DateTimeFormatter.ofPattern("MMMM d")
-                        )
-                    }
-                    state.weatherInfo?.briefWeatherDataPerDay?.get(4)?.let { weatherDataList ->
-                        inThreeDaysAdapter.submitList(weatherDataList)
-                        binding.fragmentWeatherInfoTvInThreeDaysDate.text = weatherDataList[0].time.format(
-                            DateTimeFormatter.ofPattern("MMMM d")
-                        )
-                    }
-                    state.weatherInfo?.briefWeatherDataPerDay?.get(5)?.let { weatherDataList ->
-                        inFourDaysAdapter.submitList(weatherDataList)
-                        binding.fragmentWeatherInfoTvInFourDaysDate.text = weatherDataList[0].time.format(
-                            DateTimeFormatter.ofPattern("MMMM d")
-                        )
-                    }
-                    state.weatherInfo?.briefWeatherDataPerDay?.get(6)?.let { weatherDataList ->
-                        inFiveDaysAdapter.submitList(weatherDataList)
-                        binding.fragmentWeatherInfoTvInFiveDaysDate.text = weatherDataList[0].time.format(
-                            DateTimeFormatter.ofPattern("MMMM d")
-                        )
-                    }
-                }
-            }
-        }
     }
 
     override fun onDestroyView() {

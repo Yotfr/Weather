@@ -1,8 +1,8 @@
-package com.yotfr.weather.domain.usecase
+package com.yotfr.weather.domain.usecases
 
 import android.util.Log
 import com.yotfr.weather.domain.location.LocationTracker
-import com.yotfr.weather.domain.model.weather.WeatherInfo
+import com.yotfr.weather.domain.model.WeatherInfo
 import com.yotfr.weather.domain.repository.WeatherRepository
 import com.yotfr.weather.domain.util.Response
 import kotlinx.coroutines.flow.Flow

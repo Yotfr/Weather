@@ -1,4 +1,4 @@
-package com.yotfr.weather
+package com.yotfr.weather.presentation
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -7,6 +7,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
+import com.yotfr.weather.R
 
 class MainActivity : AppCompatActivity() {
 

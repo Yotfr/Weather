@@ -1,8 +1,27 @@
 package com.yotfr.weather.presentation.weather_info
 
-import com.yotfr.weather.domain.model.weather.WeatherInfo
+import androidx.annotation.DrawableRes
+import com.yotfr.weather.domain.model.WeatherData
 
 data class WeatherInfoState(
     val isLoading: Boolean = false,
-    val weatherInfo: WeatherInfo? = null
+    val currentTime: String = "",
+    @DrawableRes val currentWeatherTypeIconRes: Int = 0,
+    val currentWeatherTypeDescription: String = "",
+    val currentTemperature: String = "",
+    val currentPressure: String = "",
+    val currentHumidity: String = "",
+    val currentWindSpeed: String = "",
+    val hourlyWeatherListForToday: List<WeatherData> ? = emptyList(),
+    val hourlyWeatherListForTomorrow: List<WeatherData> ? = emptyList(),
+    val dayAfterTomorrowDate: String ? = "",
+    val hourlyWeatherListForDayAfterTomorrow: List<WeatherData> ? = emptyList(),
+    val inTwoDaysDate: String ? = "",
+    val hourlyWeatherListForInTwoDays: List<WeatherData> ? = emptyList(),
+    val inThreeDaysDate: String ? = "",
+    val hourlyWeatherListForInThreeDays: List<WeatherData> ? = emptyList(),
+    val inFourDaysDate: String ? = "",
+    val hourlyWeatherListForInFourDays: List<WeatherData> ? = emptyList(),
+    val inFiveDaysDate: String ? = "",
+    val hourlyWeatherListForInFiveDays: List<WeatherData> ? = emptyList()
 )

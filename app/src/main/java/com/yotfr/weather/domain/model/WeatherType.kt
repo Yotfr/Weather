@@ -1,4 +1,4 @@
-package com.yotfr.weather.domain.model.weather
+package com.yotfr.weather.domain.model
 
 import androidx.annotation.DrawableRes
 import com.yotfr.weather.R

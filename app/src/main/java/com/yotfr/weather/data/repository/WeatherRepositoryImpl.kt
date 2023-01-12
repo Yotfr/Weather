@@ -1,8 +1,8 @@
 package com.yotfr.weather.data.repository
 
-import com.yotfr.weather.data.mapper.mapToWeatherInfo
-import com.yotfr.weather.data.remote.WeatherApi
-import com.yotfr.weather.domain.model.weather.WeatherInfo
+import com.yotfr.weather.data.datasource.remote.WeatherApi
+import com.yotfr.weather.data.util.mapToWeatherInfo
+import com.yotfr.weather.domain.model.WeatherInfo
 import com.yotfr.weather.domain.repository.WeatherRepository
 import com.yotfr.weather.domain.util.Response
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +19,7 @@ class WeatherRepositoryImpl @Inject constructor(
     ): Flow<Response<WeatherInfo>> = flow {
         try {
             emit(
-                Response.Succecss(
+                Response.Success(
                     data = weatherApi.getWeatherData(
                         latitude = latitude,
                         longitude = longitude

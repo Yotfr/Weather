@@ -1,10 +1,10 @@
-package com.yotfr.weather.data.mapper
+package com.yotfr.weather.data.util
 
-import com.yotfr.weather.data.remote.WeatherDataDto
-import com.yotfr.weather.data.remote.WeatherDto
-import com.yotfr.weather.domain.model.weather.WeatherData
-import com.yotfr.weather.domain.model.weather.WeatherInfo
-import com.yotfr.weather.domain.model.weather.WeatherType
+import com.yotfr.weather.data.datasource.remote.WeatherDataDto
+import com.yotfr.weather.data.datasource.remote.WeatherDto
+import com.yotfr.weather.domain.model.WeatherData
+import com.yotfr.weather.domain.model.WeatherInfo
+import com.yotfr.weather.domain.model.WeatherType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -48,18 +48,6 @@ fun WeatherDataDto.mapToWeatherData(): Map<Int, List<WeatherData>> {
 
 fun WeatherDto.mapToWeatherInfo(): WeatherInfo {
     val detailedMappedWeatherData = weatherData.mapToWeatherData()
-    val briefMappedWeatherData = detailedMappedWeatherData.mapValues { values ->
-        values.value.filter { weatherData ->
-            weatherData.time.hour == 1 ||
-                weatherData.time.hour == 4 ||
-                weatherData.time.hour == 7 ||
-                weatherData.time.hour == 10 ||
-                weatherData.time.hour == 13 ||
-                weatherData.time.hour == 16 ||
-                weatherData.time.hour == 19 ||
-                weatherData.time.hour == 22
-        }
-    }
     val currentTime = LocalDateTime.now()
     val currentWeatherData = detailedMappedWeatherData[0]?.find { data ->
         val hour = if (currentTime.minute < 30) {
@@ -69,7 +57,6 @@ fun WeatherDto.mapToWeatherInfo(): WeatherInfo {
     }
     return WeatherInfo(
         detailedWeatherDataPerDay = detailedMappedWeatherData,
-        currentWeatherData = currentWeatherData,
-        briefWeatherDataPerDay = briefMappedWeatherData,
+        currentWeatherData = currentWeatherData
     )
 }

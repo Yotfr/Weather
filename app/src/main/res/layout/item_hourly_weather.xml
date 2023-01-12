@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:elevation="8dp"
-    android:background="@drawable/oval_shape_surface_gradient"
+    android:background="@drawable/rounded_corner_shape_surface_color_item_background"
     android:paddingVertical="@dimen/small_spacing">
 
     <TextView

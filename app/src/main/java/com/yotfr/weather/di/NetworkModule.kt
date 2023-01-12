@@ -1,6 +1,6 @@
 package com.yotfr.weather.di
 
-import com.yotfr.weather.data.remote.WeatherApi
+import com.yotfr.weather.data.datasource.remote.WeatherApi
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

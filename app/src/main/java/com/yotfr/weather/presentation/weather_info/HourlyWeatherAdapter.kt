@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.weather.databinding.ItemHourlyWeatherBinding
-import com.yotfr.weather.domain.model.weather.WeatherData
+import com.yotfr.weather.domain.model.WeatherData
 import java.time.format.DateTimeFormatter
 
-class HourlyWeatherDiffUttilCallback : DiffUtil.ItemCallback<WeatherData>() {
+class HourlyWeatherDiffUtilCallback : DiffUtil.ItemCallback<WeatherData>() {
     override fun areItemsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
         return oldItem.time == newItem.time
     }
@@ -22,7 +22,7 @@ class HourlyWeatherDiffUttilCallback : DiffUtil.ItemCallback<WeatherData>() {
 }
 
 class HourlyWeatherAdapter : ListAdapter<WeatherData, HourlyWeatherAdapter.HourlyWeatherViewHolder>(
-    HourlyWeatherDiffUttilCallback()
+    HourlyWeatherDiffUtilCallback()
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HourlyWeatherViewHolder {
