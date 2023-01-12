@@ -5,7 +5,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:elevation="8dp"
     android:background="@drawable/oval_shape_surface_gradient"
     android:paddingVertical="@dimen/small_spacing">
 
@@ -14,7 +13,7 @@
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="?attr/colorPrimary"
+        android:textColor="?attr/colorOnSurface"
         tools:text="00:00"/>
 
     <ImageView
@@ -28,7 +27,7 @@
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="?attr/colorPrimary"
+        android:textColor="?attr/colorOnSurface"
         tools:text="31 C"/>
 
 </LinearLayout>

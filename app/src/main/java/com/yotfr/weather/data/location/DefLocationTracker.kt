@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.yotfr.weather.domain.location.LocationTracker
@@ -18,6 +17,7 @@ class DefLocationTracker @Inject constructor(
     private val locationClient: FusedLocationProviderClient,
     private val application: Application
 ) : LocationTracker {
+
     override suspend fun getCurrentLocation(): Location? {
         val hasAccessFineLocationPermission = ContextCompat.checkSelfPermission(
             application,
@@ -37,24 +37,18 @@ class DefLocationTracker @Inject constructor(
 
         return suspendCancellableCoroutine { continuation ->
             locationClient.lastLocation.apply {
-                Log.d("TEST","task $this")
                 if (isComplete) {
-                    Log.d("TEST","completed")
                     if (isSuccessful) {
-                        Log.d("TEST","failed")
                         continuation.resume(result)
                     } else {
-                        Log.d("TEST","failed")
                         continuation.resume(null)
                     }
                     return@suspendCancellableCoroutine
                 }
                 addOnSuccessListener { location ->
-                    Log.d("TEST","succeed with $location")
                     continuation.resume(location)
                 }
                 addOnFailureListener {
-                    Log.d("TEST","failedf")
                     continuation.resume(null)
                 }
                 addOnCanceledListener {

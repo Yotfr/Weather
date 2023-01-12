@@ -1,6 +1,5 @@
 package com.yotfr.weather.data.repository
 
-import android.util.Log
 import com.yotfr.weather.data.mapper.mapToWeatherInfo
 import com.yotfr.weather.data.remote.WeatherApi
 import com.yotfr.weather.domain.model.weather.WeatherInfo
@@ -28,7 +27,6 @@ class WeatherRepositoryImpl @Inject constructor(
                 )
             )
         } catch (e: Exception) {
-            Log.d("TEST","exception $e ${e.message} ${e.cause}")
             e.printStackTrace()
             emit(
                 Response.Error(

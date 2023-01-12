@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Widget.Weather.CardView" parent="Widget.Material3.CardView.Elevated">
+        <item name="shapeAppearance">@style/ShapeAppearance.Weather.MediumComponent</item>
+    </style>
+
+    <style name="ThemeOverlay.Weather.Card" parent="">
+        <item name="colorSecondary">?attr/colorPrimary</item>
+        <item name="colorSurface">?attr/colorPrimary</item>
+        <item name="colorOnSurfaceVariant">?attr/colorPrimary</item>
+    </style>
+
+    <style name="ShapeAppearance.Weather.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/large_corner_radius</item>
+        <item name="cornerSizeTopRight">@dimen/large_corner_radius</item>
+    </style>
+
+</resources>
