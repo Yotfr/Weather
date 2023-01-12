@@ -58,12 +58,14 @@ class WeatherInfoFragment : Fragment(R.layout.fragment_weather_info) {
                 viewModel.state.collectLatest { state ->
                     binding.apply {
                         fragmentWeatherInfoTvCurrentTime.text = state.currentTime
-                        fragmentWeatherInfoIvWeatherTypeIcon.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                state.currentWeatherTypeIconRes
+                        state.currentWeatherTypeIconRes?.let {
+                            fragmentWeatherInfoIvWeatherTypeIcon.setImageDrawable(
+                                ContextCompat.getDrawable(
+                                    requireContext(),
+                                    it
+                                )
                             )
-                        )
+                        }
                         fragmentWeatherInfoTvWeatherType.text = state.currentWeatherTypeDescription
                         fragmentWeatherInfoTvTemperature.text = state.currentTemperature
                         fragmentWeatherInfoTvPressure.text = state.currentPressure

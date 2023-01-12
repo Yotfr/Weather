@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
+import java.util.*
 import javax.inject.Inject
 
 class WeatherInfoViewModel @Inject constructor(
@@ -47,7 +48,7 @@ class WeatherInfoViewModel @Inject constructor(
                 it.copy(
                     isLoading = false,
                     currentTime = weatherData.time.format(
-                        DateTimeFormatter.ofPattern("HH:mm")
+                        DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
                     ),
                     currentWeatherTypeIconRes = weatherData.weatherType.iconRes,
                     currentWeatherTypeDescription = weatherData.weatherType.weatherDesc,
@@ -58,23 +59,23 @@ class WeatherInfoViewModel @Inject constructor(
                     hourlyWeatherListForToday = response.data.detailedWeatherDataPerDay[0],
                     hourlyWeatherListForTomorrow = response.data.detailedWeatherDataPerDay[1],
                     dayAfterTomorrowDate = response.data.detailedWeatherDataPerDay[2]?.get(0)?.time?.format(
-                        DateTimeFormatter.ofPattern("MMMM d")
+                        DateTimeFormatter.ofPattern("MMMM d", Locale.getDefault())
                     ),
                     hourlyWeatherListForDayAfterTomorrow = response.data.detailedWeatherDataPerDay[2],
                     inTwoDaysDate = response.data.detailedWeatherDataPerDay[3]?.get(0)?.time?.format(
-                        DateTimeFormatter.ofPattern("MMMM d")
+                        DateTimeFormatter.ofPattern("MMMM d", Locale.getDefault())
                     ),
                     hourlyWeatherListForInTwoDays = response.data.detailedWeatherDataPerDay[3],
                     inThreeDaysDate = response.data.detailedWeatherDataPerDay[4]?.get(0)?.time?.format(
-                        DateTimeFormatter.ofPattern("MMMM d")
+                        DateTimeFormatter.ofPattern("MMMM d", Locale.getDefault())
                     ),
                     hourlyWeatherListForInThreeDays = response.data.detailedWeatherDataPerDay[4],
                     inFourDaysDate = response.data.detailedWeatherDataPerDay[5]?.get(0)?.time?.format(
-                        DateTimeFormatter.ofPattern("MMMM d")
+                        DateTimeFormatter.ofPattern("MMMM d", Locale.getDefault())
                     ),
                     hourlyWeatherListForInFourDays = response.data.detailedWeatherDataPerDay[5],
                     inFiveDaysDate = response.data.detailedWeatherDataPerDay[6]?.get(0)?.time?.format(
-                        DateTimeFormatter.ofPattern("MMMM d")
+                        DateTimeFormatter.ofPattern("MMMM d", Locale.getDefault())
                     ),
                     hourlyWeatherListForInFiveDays = response.data.detailedWeatherDataPerDay[6]
                 )

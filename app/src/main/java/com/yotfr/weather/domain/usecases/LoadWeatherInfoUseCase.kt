@@ -1,6 +1,5 @@
 package com.yotfr.weather.domain.usecases
 
-import android.util.Log
 import com.yotfr.weather.domain.location.LocationTracker
 import com.yotfr.weather.domain.model.WeatherInfo
 import com.yotfr.weather.domain.repository.WeatherRepository
@@ -14,7 +13,6 @@ class LoadWeatherInfoUseCase(
 ) {
     suspend operator fun invoke(): Flow<Response<WeatherInfo>> {
         return locationTracker.getCurrentLocation()?.let { location ->
-            Log.d("TEST","repo with ${location.latitude} ${location.longitude}")
             weatherRepository.getWeatherData(
                 latitude = location.latitude,
                 longitude = location.longitude

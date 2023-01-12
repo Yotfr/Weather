@@ -21,7 +21,7 @@
         android:id="@+id/item_hourly_weather_iv_weather_type"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        tools:src="@drawable/ic_sunny"/>
+        tools:src="@drawable/ic_clear_sky_sun"/>
 
     <TextView
         android:id="@+id/item_hourly_weather_tv_temperature"

@@ -7,6 +7,7 @@ import com.yotfr.weather.domain.repository.WeatherRepository
 import com.yotfr.weather.domain.util.Response
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.util.TimeZone
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
@@ -22,7 +23,8 @@ class WeatherRepositoryImpl @Inject constructor(
                 Response.Success(
                     data = weatherApi.getWeatherData(
                         latitude = latitude,
-                        longitude = longitude
+                        longitude = longitude,
+                        timezone = TimeZone.getDefault().id
                     ).mapToWeatherInfo()
                 )
             )
