@@ -19,6 +19,7 @@ class WeatherRepositoryImpl @Inject constructor(
         longitude: Double
     ): Flow<Response<WeatherInfo>> = flow {
         try {
+            emit(Response.Loading())
             emit(
                 Response.Success(
                     data = weatherApi.getWeatherData(

@@ -5,7 +5,7 @@ import android.content.Context
 import com.yotfr.weather.di.AppComponent
 import com.yotfr.weather.di.DaggerAppComponent
 
-class App : Application() {
+open class App : Application() {
 
     lateinit var appComponent: AppComponent
 
