@@ -1,75 +1,151 @@
 package com.yotfr.weather.data.repository
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
 import com.yotfr.weather.data.datasource.remote.WeatherApi
+import com.yotfr.weather.data.datasource.remote.WeatherDataDto
+import com.yotfr.weather.data.datasource.remote.WeatherDto
 import com.yotfr.weather.domain.repository.WeatherRepository
-import com.yotfr.weather.testutils.TestWeatherInfo
+import com.yotfr.weather.domain.util.Cause
+import com.yotfr.weather.domain.util.Response
+import io.mockk.coEvery
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.ResponseBody
+import okio.IOException
 import org.junit.Assert.*
-import org.junit.Before
 import org.junit.Test
-import retrofit2.Retrofit
-import java.net.HttpURLConnection
-import java.util.TimeZone
+import retrofit2.HttpException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TestWeatherRepositoryImpl {
 
-    private lateinit var repository: WeatherRepository
-    private lateinit var weatherApi: WeatherApi
-    private lateinit var mockWebServer: MockWebServer
-    private lateinit var moshi: Moshi
+    @Test
+    fun `getWeatherData must return Response Success if result from api is WeatherDTO`() =
+        runTest {
+            val weatherApi = createWeatherApi()
+            val weatherRepository = createWeatherRepository(weatherApi)
+            coEvery { weatherApi.getWeatherData(any(), any(), any()) } coAnswers {
+                WeatherDto(
+                    weatherData = WeatherDataDto(
+                        time = emptyList(),
+                        temperatures = emptyList(),
+                        weatherCodes = emptyList(),
+                        pressures = emptyList(),
+                        windSpeeds = emptyList(),
+                        humidities = emptyList()
+                    )
+                )
+            }
 
-    @Before
-    fun setUp() {
-        mockWebServer = MockWebServer()
-        mockWebServer.start()
-        weatherApi = RetrofitHelper.weatherApiInstance(mockWebServer.url("/").toString())
-        repository = WeatherRepositoryImpl(weatherApi)
-        moshi = RetrofitHelper.moshiInstance()
-    }
+            val result = weatherRepository.getWeatherData(0.0, 0.0)
 
-    @After
-    fun shutDown() {
-        mockWebServer.shutdown()
-    }
+            assertEquals(Response.Success::class.java, result.last().javaClass)
+        }
 
     @Test
-    fun `get weather data must return WeatherInfo with code 200`() = runTest {
-        val testWeatherInfo = TestWeatherInfo()
+    fun `getWeatherData must return Response Exception with UnknownException Cause if result from api is Error code 400`() =
+        runTest {
+            val weatherApi = createWeatherApi()
+            val weatherRepository = createWeatherRepository(weatherApi)
 
-        val jsonAdapter: JsonAdapter<TestWeatherInfo> = moshi.adapter(TestWeatherInfo::class.java)
+            coEvery { weatherApi.getWeatherData(any(), any(), any()) } throws
+                HttpException(
+                    retrofit2.Response.error<ResponseBody>(
+                        400,
+                        ResponseBody.create("plain/text".toMediaType(), "")
+                    )
+                )
 
-        val expectedResponse = MockResponse()
-            .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(jsonAdapter.toJson(testWeatherInfo))
-        mockWebServer.enqueue(expectedResponse)
+            val result = weatherRepository.getWeatherData(0.0, 0.0)
 
-        val actualResponse = weatherApi.getWeatherData(
-            0.0,
-            0.0,
-            TimeZone.getDefault().id
-        )
+            assertEquals(Response.Exception::class.java, result.last().javaClass)
 
-        assertEquals(actualResponse, expectedResponse)
+            val cause = result.last() as Response.Exception
+
+            assertEquals(Cause.UnknownException::class.java, cause.cause.javaClass)
+        }
+
+    @Test
+    fun `getWeatherData must return Response Exception with UnknownException Cause if result from api differs from code 400`() =
+        runTest {
+            val weatherApi = createWeatherApi()
+            val weatherRepository = createWeatherRepository(weatherApi)
+
+            coEvery { weatherApi.getWeatherData(any(), any(), any()) } throws
+                HttpException(
+                    retrofit2.Response.error<ResponseBody>(
+                        500,
+                        ResponseBody.create("plain/text".toMediaType(), "")
+                    )
+                )
+
+            val result = weatherRepository.getWeatherData(0.0, 0.0)
+
+            assertEquals(Response.Exception::class.java, result.last().javaClass)
+
+            val cause = result.last() as Response.Exception
+
+            assertEquals(Cause.UnknownException::class.java, cause.cause.javaClass)
+        }
+
+    @Test
+    fun `getWeatherData must return Response Exception with BadConnectionException Cause if IOException occurs`() =
+        runTest {
+            val weatherApi = createWeatherApi()
+            val weatherRepository = createWeatherRepository(weatherApi)
+
+            coEvery { weatherApi.getWeatherData(any(), any(), any()) } throws IOException()
+
+            val result = weatherRepository.getWeatherData(0.0, 0.0)
+
+            assertEquals(Response.Exception::class.java, result.last().javaClass)
+
+            val cause = result.last() as Response.Exception
+
+            assertEquals(Cause.BadConnectionException::class.java, cause.cause.javaClass)
+        }
+
+    @Test
+    fun `getWeatherData must return Response Exception with UnknownException Cause if unknown exception occurs`() =
+        runTest {
+            val weatherApi = createWeatherApi()
+            val weatherRepository = createWeatherRepository(weatherApi)
+
+            coEvery { weatherApi.getWeatherData(any(), any(), any()) } throws Exception()
+
+            val result = weatherRepository.getWeatherData(0.0, 0.0)
+
+            assertEquals(Response.Exception::class.java, result.last().javaClass)
+
+            val cause = result.last() as Response.Exception
+
+            assertEquals(Cause.UnknownException::class.java, cause.cause.javaClass)
+        }
+
+    @Test
+    fun `getWeatherData must always return Loading State first`() = runTest {
+        val weatherApi = createWeatherApi()
+        val weatherRepository = createWeatherRepository(weatherApi)
+
+        coEvery { weatherApi.getWeatherData(any(), any(), any()) } throws Exception()
+
+        val result = weatherRepository.getWeatherData(0.0, 0.0)
+
+        assertEquals(Response.Loading::class.java, result.first().javaClass)
     }
-}
 
-object RetrofitHelper {
-
-    fun moshiInstance(): Moshi {
-        return Moshi.Builder().build()
+    private fun createMockedBlock(): suspend () -> String {
+        return mockk()
     }
 
-    fun weatherApiInstance(baseUrl: String): WeatherApi {
-        return Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .build()
-            .create(WeatherApi::class.java)
+    private fun createWeatherApi(): WeatherApi {
+        return mockk()
+    }
+
+    private fun createWeatherRepository(weatherApi: WeatherApi): WeatherRepository {
+        return WeatherRepositoryImpl(weatherApi)
     }
 }

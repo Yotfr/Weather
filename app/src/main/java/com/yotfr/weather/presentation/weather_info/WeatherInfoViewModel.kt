@@ -35,15 +35,15 @@ class WeatherInfoViewModel @Inject constructor(
                     is Response.Success -> {
                         processSuccessState(response)
                     }
-                    is Response.Error -> {
+                    is Response.Exception -> {
                     }
                 }
             }
         }
     }
 
-    private fun processSuccessState(response: Response<WeatherInfo>) {
-        response.data?.currentWeatherData?.let { weatherData ->
+    private fun processSuccessState(response: Response.Success<WeatherInfo>) {
+        response.data.currentWeatherData?.let { weatherData ->
             _state.update {
                 it.copy(
                     isLoading = false,

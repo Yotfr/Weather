@@ -11,5 +11,4 @@ interface WeatherApi {
         @Query("longitude") longitude: Double,
         @Query("timezone") timezone: String
     ): WeatherDto
-
 }

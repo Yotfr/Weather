@@ -3,6 +3,7 @@ package com.yotfr.weather.domain.usecases
 import com.yotfr.weather.domain.location.LocationTracker
 import com.yotfr.weather.domain.model.WeatherInfo
 import com.yotfr.weather.domain.repository.WeatherRepository
+import com.yotfr.weather.domain.util.Cause
 import com.yotfr.weather.domain.util.Response
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -18,7 +19,7 @@ class LoadWeatherInfoUseCase(
                 longitude = location.longitude
             )
         } ?: kotlin.run {
-            flow { Response.Error<WeatherInfo>(message = "couldn't retrieve location") }
+            flow { Response.Exception(cause = Cause.UnknownException("wegwe")) }
         }
     }
 }
