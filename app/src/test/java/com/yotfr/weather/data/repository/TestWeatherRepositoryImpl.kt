@@ -23,7 +23,7 @@ import retrofit2.HttpException
 class TestWeatherRepositoryImpl {
 
     @Test
-    fun `getWeatherData must return Response Success if result from api is WeatherDTO`() =
+    fun `getWeatherData must return Response Success with data if result from api is WeatherDTO`() =
         runTest {
             val weatherApi = createWeatherApi()
             val weatherRepository = createWeatherRepository(weatherApi)
@@ -43,6 +43,10 @@ class TestWeatherRepositoryImpl {
             val result = weatherRepository.getWeatherData(0.0, 0.0)
 
             assertEquals(Response.Success::class.java, result.last().javaClass)
+
+            val success = result.last() as Response.Success
+
+            assertNotNull(success.data)
         }
 
     @Test

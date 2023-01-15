@@ -19,7 +19,7 @@ class LoadWeatherInfoUseCase(
                 longitude = location.longitude
             )
         } ?: kotlin.run {
-            flow { Response.Exception(cause = Cause.UnknownException("wegwe")) }
+            flow { Response.Exception(cause = Cause.UnknownException()) }
         }
     }
 }
