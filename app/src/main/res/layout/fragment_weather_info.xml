@@ -8,6 +8,13 @@
     android:background="@drawable/weather_info_fragment_background_gradient"
     app:layoutDescription="@xml/fragment_weather_info_scene">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/fragment_weather_info_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/fragment_weather_info_toolbar_menu"/>
+
     <TextView
         android:id="@+id/fragment_weather_info_tv_current_time"
         android:layout_width="wrap_content"
@@ -15,7 +22,7 @@
         android:layout_margin="@dimen/medium_spacing"
         android:textColor="?attr/colorOnPrimary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/fragment_weather_info_toolbar"
         tools:text="Today 15:00" />
 
     <ImageView

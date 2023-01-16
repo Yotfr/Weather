@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yotfr.weather.R
 import com.yotfr.weather.appComponent
@@ -50,6 +51,20 @@ class WeatherInfoFragment : Fragment(R.layout.fragment_weather_info) {
         initializeAdapters()
 
         processUiState()
+
+        binding.fragmentWeatherInfoToolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.add_city -> {
+                    val action = WeatherInfoFragmentDirections
+                        .actionWeatherInfoFragmentToCityManagementFragment()
+                    findNavController().navigate(action)
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
     }
 
     private fun processUiState() {

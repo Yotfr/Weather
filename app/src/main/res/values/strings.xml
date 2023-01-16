@@ -3,4 +3,7 @@
 
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
+
+    <string name="add_city">Add city</string>
+    <string name="arrow_back">Arrow back</string>
 </resources>
