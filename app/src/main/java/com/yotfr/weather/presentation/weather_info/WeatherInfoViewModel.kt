@@ -1,5 +1,6 @@
 package com.yotfr.weather.presentation.weather_info
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.model.WeatherInfo
@@ -28,8 +29,9 @@ class WeatherInfoViewModel @Inject constructor(
     private fun loadWeatherData() {
         viewModelScope.launch {
             loadWeatherInfoUseCase().collectLatest { response ->
+                Log.d("TEST","$response")
                 when (response) {
-                    is Response.Loading -> {
+                    is Response.Loading<*> -> {
                         processLoadingState()
                     }
                     is Response.Success -> {

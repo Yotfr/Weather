@@ -1,6 +1,8 @@
 package com.yotfr.weather.data.repository
 
+import com.yotfr.weather.data.datasource.local.WeatherDao
 import com.yotfr.weather.data.datasource.remote.WeatherApi
+import com.yotfr.weather.data.util.mapToWeatherDataEntity
 import com.yotfr.weather.data.util.mapToWeatherInfo
 import com.yotfr.weather.domain.model.WeatherInfo
 import com.yotfr.weather.domain.repository.WeatherRepository
@@ -14,24 +16,29 @@ import java.util.TimeZone
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
-    private val weatherApi: WeatherApi
+    private val weatherApi: WeatherApi,
+    private val weatherDao: WeatherDao
 ) : WeatherRepository {
 
     override suspend fun getWeatherData(
         latitude: Double,
         longitude: Double
     ): Flow<Response<WeatherInfo>> = flow {
+        emit(Response.Loading<WeatherInfo>())
+
+        val cachedWeatherData = weatherDao.getWeatherData()
+        cachedWeatherData?.let {
+            emit(Response.Loading(it.mapToWeatherInfo()))
+        }
+
         try {
-            emit(Response.Loading)
-            emit(
-                Response.Success(
-                    data = weatherApi.getWeatherData(
-                        latitude = latitude,
-                        longitude = longitude,
-                        timezone = TimeZone.getDefault().id
-                    ).mapToWeatherInfo()
-                )
+            val fetchedWeatherData = weatherApi.getWeatherData(
+                latitude = latitude,
+                longitude = longitude,
+                timezone = TimeZone.getDefault().id
             )
+            weatherDao.deleteWeatherData()
+            weatherDao.insertWeatherData(fetchedWeatherData.mapToWeatherDataEntity())
         } catch (e: Exception) {
             when (e) {
                 is HttpException -> {
@@ -63,6 +70,15 @@ class WeatherRepositoryImpl @Inject constructor(
                     )
                 }
             }
+        }
+
+        val newCachedWeatherData = weatherDao.getWeatherData()
+        newCachedWeatherData?.let {
+            emit(
+                Response.Success(
+                    data = it.mapToWeatherInfo()
+                )
+            )
         }
     }
 }

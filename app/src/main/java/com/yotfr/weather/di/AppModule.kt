@@ -4,7 +4,7 @@ import dagger.Module
 
 @Module(
     includes = [
-        NetworkModule::class,
+        DataSourceModule::class,
         LocationModule::class,
         AppBindModule::class,
         UseCasesModule::class,

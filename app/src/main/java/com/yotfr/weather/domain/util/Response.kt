@@ -1,7 +1,7 @@
 package com.yotfr.weather.domain.util
 
 sealed class Response<out S> {
-    object Loading : Response<Nothing>()
+    data class Loading<S>(val data: S? = null) : Response<Nothing>()
     data class Success<S>(val data: S) : Response<S>()
-    class Exception(val cause: Cause) : Response<Nothing>()
+    data class Exception(val cause: Cause) : Response<Nothing>()
 }

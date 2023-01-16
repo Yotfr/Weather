@@ -1,5 +1,6 @@
 package com.yotfr.weather.data.util
 
+import com.yotfr.weather.data.datasource.local.WeatherDataEntity
 import com.yotfr.weather.data.datasource.remote.WeatherDataDto
 import com.yotfr.weather.data.datasource.remote.WeatherDto
 import com.yotfr.weather.domain.model.WeatherData
@@ -48,6 +49,62 @@ fun WeatherDataDto.mapToWeatherData(): Map<Int, List<WeatherData>> {
     }.mapValues { values ->
         values.value.map { it.data }
     }
+}
+
+fun WeatherDataEntity.mapToWeatherData(): Map<Int, List<WeatherData>> {
+    return time.mapIndexed { index, time ->
+        val temperature = temperatures[index]
+        val weatherCode = weatherCodes[index]
+        val windSpeed = windSpeeds[index]
+        val pressure = pressures[index]
+        val humidity = humidities[index]
+        val parsedTime = LocalDateTime.parse(time, DateTimeFormatter.ISO_DATE_TIME)
+        IndexedWeatherData(
+            index = index,
+            data = WeatherData(
+                time = parsedTime,
+                temperature = temperature,
+                pressure = pressure,
+                windSpeed = windSpeed,
+                humidity = humidity,
+                weatherType = WeatherType.fromWMO(
+                    code = weatherCode,
+                    isDayTime = parsedTime.hour in 7..20
+                )
+            )
+        )
+    }.groupBy {
+        it.index / 24
+    }.mapValues { values ->
+        values.value.map { it.data }
+    }
+}
+
+fun WeatherDto.mapToWeatherDataEntity(): WeatherDataEntity {
+    return WeatherDataEntity(
+        time = weatherData.time,
+        temperatures = weatherData.temperatures,
+        weatherCodes = weatherData.weatherCodes,
+        pressures = weatherData.pressures,
+        windSpeeds = weatherData.windSpeeds,
+        humidities = weatherData.humidities,
+        id = 0
+    )
+}
+
+fun WeatherDataEntity.mapToWeatherInfo(): WeatherInfo {
+    val detailedMappedWeatherData = this.mapToWeatherData()
+    val currentTime = LocalDateTime.now()
+    val currentWeatherData = detailedMappedWeatherData[0]?.find { data ->
+        val hour = if (currentTime.minute < 30) {
+            currentTime.hour
+        } else currentTime.hour + 1
+        data.time.hour == hour
+    }
+    return WeatherInfo(
+        detailedWeatherDataPerDay = detailedMappedWeatherData,
+        currentWeatherData = currentWeatherData
+    )
 }
 
 fun WeatherDto.mapToWeatherInfo(): WeatherInfo {
