@@ -1,8 +1,8 @@
 package com.yotfr.weather.data.util
 
 import com.yotfr.weather.data.datasource.local.WeatherDataEntity
-import com.yotfr.weather.data.datasource.remote.WeatherDataDto
-import com.yotfr.weather.data.datasource.remote.WeatherDto
+import com.yotfr.weather.data.datasource.remote.dto.WeatherDataDto
+import com.yotfr.weather.data.datasource.remote.dto.WeatherDto
 import com.yotfr.weather.domain.model.WeatherData
 import com.yotfr.weather.domain.model.WeatherInfo
 import com.yotfr.weather.domain.model.WeatherType

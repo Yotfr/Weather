@@ -1,4 +1,4 @@
-package com.yotfr.weather.data.datasource.remote
+package com.yotfr.weather.data.datasource.remote.dto
 
 import com.squareup.moshi.Json
 

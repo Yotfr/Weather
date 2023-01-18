@@ -1,8 +1,8 @@
 package com.yotfr.weather.data.repository
 
 import com.yotfr.weather.data.datasource.remote.WeatherApi
-import com.yotfr.weather.data.datasource.remote.WeatherDataDto
-import com.yotfr.weather.data.datasource.remote.WeatherDto
+import com.yotfr.weather.data.datasource.remote.dto.WeatherDataDto
+import com.yotfr.weather.data.datasource.remote.dto.WeatherDto
 import com.yotfr.weather.domain.repository.WeatherRepository
 import com.yotfr.weather.domain.util.Cause
 import com.yotfr.weather.domain.util.Response

@@ -1,5 +1,6 @@
 package com.yotfr.weather.data.datasource.remote
 
+import com.yotfr.weather.data.datasource.remote.dto.WeatherDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -11,4 +12,5 @@ interface WeatherApi {
         @Query("longitude") longitude: Double,
         @Query("timezone") timezone: String
     ): WeatherDto
+
 }
