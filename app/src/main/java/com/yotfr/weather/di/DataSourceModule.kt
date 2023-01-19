@@ -2,10 +2,10 @@ package com.yotfr.weather.di
 
 import android.content.Context
 import androidx.room.Room
-import com.yotfr.weather.data.datasource.local.WeatherDao
-import com.yotfr.weather.data.datasource.local.WeatherDataBase
-import com.yotfr.weather.data.datasource.remote.LocationApi
-import com.yotfr.weather.data.datasource.remote.WeatherApi
+import com.yotfr.weather.data.places.datasource.local.WeatherDao
+import com.yotfr.weather.data.places.datasource.local.WeatherDataBase
+import com.yotfr.weather.data.places.datasource.remote.LocationApi
+import com.yotfr.weather.data.weather.datasource.remote.WeatherApi
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

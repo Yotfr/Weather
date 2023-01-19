@@ -2,7 +2,8 @@ package com.yotfr.weather.di
 
 import android.app.Application
 import android.content.Context
-import com.yotfr.weather.presentation.weather_info.WeatherInfoViewModel
+import com.yotfr.weather.presentation.places.citymanagement.CityManagementViewModel
+import com.yotfr.weather.presentation.weather.weather_info.WeatherInfoViewModel
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Component.Builder
@@ -26,4 +27,6 @@ interface AppComponent {
     fun viewModelFavtory(): ViewModelFactory
 
     fun weatherInfoViewModel(): WeatherInfoViewModel
+
+    fun cityManagementViewModel(): CityManagementViewModel
 }

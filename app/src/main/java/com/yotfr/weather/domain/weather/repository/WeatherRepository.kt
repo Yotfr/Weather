@@ -1,0 +1,9 @@
+package com.yotfr.weather.domain.weather.repository
+
+import com.yotfr.weather.domain.weather.model.WeatherInfo
+import com.yotfr.weather.domain.util.Response
+import kotlinx.coroutines.flow.Flow
+
+interface WeatherRepository {
+    suspend fun getWeatherData(latitude: Double, longitude: Double): Flow<Response<WeatherInfo>>
+}

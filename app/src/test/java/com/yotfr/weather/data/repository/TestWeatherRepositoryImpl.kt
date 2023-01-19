@@ -1,9 +1,10 @@
 package com.yotfr.weather.data.repository
 
-import com.yotfr.weather.data.datasource.remote.WeatherApi
-import com.yotfr.weather.data.datasource.remote.dto.WeatherDataDto
-import com.yotfr.weather.data.datasource.remote.dto.WeatherDto
-import com.yotfr.weather.domain.repository.WeatherRepository
+import com.yotfr.weather.data.weather.datasource.remote.WeatherApi
+import com.yotfr.weather.data.weather.datasource.remote.dto.WeatherDataDto
+import com.yotfr.weather.data.weather.datasource.remote.dto.WeatherDto
+import com.yotfr.weather.data.weather.repository.WeatherRepositoryImpl
+import com.yotfr.weather.domain.weather.repository.WeatherRepository
 import com.yotfr.weather.domain.util.Cause
 import com.yotfr.weather.domain.util.Response
 import io.mockk.coEvery

@@ -1,10 +1,10 @@
 package com.yotfr.weather.di
 
-import com.yotfr.weather.domain.location.LocationTracker
-import com.yotfr.weather.domain.repository.LocationRepository
-import com.yotfr.weather.domain.repository.WeatherRepository
-import com.yotfr.weather.domain.usecases.LoadWeatherInfoUseCase
-import com.yotfr.weather.domain.usecases.SearchLocationUseCase
+import com.yotfr.weather.domain.weather.location.LocationTracker
+import com.yotfr.weather.domain.places.repository.LocationRepository
+import com.yotfr.weather.domain.weather.repository.WeatherRepository
+import com.yotfr.weather.domain.weather.usecases.LoadWeatherInfoUseCase
+import com.yotfr.weather.domain.places.usecases.SearchLocationUseCase
 import dagger.Module
 import dagger.Provides
 
