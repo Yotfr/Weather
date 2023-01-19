@@ -2,7 +2,7 @@ package com.yotfr.weather.data.datasource.remote.dto
 
 import com.squareup.moshi.Json
 
-data class WeatherDataDto(
+data class HourlyWeatherDataDto(
     val time: List<String>,
     @field:Json(name = "temperature_2m")
     val temperatures: List<Double>,
@@ -13,5 +13,7 @@ data class WeatherDataDto(
     @field:Json(name = "windspeed_10m")
     val windSpeeds: List<Double>,
     @field:Json(name = "relativehumidity_2m")
-    val humidities: List<Double>
+    val humidities: List<Double>,
+    @field:Json(name = "apparent_temperature")
+    val apparentTemperature: List<Double>
 )

@@ -2,7 +2,7 @@ package com.yotfr.weather.di
 
 import android.content.Context
 import androidx.room.Room
-import com.yotfr.weather.data.datasource.local.WeatherDao
+import com.yotfr.weather.data.datasource.local.WeatherCacheDao
 import com.yotfr.weather.data.datasource.local.AppDataBase
 import com.yotfr.weather.data.datasource.local.PlacesDao
 import com.yotfr.weather.data.datasource.remote.PlacesApi
@@ -51,8 +51,8 @@ class DataSourceModule {
     }
 
     @Provides
-    fun provideWeatherDao(appDataBase: AppDataBase): WeatherDao {
-        return appDataBase.weatherDao
+    fun provideWeatherDao(appDataBase: AppDataBase): WeatherCacheDao {
+        return appDataBase.weatherCacheDao
     }
 
     @Provides

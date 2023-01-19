@@ -2,7 +2,10 @@ package com.yotfr.weather.data.repository
 
 import com.yotfr.weather.data.datasource.local.PlacesDao
 import com.yotfr.weather.data.datasource.remote.PlacesApi
+import com.yotfr.weather.data.datasource.remote.WeatherApi
+import com.yotfr.weather.data.util.mapToFavoritePlaceInfo
 import com.yotfr.weather.data.util.mapToLocationInfo
+import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.model.PlaceInfo
 import com.yotfr.weather.domain.repository.PlacesRepository
 import com.yotfr.weather.domain.util.Cause
@@ -16,7 +19,8 @@ import javax.inject.Inject
 
 class PlacesRepositoryImpl @Inject constructor(
     private val placesApi: PlacesApi,
-    private val placesDao: PlacesDao
+    private val placesDao: PlacesDao,
+    private val weatherApi: WeatherApi
 ) : PlacesRepository {
 
     override suspend fun getPlacesThatMatchesQuery(searchQuery: String): Flow<Response<List<PlaceInfo>>> =
@@ -64,17 +68,25 @@ class PlacesRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getFavoritePlaces(): Flow<List<PlaceInfo>> {
-        return placesDao.getAllPlaces().map {
-            it.map {
-                it.mapToLocationInfo()
+    override suspend fun getFavoritePlaces(): Flow<List<FavoritePlaceInfo>> {
+        return placesDao.getAllPlaces().map { placesList ->
+            placesList.map { place ->
+                place.mapToFavoritePlaceInfo()
             }
         }
     }
 
     override suspend fun addFavoritePlace(place: PlaceInfo) {
-       placesDao.addPlace(
-           placeEntity = place.mapToLocationInfo()
-       )
+        val weatherData = weatherApi.getBriefCurrentWeatherData(
+            latitude = place.latitude,
+            longitude = place.longitude,
+            timezone = place.timeZone
+        )
+        placesDao.addPlace(
+            placeEntity = place.mapToLocationInfo(
+                weatherCode = weatherData.currentWeather.weatherCode,
+                temperature = weatherData.currentWeather.temperature
+            )
+        )
     }
 }

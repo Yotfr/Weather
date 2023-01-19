@@ -1,7 +1,7 @@
 package com.yotfr.weather.data.repository
 
 import com.yotfr.weather.data.datasource.remote.WeatherApi
-import com.yotfr.weather.data.datasource.remote.dto.WeatherDataDto
+import com.yotfr.weather.data.datasource.remote.dto.HourlyWeatherDataDto
 import com.yotfr.weather.data.datasource.remote.dto.WeatherDto
 import com.yotfr.weather.domain.repository.WeatherRepository
 import com.yotfr.weather.domain.util.Cause
@@ -29,7 +29,7 @@ class TestWeatherRepositoryImpl {
             val weatherRepository = createWeatherRepository(weatherApi)
             coEvery { weatherApi.getWeatherData(any(), any(), any()) } coAnswers {
                 WeatherDto(
-                    weatherData = WeatherDataDto(
+                    hourlyWeatherData = HourlyWeatherDataDto(
                         time = emptyList(),
                         temperatures = emptyList(),
                         weatherCodes = emptyList(),

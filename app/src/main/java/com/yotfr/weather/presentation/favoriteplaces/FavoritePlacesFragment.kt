@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.yotfr.weather.R
 import com.yotfr.weather.appComponent
 import com.yotfr.weather.databinding.FragmentFavoritePlacesBinding
+import com.yotfr.weather.presentation.utils.VerticalMarginItemDecoration
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -41,14 +42,26 @@ class FavoritePlacesFragment : Fragment(R.layout.fragment_favorite_places) {
 
         val layoutManager = LinearLayoutManager(requireContext())
         adapter = FavoritePlacesAdapter()
+        binding.fragmentFavoritePlacesRv.adapter = adapter
+        binding.fragmentFavoritePlacesRv.layoutManager = layoutManager
+        binding.fragmentFavoritePlacesRv.addItemDecoration(
+            VerticalMarginItemDecoration(spaceSize = resources.getDimensionPixelSize(R.dimen.medium_spacing))
+        )
 
-        binding.favoritePlacesRv.adapter = adapter
-        binding.favoritePlacesRv.layoutManager = layoutManager
+        binding.fragmentFavoritePlacesToolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.fragment_favorite_places_toolbar_search -> {
+                    val action = FavoritePlacesFragmentDirections
+                        .actionFavoritePlacesFragmentToSearchPlacesFragment()
+                    findNavController().navigate(action)
+                    true
+                }
+                else -> false
+            }
+        }
 
-        binding.toSearch.setOnClickListener {
-            val action = FavoritePlacesFragmentDirections
-                .actionFavoritePlacesFragmentToSearchPlacesFragment()
-            findNavController().navigate(action)
+        binding.fragmentFavoritePlacesToolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

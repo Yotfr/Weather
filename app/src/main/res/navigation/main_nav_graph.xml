@@ -7,11 +7,14 @@
 
     <fragment
         android:id="@+id/weatherInfoFragment"
-        android:name="com.yotfr.weather.presentation.weatherinfo.WeatherInfoFragment"
+        android:name="com.yotfr.weather.presentation.currentdayforecast.CurrentDayForecastFragment"
         android:label="WeatherInfoFragment" >
         <action
             android:id="@+id/action_weatherInfoFragment_to_favoritePlacesFragment"
             app:destination="@id/favoritePlacesFragment" />
+        <action
+            android:id="@+id/action_weatherInfoFragment_to_sevenDaysForecastFragment"
+            app:destination="@id/sevenDaysForecastFragment" />
     </fragment>
     <fragment
         android:id="@+id/favoritePlacesFragment"
@@ -25,4 +28,8 @@
         android:id="@+id/searchPlacesFragment"
         android:name="com.yotfr.weather.presentation.searchplaces.SearchPlacesFragment"
         android:label="SearchPlacesFragment" />
+    <fragment
+        android:id="@+id/sevenDaysForecastFragment"
+        android:name="com.yotfr.weather.presentation.sevendaysforecast.SevenDaysForecastFragment"
+        android:label="SevenDaysForecastFragment" />
 </navigation>

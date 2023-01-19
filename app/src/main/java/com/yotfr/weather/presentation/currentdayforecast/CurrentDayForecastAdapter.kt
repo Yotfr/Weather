@@ -1,4 +1,4 @@
-package com.yotfr.weather.presentation.weatherinfo
+package com.yotfr.weather.presentation.currentdayforecast
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,20 +8,20 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.weather.databinding.ItemHourlyWeatherBinding
-import com.yotfr.weather.domain.model.WeatherData
+import com.yotfr.weather.domain.model.HourlyWeatherData
 import java.time.format.DateTimeFormatter
 
-class HourlyWeatherDiffUtilCallback : DiffUtil.ItemCallback<WeatherData>() {
-    override fun areItemsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
+class HourlyWeatherDiffUtilCallback : DiffUtil.ItemCallback<HourlyWeatherData>() {
+    override fun areItemsTheSame(oldItem: HourlyWeatherData, newItem: HourlyWeatherData): Boolean {
         return oldItem.time == newItem.time
     }
 
-    override fun areContentsTheSame(oldItem: WeatherData, newItem: WeatherData): Boolean {
+    override fun areContentsTheSame(oldItem: HourlyWeatherData, newItem: HourlyWeatherData): Boolean {
         return oldItem == newItem
     }
 }
 
-class HourlyWeatherAdapter : ListAdapter<WeatherData, HourlyWeatherAdapter.HourlyWeatherViewHolder>(
+class HourlyWeatherAdapter : ListAdapter<HourlyWeatherData, HourlyWeatherAdapter.HourlyWeatherViewHolder>(
     HourlyWeatherDiffUtilCallback()
 ) {
 
@@ -44,15 +44,15 @@ class HourlyWeatherAdapter : ListAdapter<WeatherData, HourlyWeatherAdapter.Hourl
         private val binding: ItemHourlyWeatherBinding,
         private val context: Context
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(weatherData: WeatherData) {
+        fun bind(hourlyWeatherData: HourlyWeatherData) {
             binding.apply {
                 itemHourlyWeatherTvTime.text =
-                    weatherData.time.format(DateTimeFormatter.ofPattern("HH:mm"))
-                itemHourlyWeatherTvTemperature.text = weatherData.temperature.toString()
+                    hourlyWeatherData.time.format(DateTimeFormatter.ofPattern("HH:mm"))
+                itemHourlyWeatherTvTemperature.text = hourlyWeatherData.temperature.toString()
                 itemHourlyWeatherIvWeatherType.setImageDrawable(
                     ContextCompat.getDrawable(
                         context,
-                        weatherData.weatherType.iconRes
+                        hourlyWeatherData.weatherType.iconRes
                     )
                 )
             }

@@ -5,17 +5,18 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Button
-        android:id="@+id/toSearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favoritePlacesRv"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/fragment_favorite_places_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toSearch" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/fragment_favorite_places_toolbar_menu"
+        app:navigationIcon="@drawable/ic_arrow_back"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragment_favorite_places_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/fragment_favorite_places_toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

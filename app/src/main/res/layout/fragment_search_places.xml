@@ -9,8 +9,8 @@
         android:id="@+id/fragment_city_management_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/fragment_city_management_toolbar_menu" />
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
         android:id="@+id/fragment_city_management_search"

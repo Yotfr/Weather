@@ -6,4 +6,7 @@
 
     <string name="add_city">Add city</string>
     <string name="arrow_back">Arrow back</string>
+    
+    <string name="seven_days">7 days</string>
+    <string name="search">Search</string>
 </resources>

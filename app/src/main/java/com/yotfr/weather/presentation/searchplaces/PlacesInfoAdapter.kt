@@ -55,7 +55,7 @@ class LocationInfoAdapter : ListAdapter<PlaceInfo, LocationInfoAdapter.LocationI
             binding.apply {
                 itemLocationInfoTvPlaceName.text = placeInfo.placeName
                 itemLocationInfoTvCountryName.text = placeInfo.countryName
-                itemLocationInfoBtnAdd.setOnClickListener {
+                btnAddFavorite.setOnClickListener {
                     delegate?.addPlaceClicked(place = placeInfo)
                 }
             }
