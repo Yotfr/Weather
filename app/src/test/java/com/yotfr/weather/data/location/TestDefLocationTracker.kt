@@ -7,7 +7,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.yotfr.weather.data.weather.location.DefLocationTracker
+import com.yotfr.weather.data.location.DefLocationTracker
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

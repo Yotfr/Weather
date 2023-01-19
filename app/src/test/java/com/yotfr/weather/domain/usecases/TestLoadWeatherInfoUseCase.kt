@@ -1,8 +1,7 @@
 package com.yotfr.weather.domain.usecases
 
-import com.yotfr.weather.domain.weather.location.LocationTracker
-import com.yotfr.weather.domain.weather.repository.WeatherRepository
-import com.yotfr.weather.domain.weather.usecases.LoadWeatherInfoUseCase
+import com.yotfr.weather.domain.location.LocationTracker
+import com.yotfr.weather.domain.repository.WeatherRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

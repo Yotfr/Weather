@@ -2,10 +2,11 @@ package com.yotfr.weather.di
 
 import android.content.Context
 import androidx.room.Room
-import com.yotfr.weather.data.places.datasource.local.WeatherDao
-import com.yotfr.weather.data.places.datasource.local.WeatherDataBase
-import com.yotfr.weather.data.places.datasource.remote.LocationApi
-import com.yotfr.weather.data.weather.datasource.remote.WeatherApi
+import com.yotfr.weather.data.datasource.local.WeatherDao
+import com.yotfr.weather.data.datasource.local.AppDataBase
+import com.yotfr.weather.data.datasource.local.PlacesDao
+import com.yotfr.weather.data.datasource.remote.PlacesApi
+import com.yotfr.weather.data.datasource.remote.WeatherApi
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -31,7 +32,7 @@ class DataSourceModule {
 
     @Provides
     @Singleton
-    fun provideLocationApi(): LocationApi {
+    fun provideLocationApi(): PlacesApi {
         return Retrofit.Builder()
             .baseUrl(LOCATION_BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create())
@@ -41,16 +42,21 @@ class DataSourceModule {
 
     @Provides
     @Singleton
-    fun provideWeatherDataBase(context: Context): WeatherDataBase {
+    fun provideWeatherDataBase(context: Context): AppDataBase {
         return Room.databaseBuilder(
             context,
-            WeatherDataBase::class.java,
+            AppDataBase::class.java,
             "weather_db"
         ).build()
     }
 
     @Provides
-    fun provideWeatherDao(weatherDataBase: WeatherDataBase): WeatherDao {
-        return weatherDataBase.weatherDao
+    fun provideWeatherDao(appDataBase: AppDataBase): WeatherDao {
+        return appDataBase.weatherDao
+    }
+
+    @Provides
+    fun providePlacesDao(appDataBase: AppDataBase): PlacesDao {
+        return appDataBase.placesDao
     }
 }

@@ -7,14 +7,22 @@
 
     <fragment
         android:id="@+id/weatherInfoFragment"
-        android:name="com.yotfr.weather.presentation.weather.weather_info.WeatherInfoFragment"
+        android:name="com.yotfr.weather.presentation.weatherinfo.WeatherInfoFragment"
         android:label="WeatherInfoFragment" >
         <action
-            android:id="@+id/action_weatherInfoFragment_to_cityManagementFragment"
-            app:destination="@id/cityManagementFragment" />
+            android:id="@+id/action_weatherInfoFragment_to_favoritePlacesFragment"
+            app:destination="@id/favoritePlacesFragment" />
     </fragment>
     <fragment
-        android:id="@+id/cityManagementFragment"
-        android:name="com.yotfr.weather.presentation.places.citymanagement.CityManagementFragment"
-        android:label="CityManagementFragment" />
+        android:id="@+id/favoritePlacesFragment"
+        android:name="com.yotfr.weather.presentation.favoriteplaces.FavoritePlacesFragment"
+        android:label="FavoritePlacesFragment" >
+        <action
+            android:id="@+id/action_favoritePlacesFragment_to_searchPlacesFragment"
+            app:destination="@id/searchPlacesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchPlacesFragment"
+        android:name="com.yotfr.weather.presentation.searchplaces.SearchPlacesFragment"
+        android:label="SearchPlacesFragment" />
 </navigation>
