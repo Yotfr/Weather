@@ -10,11 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yotfr.weather.R
 import com.yotfr.weather.appComponent
 import com.yotfr.weather.databinding.FragmentSearchPlacesBinding
 import com.yotfr.weather.domain.model.PlaceInfo
+import com.yotfr.weather.presentation.utils.LocationInfo
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -50,6 +52,16 @@ class SearchPlacesFragment : Fragment(R.layout.fragment_search_places) {
                             place = place
                         )
                     )
+                }
+                override fun placeClicked(place: PlaceInfo) {
+                    val action = SearchPlacesFragmentDirections.actionSearchPlacesFragmentToSevenDaysForecastFragment(
+                        locationInfo = LocationInfo(
+                            latitude = place.latitude,
+                            longitude = place.longitude,
+                            timeZone = place.timeZone
+                        )
+                    )
+                    findNavController().navigate(action)
                 }
             }
         )

@@ -27,9 +27,17 @@
     <fragment
         android:id="@+id/searchPlacesFragment"
         android:name="com.yotfr.weather.presentation.searchplaces.SearchPlacesFragment"
-        android:label="SearchPlacesFragment" />
+        android:label="SearchPlacesFragment" >
+        <action
+            android:id="@+id/action_searchPlacesFragment_to_sevenDaysForecastFragment"
+            app:destination="@id/sevenDaysForecastFragment" />
+    </fragment>
     <fragment
         android:id="@+id/sevenDaysForecastFragment"
         android:name="com.yotfr.weather.presentation.sevendaysforecast.SevenDaysForecastFragment"
-        android:label="SevenDaysForecastFragment" />
+        android:label="SevenDaysForecastFragment" >
+        <argument
+            android:name="LocationInfo"
+            app:argType="com.yotfr.weather.presentation.utils.LocationInfo" />
+    </fragment>
 </navigation>

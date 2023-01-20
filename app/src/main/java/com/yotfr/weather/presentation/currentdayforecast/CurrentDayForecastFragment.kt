@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.yotfr.weather.R
 import com.yotfr.weather.appComponent
 import com.yotfr.weather.databinding.FragmentCurrentDayForecastBinding
+import com.yotfr.weather.presentation.utils.LocationInfo
 import com.yotfr.weather.presentation.utils.MarginItemDecoration
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -82,7 +83,9 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
         }
 
         binding.fragmentCurrentWeatherInfoBtnSevenDaysForecast.setOnClickListener {
-            val action = CurrentDayForecastFragmentDirections.actionWeatherInfoFragmentToSevenDaysForecastFragment()
+            val action = CurrentDayForecastFragmentDirections.actionWeatherInfoFragmentToSevenDaysForecastFragment(
+                locationInfo = LocationInfo()
+            )
             findNavController().navigate(action)
         }
     }

@@ -7,19 +7,33 @@ import com.yotfr.weather.domain.util.Cause
 import com.yotfr.weather.domain.util.Response
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.util.TimeZone
 
 class LoadWeatherInfoUseCase(
     private val weatherRepository: WeatherRepository,
     private val locationTracker: LocationTracker
 ) {
-    suspend operator fun invoke(): Flow<Response<WeatherInfo>> {
-        return locationTracker.getCurrentLocation()?.let { location ->
+    suspend operator fun invoke(
+        latitude: Double ? = null,
+        longitude: Double ? = null,
+        timezone: String ? = null
+    ): Flow<Response<WeatherInfo>> {
+        return if (latitude != null && longitude != null && timezone != null) {
             weatherRepository.getWeatherData(
-                latitude = location.latitude,
-                longitude = location.longitude
+                latitude = latitude,
+                longitude = longitude,
+                timeZone = timezone
             )
-        } ?: kotlin.run {
-            flow { Response.Exception(cause = Cause.UnknownException()) }
+        }else {
+            locationTracker.getCurrentLocation()?.let { location ->
+                weatherRepository.getWeatherData(
+                    latitude = location.latitude,
+                    longitude = location.longitude,
+                    timeZone = TimeZone.getDefault().id
+                )
+            } ?: kotlin.run {
+                flow { Response.Exception(cause = Cause.UnknownException()) }
+            }
         }
     }
 }

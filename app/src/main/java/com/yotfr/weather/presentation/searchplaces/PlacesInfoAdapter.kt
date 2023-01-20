@@ -10,6 +10,7 @@ import com.yotfr.weather.domain.model.PlaceInfo
 
 interface SearchedPlacesDelegate {
     fun addPlaceClicked(place: PlaceInfo)
+    fun placeClicked(place: PlaceInfo)
 }
 
 class LocationInfoDiffUtilCallback : DiffUtil.ItemCallback<PlaceInfo>() {
@@ -57,6 +58,9 @@ class LocationInfoAdapter : ListAdapter<PlaceInfo, LocationInfoAdapter.LocationI
                 itemLocationInfoTvCountryName.text = placeInfo.countryName
                 btnAddFavorite.setOnClickListener {
                     delegate?.addPlaceClicked(place = placeInfo)
+                }
+                constraint.setOnClickListener {
+                    delegate?.placeClicked(place = placeInfo)
                 }
             }
         }
