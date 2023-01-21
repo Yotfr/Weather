@@ -28,9 +28,6 @@
         android:id="@+id/searchPlacesFragment"
         android:name="com.yotfr.weather.presentation.searchplaces.SearchPlacesFragment"
         android:label="SearchPlacesFragment" >
-        <action
-            android:id="@+id/action_searchPlacesFragment_to_sevenDaysForecastFragment"
-            app:destination="@id/sevenDaysForecastFragment" />
     </fragment>
     <fragment
         android:id="@+id/sevenDaysForecastFragment"

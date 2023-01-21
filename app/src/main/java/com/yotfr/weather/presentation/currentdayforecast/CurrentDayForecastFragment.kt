@@ -43,6 +43,16 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("placeId")?.observe(
+            viewLifecycleOwner
+        ) { placeId ->
+            viewModel.onEvent(
+                CurrentDayForecastEvent.ChangeCurrentSelectedPlaceId(
+                    newPlaceId = placeId.toLong()
+                )
+            )
+        }
+
         val layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         adapter = HourlyWeatherAdapter()

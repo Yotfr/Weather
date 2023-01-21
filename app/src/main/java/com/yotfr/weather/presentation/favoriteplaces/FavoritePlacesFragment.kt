@@ -42,6 +42,17 @@ class FavoritePlacesFragment : Fragment(R.layout.fragment_favorite_places) {
 
         val layoutManager = LinearLayoutManager(requireContext())
         adapter = FavoritePlacesAdapter()
+        adapter.attachDelegate(
+            object : FavoritePlacesDelegate {
+                override fun placeClicked(placeId: Long) {
+                    findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                        "placeId",
+                        placeId.toString()
+                    )
+                    findNavController().popBackStack()
+                }
+            }
+        )
         binding.fragmentFavoritePlacesRv.adapter = adapter
         binding.fragmentFavoritePlacesRv.layoutManager = layoutManager
         binding.fragmentFavoritePlacesRv.addItemDecoration(

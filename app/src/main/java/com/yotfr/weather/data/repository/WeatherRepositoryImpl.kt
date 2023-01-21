@@ -2,6 +2,7 @@ package com.yotfr.weather.data.repository
 
 import com.yotfr.weather.data.datasource.local.WeatherCacheDao
 import com.yotfr.weather.data.datasource.remote.WeatherApi
+import com.yotfr.weather.data.util.mapToWeatherCacheEntity
 import com.yotfr.weather.data.util.mapToWeatherInfo
 import com.yotfr.weather.domain.model.WeatherInfo
 import com.yotfr.weather.domain.repository.WeatherRepository
@@ -115,5 +116,44 @@ class WeatherRepositoryImpl @Inject constructor(
         }
 
          */
+    }
+
+    override suspend fun fetchAndCacheWeatherDataForPlaceId(
+        placeId: Long,
+        latitude: Double,
+        longitude: Double,
+        timeZone: String
+    ) {
+        val fetchedData = weatherApi.getWeatherData(
+            latitude = latitude,
+            longitude = longitude,
+            timezone = timeZone
+        )
+        weatherCacheDao.insertWeatherCache(
+            weatherData = fetchedData.mapToWeatherCacheEntity(
+                placeId = placeId
+            )
+        )
+    }
+
+    override suspend fun updateWeatherCacheForFavoritePlace(
+        placeId: Long,
+        latitude: Double,
+        longitude: Double,
+        timeZone: String
+    ) {
+        val fetchedData = weatherApi.getWeatherData(
+            latitude = latitude,
+            longitude = longitude,
+            timezone = timeZone
+        )
+        weatherCacheDao.deleteWeatherCache(
+            placeId = placeId
+        )
+        weatherCacheDao.insertWeatherCache(
+            weatherData = fetchedData.mapToWeatherCacheEntity(
+                placeId = placeId
+            )
+        )
     }
 }

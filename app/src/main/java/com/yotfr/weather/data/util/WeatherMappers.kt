@@ -1,8 +1,6 @@
 package com.yotfr.weather.data.util
 
-import com.yotfr.weather.data.datasource.local.entities.CacheData
-import com.yotfr.weather.data.datasource.local.entities.DailyWeatherCacheEntity
-import com.yotfr.weather.data.datasource.local.entities.HourlyWeatherCacheEntity
+import com.yotfr.weather.data.datasource.local.entities.WeatherCacheEntity
 import com.yotfr.weather.data.datasource.remote.dto.WeatherDto
 import com.yotfr.weather.domain.model.*
 import java.time.LocalDate
@@ -33,9 +31,9 @@ fun WeatherDto.mapToWeatherInfo(): WeatherInfo {
         val humidity = hourlyWeatherData.humidities[index]
         val apparentTemperature = hourlyWeatherData.apparentTemperature[index]
         val parsedTime = LocalDateTime.parse(time, DateTimeFormatter.ISO_DATE_TIME)
-        val sunriseTime = dailyWeatherData.sunrise[index/24]
+        val sunriseTime = dailyWeatherData.sunrise[index / 24]
         val parsedSunriseTime = LocalDateTime.parse(sunriseTime, DateTimeFormatter.ISO_DATE_TIME)
-        val sunsetTime = dailyWeatherData.sunset[index/24]
+        val sunsetTime = dailyWeatherData.sunset[index / 24]
         val parsedSunsetTime = LocalDateTime.parse(sunsetTime, DateTimeFormatter.ISO_DATE_TIME)
         val isDayTime = parsedTime in parsedSunriseTime..parsedSunsetTime
 
@@ -142,19 +140,19 @@ fun WeatherDto.mapToWeatherInfo(): WeatherInfo {
     )
 }
 
-fun CacheData.mapToWeatherInfo(): WeatherInfo {
-    val indexedHourlyWeatherData = hourlyWeatherCacheEntity.time.mapIndexed { index, time ->
+fun WeatherCacheEntity.mapToWeatherInfo(): WeatherInfo {
+    val indexedHourlyWeatherData = hourlyTime.mapIndexed { index, time ->
 
-        val temperature = hourlyWeatherCacheEntity.temperatures[index]
-        val weatherCode = hourlyWeatherCacheEntity.weatherCodes[index]
-        val windSpeed = hourlyWeatherCacheEntity.windSpeeds[index]
-        val pressure = hourlyWeatherCacheEntity.pressures[index]
-        val humidity = hourlyWeatherCacheEntity.humidities[index]
-        val apparentTemperature = hourlyWeatherCacheEntity.apparentTemperature[index]
+        val temperature = hourlyTemperatures[index]
+        val weatherCode = hourlyWeatherCodes[index]
+        val windSpeed = hourlyWindSpeeds[index]
+        val pressure = hourlyPressures[index]
+        val humidity = hourlyHumidities[index]
+        val apparentTemperature = hourlyApparentTemperature[index]
         val parsedTime = LocalDateTime.parse(time, DateTimeFormatter.ISO_DATE_TIME)
-        val sunriseTime = dailyWeatherCacheEntity.sunrise[index/24]
+        val sunriseTime = dailySunrise[index / 24]
         val parsedSunriseTime = LocalDateTime.parse(sunriseTime, DateTimeFormatter.ISO_DATE_TIME)
-        val sunsetTime = dailyWeatherCacheEntity.sunset[index/24]
+        val sunsetTime = dailySunset[index / 24]
         val parsedSunsetTime = LocalDateTime.parse(sunsetTime, DateTimeFormatter.ISO_DATE_TIME)
         val isDayTime = parsedTime in parsedSunriseTime..parsedSunsetTime
 
@@ -182,16 +180,15 @@ fun CacheData.mapToWeatherInfo(): WeatherInfo {
     }
 
 
-
-    val mappedDailyWeatherData = dailyWeatherCacheEntity.time.mapIndexed { index, time ->
+    val mappedDailyWeatherData = dailyTime.mapIndexed { index, time ->
 
         val parsedTime = LocalDate.parse(time, DateTimeFormatter.ISO_DATE)
-        val weatherCode = dailyWeatherCacheEntity.weatherCodes[index]
-        val maxTemperature = dailyWeatherCacheEntity.maxTemperature[index]
-        val minTemperature = dailyWeatherCacheEntity.minTemperature[index]
-        val sunriseTime = dailyWeatherCacheEntity.sunrise[index]
+        val weatherCode = dailyWeatherCodes[index]
+        val maxTemperature = dailyMaxTemperature[index]
+        val minTemperature = dailyMinTemperature[index]
+        val sunriseTime = dailySunrise[index]
         val parsedSunriseTime = LocalDateTime.parse(sunriseTime, DateTimeFormatter.ISO_DATE_TIME)
-        val sunsetTime = dailyWeatherCacheEntity.sunset[index]
+        val sunsetTime = dailySunset[index]
         val parsedSunSetTime = LocalDateTime.parse(sunsetTime, DateTimeFormatter.ISO_DATE_TIME)
 
         IndexedDailyWeatherData(
@@ -268,27 +265,24 @@ fun CacheData.mapToWeatherInfo(): WeatherInfo {
  * divide index by 24
  */
 
-fun WeatherDto.mapToHourlyCache(): HourlyWeatherCacheEntity {
-    return HourlyWeatherCacheEntity(
-        time = hourlyWeatherData.time,
-        temperatures = hourlyWeatherData.temperatures,
-        weatherCodes = hourlyWeatherData.weatherCodes,
-        pressures = hourlyWeatherData.pressures,
-        windSpeeds = hourlyWeatherData.windSpeeds,
-        humidities = hourlyWeatherData.humidities,
-        apparentTemperature = hourlyWeatherData.apparentTemperature,
-        id = 0
-    )
-}
-
-fun WeatherDto.mapToDailyCache(): DailyWeatherCacheEntity {
-    return DailyWeatherCacheEntity(
-        time = dailyWeatherData.time,
-        weatherCodes = dailyWeatherData.weatherCodes,
-        maxTemperature = dailyWeatherData.maxTemperature,
-        minTemperature = dailyWeatherData.minTemperature,
-        sunrise = dailyWeatherData.sunrise,
-        sunset = dailyWeatherData.sunset,
-        id = 0
+fun WeatherDto.mapToWeatherCacheEntity(
+    placeId: Long
+): WeatherCacheEntity {
+    return WeatherCacheEntity(
+        id = 0,
+        dailyTime = dailyWeatherData.time,
+        dailyWeatherCodes = dailyWeatherData.weatherCodes,
+        dailyMaxTemperature = dailyWeatherData.maxTemperature,
+        dailyMinTemperature = dailyWeatherData.minTemperature,
+        dailySunrise = dailyWeatherData.sunrise,
+        dailySunset = dailyWeatherData.sunset,
+        hourlyTime = hourlyWeatherData.time,
+        hourlyTemperatures = hourlyWeatherData.temperatures,
+        hourlyWeatherCodes = hourlyWeatherData.weatherCodes,
+        hourlyPressures = hourlyWeatherData.pressures,
+        hourlyWindSpeeds = hourlyWeatherData.windSpeeds,
+        hourlyHumidities = hourlyWeatherData.humidities,
+        hourlyApparentTemperature = hourlyWeatherData.apparentTemperature,
+        placeId = placeId
     )
 }

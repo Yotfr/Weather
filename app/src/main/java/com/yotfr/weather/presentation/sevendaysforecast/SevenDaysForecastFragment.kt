@@ -26,7 +26,7 @@ class SevenDaysForecastFragment : Fragment(R.layout.fragment_seven_days_forecast
     private lateinit var adapter: SevenDaysForecastHourlyWeatherAdapter
 
     private val viewModel: SevenDaysForecastViewModel by viewModels {
-        SevenDaysForecastViewModelFactory()
+        requireContext().appComponent.viewModelFavtory()
     }
 
     override fun onCreateView(

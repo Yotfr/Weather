@@ -1,19 +1,17 @@
 package com.yotfr.weather.presentation.sevendaysforecast
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.usecases.LoadWeatherInfoUseCase
 import com.yotfr.weather.domain.util.Response
-import com.yotfr.weather.presentation.utils.LocationInfo
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.inject.Inject
 
-class SevenDaysForecastViewModel(
-    private val getWeatherInfoUseCase: LoadWeatherInfoUseCase,
-    state: SavedStateHandle
+class SevenDaysForecastViewModel @Inject constructor(
+    private val getWeatherInfoUseCase: LoadWeatherInfoUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SevenDaysForecastState())
@@ -21,8 +19,6 @@ class SevenDaysForecastViewModel(
 
     private val _selectedIndex = MutableStateFlow(0)
     val selectedIndex = _selectedIndex.asStateFlow()
-
-    private val locationInfo = state.getStateFlow("LocationInfo", LocationInfo())
 
     init {
         getWeather()

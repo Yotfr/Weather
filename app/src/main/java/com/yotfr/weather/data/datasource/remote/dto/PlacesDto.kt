@@ -4,5 +4,5 @@ import com.squareup.moshi.Json
 
 data class PlacesDto(
     @field:Json(name = "results")
-    val weatherData: List<PlaceDataDto>
+    val placeData: List<PlaceDataDto>
 )

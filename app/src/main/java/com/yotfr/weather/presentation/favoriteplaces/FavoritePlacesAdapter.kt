@@ -9,7 +9,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.weather.databinding.ItemFavoritePlaceInfoBinding
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
-import com.yotfr.weather.domain.model.PlaceInfo
+
+interface FavoritePlacesDelegate {
+    fun placeClicked(placeId: Long)
+}
 
 class FavoritePlacesDiffUtilCallback : DiffUtil.ItemCallback<FavoritePlaceInfo>() {
     override fun areItemsTheSame(oldItem: FavoritePlaceInfo, newItem: FavoritePlaceInfo): Boolean {
@@ -25,6 +28,12 @@ class FavoritePlacesAdapter : ListAdapter<FavoritePlaceInfo, FavoritePlacesAdapt
     FavoritePlacesDiffUtilCallback()
 ) {
 
+    private var delegate: FavoritePlacesDelegate? = null
+
+    fun attachDelegate(delegate: FavoritePlacesDelegate) {
+        this.delegate = delegate
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoritePlaceViewHolder {
         return FavoritePlaceViewHolder(
             binding = ItemFavoritePlaceInfoBinding.inflate(
@@ -32,7 +41,8 @@ class FavoritePlacesAdapter : ListAdapter<FavoritePlaceInfo, FavoritePlacesAdapt
                 parent,
                 false
             ),
-            context = parent.context
+            context = parent.context,
+            delegate = delegate
         )
     }
 
@@ -42,7 +52,8 @@ class FavoritePlacesAdapter : ListAdapter<FavoritePlaceInfo, FavoritePlacesAdapt
 
     class FavoritePlaceViewHolder(
         private val binding: ItemFavoritePlaceInfoBinding,
-        private val context: Context
+        private val context: Context,
+        private val delegate: FavoritePlacesDelegate?
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(placeInfo: FavoritePlaceInfo) {
             binding.apply {
@@ -51,10 +62,16 @@ class FavoritePlacesAdapter : ListAdapter<FavoritePlaceInfo, FavoritePlacesAdapt
                 itemFavoritePlaceInfoIvWeatherType.setImageDrawable(
                     ContextCompat.getDrawable(
                         context,
-                        placeInfo.weatherCode.iconRes
+                        placeInfo.weatherInfo.currentWeatherData.weatherType.iconRes
                     )
                 )
-                itemFavoritePlaceInfoTvTemperature.text = placeInfo.temperature.toString()
+                itemFavoritePlaceInfoTvTemperature.text = placeInfo.weatherInfo.currentWeatherData
+                    .temperature.toString()
+                itemFavoritePlaceInfo.setOnClickListener {
+                    delegate?.placeClicked(
+                        placeId = placeInfo.id
+                    )
+                }
             }
         }
     }

@@ -2,9 +2,9 @@ package com.yotfr.weather.data.repository
 
 import com.yotfr.weather.data.datasource.local.PlacesDao
 import com.yotfr.weather.data.datasource.remote.PlacesApi
-import com.yotfr.weather.data.datasource.remote.WeatherApi
+import com.yotfr.weather.data.util.mapToFavoritePlaceEntity
 import com.yotfr.weather.data.util.mapToFavoritePlaceInfo
-import com.yotfr.weather.data.util.mapToLocationInfo
+import com.yotfr.weather.data.util.mapToPlaceInfo
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.model.PlaceInfo
 import com.yotfr.weather.domain.repository.PlacesRepository
@@ -19,8 +19,7 @@ import javax.inject.Inject
 
 class PlacesRepositoryImpl @Inject constructor(
     private val placesApi: PlacesApi,
-    private val placesDao: PlacesDao,
-    private val weatherApi: WeatherApi
+    private val placesDao: PlacesDao
 ) : PlacesRepository {
 
     override suspend fun getPlacesThatMatchesQuery(searchQuery: String): Flow<Response<List<PlaceInfo>>> =
@@ -30,8 +29,8 @@ class PlacesRepositoryImpl @Inject constructor(
                 val queryResult = placesApi.getPlacesWithCoordinates(
                     searchQuery = searchQuery
                 )
-                val mappedQueryResult = queryResult.weatherData.map { locationData ->
-                    locationData.mapToLocationInfo()
+                val mappedQueryResult = queryResult.placeData.map { locationData ->
+                    locationData.mapToPlaceInfo()
                 }
                 emit(Response.Success(mappedQueryResult))
             } catch (e: Exception) {
@@ -69,24 +68,22 @@ class PlacesRepositoryImpl @Inject constructor(
         }
 
     override suspend fun getFavoritePlaces(): Flow<List<FavoritePlaceInfo>> {
-        return placesDao.getAllPlaces().map { placesList ->
+        return placesDao.getAllFavoritePlaces().map { placesList ->
             placesList.map { place ->
                 place.mapToFavoritePlaceInfo()
             }
         }
     }
 
-    override suspend fun addFavoritePlace(place: PlaceInfo) {
-        val weatherData = weatherApi.getBriefCurrentWeatherData(
-            latitude = place.latitude,
-            longitude = place.longitude,
-            timezone = place.timeZone
+    override suspend fun addFavoritePlace(place: PlaceInfo): Long {
+        return placesDao.addFavoritePlace(
+            favoritePlaceEntity = place.mapToFavoritePlaceEntity()
         )
-        placesDao.addPlace(
-            placeEntity = place.mapToLocationInfo(
-                weatherCode = weatherData.currentWeather.weatherCode,
-                temperature = weatherData.currentWeather.temperature
-            )
-        )
+    }
+
+    override suspend fun getFavoritePlaceByPlaceId(placeId: Long): Flow<FavoritePlaceInfo> {
+        return placesDao.getFavoritePlaceByPlaceId(placeId).map {
+            it.mapToFavoritePlaceInfo()
+        }
     }
 }

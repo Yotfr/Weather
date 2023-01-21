@@ -24,7 +24,7 @@ class LoadWeatherInfoUseCase(
                 longitude = longitude,
                 timeZone = timezone
             )
-        }else {
+        } else {
             locationTracker.getCurrentLocation()?.let { location ->
                 weatherRepository.getWeatherData(
                     latitude = location.latitude,

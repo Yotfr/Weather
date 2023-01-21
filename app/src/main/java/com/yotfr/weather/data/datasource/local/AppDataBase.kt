@@ -3,16 +3,14 @@ package com.yotfr.weather.data.datasource.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.yotfr.weather.data.datasource.local.entities.DailyWeatherCacheEntity
-import com.yotfr.weather.data.datasource.local.entities.PlaceEntity
-import com.yotfr.weather.data.datasource.local.entities.HourlyWeatherCacheEntity
+import com.yotfr.weather.data.datasource.local.entities.FavoritePlaceEntity
+import com.yotfr.weather.data.datasource.local.entities.WeatherCacheEntity
 import com.yotfr.weather.data.util.ListConverters
 
 @Database(
     entities = [
-        HourlyWeatherCacheEntity::class,
-        DailyWeatherCacheEntity::class,
-        PlaceEntity::class
+        WeatherCacheEntity::class,
+        FavoritePlaceEntity::class
     ],
     version = 1
 )

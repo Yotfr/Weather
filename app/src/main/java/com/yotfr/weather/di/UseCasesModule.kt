@@ -3,10 +3,7 @@ package com.yotfr.weather.di
 import com.yotfr.weather.domain.location.LocationTracker
 import com.yotfr.weather.domain.repository.PlacesRepository
 import com.yotfr.weather.domain.repository.WeatherRepository
-import com.yotfr.weather.domain.usecases.AddPlaceToFavoriteUseCase
-import com.yotfr.weather.domain.usecases.GetFavoritePlacesUseCase
-import com.yotfr.weather.domain.usecases.LoadWeatherInfoUseCase
-import com.yotfr.weather.domain.usecases.SearchPlacesUseCase
+import com.yotfr.weather.domain.usecases.*
 import dagger.Module
 import dagger.Provides
 
@@ -35,10 +32,12 @@ class UseCasesModule {
 
     @Provides
     fun provideAddPlaceToFavoriteUseCase(
-        placesRepository: PlacesRepository
+        placesRepository: PlacesRepository,
+        weatherRepository: WeatherRepository
     ): AddPlaceToFavoriteUseCase {
         return AddPlaceToFavoriteUseCase(
-            placesRepository = placesRepository
+            placesRepository = placesRepository,
+            weatherRepository = weatherRepository
         )
     }
 
@@ -47,6 +46,19 @@ class UseCasesModule {
         placesRepository: PlacesRepository
     ): GetFavoritePlacesUseCase {
         return GetFavoritePlacesUseCase(
+            placesRepository = placesRepository
+        )
+    }
+
+    @Provides
+    fun provideGetWeatherInfoForFavoritePlace(
+        weatherRepository: WeatherRepository,
+        locationTracker: LocationTracker,
+        placesRepository: PlacesRepository
+    ): GetWeatherInfoForFavoritePlace {
+        return GetWeatherInfoForFavoritePlace(
+            weatherRepository = weatherRepository,
+            locationTracker = locationTracker,
             placesRepository = placesRepository
         )
     }

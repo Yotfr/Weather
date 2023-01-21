@@ -1,6 +1,5 @@
 package com.yotfr.weather.data.datasource.remote
 
-import com.yotfr.weather.data.datasource.remote.dto.BriefWeatherDto
 import com.yotfr.weather.data.datasource.remote.dto.WeatherDto
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -16,11 +15,4 @@ interface WeatherApi {
         @Query("longitude") longitude: Double,
         @Query("timezone") timezone: String
     ): WeatherDto
-
-    @GET("v1/forecast?current_weather=1")
-    suspend fun getBriefCurrentWeatherData(
-        @Query("latitude") latitude: Double,
-        @Query("longitude") longitude: Double,
-        @Query("timezone") timezone: String
-    ): BriefWeatherDto
 }
