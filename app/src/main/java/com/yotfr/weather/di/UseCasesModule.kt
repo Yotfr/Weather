@@ -40,6 +40,17 @@ class UseCasesModule {
     }
 
     @Provides
+    fun getDeleteFavoritePlaceUseCase(
+        placesRepository: PlacesRepository,
+        weatherRepository: WeatherRepository
+    ): DeleteFavoritePlaceUseCase {
+        return DeleteFavoritePlaceUseCase(
+            placesRepository = placesRepository,
+            weatherRepository = weatherRepository
+        )
+    }
+
+    @Provides
     fun provideGetWeatherInfoForFavoritePlace(
         weatherRepository: WeatherRepository,
         locationTracker: LocationTracker,

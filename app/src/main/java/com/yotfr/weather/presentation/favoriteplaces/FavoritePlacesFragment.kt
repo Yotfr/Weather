@@ -1,7 +1,6 @@
 package com.yotfr.weather.presentation.favoriteplaces
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.yotfr.weather.R
 import com.yotfr.weather.appComponent
 import com.yotfr.weather.databinding.FragmentFavoritePlacesBinding
+import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.presentation.utils.VerticalMarginItemDecoration
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -46,13 +46,19 @@ class FavoritePlacesFragment : Fragment(R.layout.fragment_favorite_places) {
         adapter.attachDelegate(
             object : FavoritePlacesDelegate {
                 override fun placeClicked(placeId: Long) {
-                    Log.d("KEYTEST","clicked")
                     findNavController().previousBackStackEntry?.savedStateHandle?.set(
                         "placeId",
                         placeId.toString()
                     )
-                    Log.d("KEYTEST","set")
                     findNavController().popBackStack()
+                }
+
+                override fun deleteClicked(placeInfo: FavoritePlaceInfo) {
+                    viewModel.onEvent(
+                        FavoritePlacesEvent.DeleteFavoritePlace(
+                            placeInfo = placeInfo
+                        )
+                    )
                 }
             }
         )

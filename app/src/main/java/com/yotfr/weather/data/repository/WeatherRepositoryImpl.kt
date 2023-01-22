@@ -1,6 +1,5 @@
 package com.yotfr.weather.data.repository
 
-import android.util.Log
 import com.yotfr.weather.data.datasource.local.WeatherCacheDao
 import com.yotfr.weather.data.datasource.remote.WeatherApi
 import com.yotfr.weather.data.util.mapToWeatherCacheEntity
@@ -28,6 +27,10 @@ class WeatherRepositoryImpl @Inject constructor(
                 placeId = placeId
             )
         )
+    }
+
+    override suspend fun deleteWeatherDataForFavoritePlace(placeId: Long) {
+        weatherCacheDao.deleteWeatherCache(placeId)
     }
 
     override suspend fun updateWeatherCacheForFavoritePlace(

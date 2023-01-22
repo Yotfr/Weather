@@ -12,6 +12,7 @@ import com.yotfr.weather.domain.model.FavoritePlaceInfo
 
 interface FavoritePlacesDelegate {
     fun placeClicked(placeId: Long)
+    fun deleteClicked(placeInfo: FavoritePlaceInfo)
 }
 
 class FavoritePlacesDiffUtilCallback : DiffUtil.ItemCallback<FavoritePlaceInfo>() {
@@ -68,6 +69,11 @@ class FavoritePlacesAdapter : ListAdapter<FavoritePlaceInfo, FavoritePlacesAdapt
                     )
                     itemFavoritePlaceInfoTvTemperature.text = weatherInfo.currentWeatherData
                         .temperature.toString()
+                }
+                delete.setOnClickListener {
+                    delegate?.deleteClicked(
+                        placeInfo = placeInfo
+                    )
                 }
                 itemFavoritePlaceInfo.setOnClickListener {
                     delegate?.placeClicked(

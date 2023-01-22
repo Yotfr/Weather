@@ -16,4 +16,6 @@ interface PlacesRepository {
     suspend fun updateCurrentPlaceInfo(latitude: Double, longitude: Double)
 
     suspend fun getFavoritePlaceByPlaceId(placeId: Long): FavoritePlaceInfo
+
+    suspend fun deleteFavoritePlace(place: FavoritePlaceInfo)
 }

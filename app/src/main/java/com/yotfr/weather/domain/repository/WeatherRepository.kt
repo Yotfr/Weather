@@ -15,4 +15,8 @@ interface WeatherRepository {
         longitude: Double,
         timeZone: String
     )
+
+    suspend fun deleteWeatherDataForFavoritePlace(
+        placeId: Long
+    )
 }

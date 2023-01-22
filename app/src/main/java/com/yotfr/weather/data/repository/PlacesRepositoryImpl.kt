@@ -95,6 +95,10 @@ class PlacesRepositoryImpl @Inject constructor(
         return placesDao.getFavoritePlaceByPlaceId(placeId).mapToFavoritePlaceInfo()
     }
 
+    override suspend fun deleteFavoritePlace(place: FavoritePlaceInfo) {
+        placesDao.deleteFavoritePlace(place.mapToFavoritePlaceEntity())
+    }
+
     override suspend fun updateCurrentPlaceInfo(latitude: Double, longitude: Double) {
         val place = getPlaceNameApi.getPlaceNameByCoordinates(
             latitude = latitude,

@@ -29,6 +29,17 @@ fun PlaceInfo.mapToFavoritePlaceEntity(): FavoritePlaceEntity {
     )
 }
 
+fun FavoritePlaceInfo.mapToFavoritePlaceEntity(): FavoritePlaceEntity {
+    return FavoritePlaceEntity(
+        id = id,
+        placeName = placeName,
+        latitude = latitude,
+        longitude = longitude,
+        countryName = countryName,
+        timeZone = timeZone
+    )
+}
+
 fun PlaceDataDto.mapToPlaceInfo(): PlaceInfo {
     return PlaceInfo(
         id = id,

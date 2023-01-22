@@ -1,6 +1,7 @@
 package com.yotfr.weather.data.datasource.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -21,4 +22,7 @@ interface PlacesDao {
     @Transaction
     @Query("SELECT * FROM place WHERE id = :placeId")
     suspend fun getFavoritePlaceByPlaceId(placeId: Long): PlaceWithWeatherCache
+
+    @Delete
+    suspend fun deleteFavoritePlace(place: FavoritePlaceEntity)
 }
