@@ -28,6 +28,9 @@
         android:id="@+id/searchPlacesFragment"
         android:name="com.yotfr.weather.presentation.searchplaces.SearchPlacesFragment"
         android:label="SearchPlacesFragment" >
+        <action
+            android:id="@+id/action_searchPlacesFragment_to_searchedPlaceForeCastFragment"
+            app:destination="@id/searchedPlaceForeCastFragment" />
     </fragment>
     <fragment
         android:id="@+id/sevenDaysForecastFragment"
@@ -36,5 +39,13 @@
         <argument
             android:name="placeId"
             app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchedPlaceForeCastFragment"
+        android:name="com.yotfr.weather.presentation.searchedplaceforecast.SearchedPlaceForeCastFragment"
+        android:label="SearchedPlaceForeCastFragment" >
+        <argument
+            android:name="placeInfo"
+            app:argType="com.yotfr.weather.domain.model.PlaceInfo" />
     </fragment>
 </navigation>

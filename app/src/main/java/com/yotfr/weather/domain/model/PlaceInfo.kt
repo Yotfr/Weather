@@ -7,4 +7,4 @@ data class PlaceInfo(
     val longitude: Double,
     val countryName: String,
     val timeZone: String
-)
+) : java.io.Serializable

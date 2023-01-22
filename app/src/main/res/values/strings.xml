@@ -9,4 +9,6 @@
     
     <string name="seven_days">7 days</string>
     <string name="search">Search</string>
+
+    <string name="add_to_favorite">Add to favorite</string>
 </resources>

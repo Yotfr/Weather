@@ -6,6 +6,7 @@ import com.yotfr.weather.presentation.favoriteplaces.FavoritePlacesViewModel
 import com.yotfr.weather.presentation.searchplaces.SearchPlacesViewModel
 import com.yotfr.weather.presentation.sevendaysforecast.SevenDaysForecastViewModel
 import com.yotfr.weather.presentation.currentdayforecast.CurrentDayForecastViewModel
+import com.yotfr.weather.presentation.searchedplaceforecast.SearchedPlaceForeCastViewModel
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -34,4 +35,6 @@ interface AppComponent {
     fun favoritePlacesViewModel(): FavoritePlacesViewModel
 
     fun sevenDaysForecastViewModel(): SevenDaysForecastViewModel
+
+    fun searchedPlaceForecastViewModel(): SearchedPlaceForeCastViewModel
 }

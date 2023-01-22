@@ -59,6 +59,11 @@ class LocationInfoAdapter : ListAdapter<PlaceInfo, LocationInfoAdapter.LocationI
                 btnAddFavorite.setOnClickListener {
                     delegate?.addPlaceClicked(place = placeInfo)
                 }
+                rootView.setOnClickListener {
+                    delegate?.placeClicked(
+                        place = placeInfo
+                    )
+                }
             }
         }
     }

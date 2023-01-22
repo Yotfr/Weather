@@ -1,18 +1,20 @@
-package com.yotfr.weather.presentation.sevendaysforecast
+package com.yotfr.weather.presentation.searchedplaceforecast
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
-import com.yotfr.weather.domain.usecases.GetWeatherInfoForFavoritePlace
+import com.yotfr.weather.domain.model.PlaceInfo
+import com.yotfr.weather.domain.usecases.GetWeatherDataForSearchedPlace
 import com.yotfr.weather.domain.util.Response
+import com.yotfr.weather.presentation.sevendaysforecast.SevenDaysForecastState
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
-class SevenDaysForecastViewModel @Inject constructor(
-    private val getWeatherInfoForFavoritePlace: GetWeatherInfoForFavoritePlace
+class SearchedPlaceForeCastViewModel @Inject constructor(
+    private val getWeatherDataForSearchedPlace: GetWeatherDataForSearchedPlace
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SevenDaysForecastState())
@@ -21,35 +23,31 @@ class SevenDaysForecastViewModel @Inject constructor(
     private val _selectedIndex = MutableStateFlow(0)
     val selectedIndex = _selectedIndex.asStateFlow()
 
-    private val _selectedPlaceId = MutableStateFlow(-2L)
-
-    init {
+    private fun loadWeatherData(place: PlaceInfo) {
         viewModelScope.launch {
-            _selectedPlaceId.collectLatest { placeId ->
-                getWeatherInfoForFavoritePlace(
-                    favoritePlaceId = placeId
-                ).combine(
-                    _selectedIndex
-                ) { response, index ->
-                    when (response) {
-                        is Response.Loading -> {
-                            if (response.data == null) {
-                                processLoadingStateWithoutData()
-                            } else {
-                                processLoadingStateWithData(response.data, index)
-                            }
-                        }
-                        is Response.Success -> {
-                            if (response.data != null) {
-                                processSuccessState(response.data, index)
-                            }
-                        }
-                        is Response.Exception -> {
-                            // TODO exception state
+            getWeatherDataForSearchedPlace(
+                place = place
+            ).combine(
+                _selectedIndex
+            ) { response, index ->
+                when (response) {
+                    is Response.Loading -> {
+                        if (response.data == null) {
+                            processLoadingStateWithoutData()
+                        } else {
+                            processLoadingStateWithData(response.data, index)
                         }
                     }
-                }.collect()
-            }
+                    is Response.Success -> {
+                        if (response.data != null) {
+                            processSuccessState(response.data, index)
+                        }
+                    }
+                    is Response.Exception -> {
+                        // TODO exception state
+                    }
+                }
+            }.collect()
         }
     }
 
@@ -451,13 +449,15 @@ class SevenDaysForecastViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: SevenDaysForecastEvent) {
+    fun onEvent(event: SearchedPlaceForeCastEvent) {
         when (event) {
-            is SevenDaysForecastEvent.SelectedDayIndexChanged -> {
-                _selectedIndex.value = event.newIndex
+            is SearchedPlaceForeCastEvent.ChangePlaceInfo -> {
+                loadWeatherData(
+                    place = event.place
+                )
             }
-            is SevenDaysForecastEvent.ChangeCurrentSelectedPlaceId -> {
-                _selectedPlaceId.value = event.newPlaceId
+            is SearchedPlaceForeCastEvent.SelectedDayIndexChanged -> {
+                _selectedIndex.value = event.newIndex
             }
         }
     }

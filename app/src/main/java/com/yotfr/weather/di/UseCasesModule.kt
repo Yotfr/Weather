@@ -40,6 +40,15 @@ class UseCasesModule {
     }
 
     @Provides
+    fun getWeatherDataForSearchedPlaceUseCase(
+        weatherRepository: WeatherRepository
+    ): GetWeatherDataForSearchedPlace {
+        return GetWeatherDataForSearchedPlace(
+            weatherRepository = weatherRepository
+        )
+    }
+
+    @Provides
     fun getDeleteFavoritePlaceUseCase(
         placesRepository: PlacesRepository,
         weatherRepository: WeatherRepository

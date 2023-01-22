@@ -1,4 +1,4 @@
-package com.yotfr.weather.presentation.sevendaysforecast
+package com.yotfr.weather.presentation.searchedplaceforecast
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,20 +15,20 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yotfr.weather.R
 import com.yotfr.weather.appComponent
-import com.yotfr.weather.databinding.FragmentSevenDaysForecastBinding
+import com.yotfr.weather.databinding.FragmentSearchedPlaceForecastBinding
 import com.yotfr.weather.presentation.utils.MarginItemDecoration
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class SevenDaysForecastFragment : Fragment(R.layout.fragment_seven_days_forecast) {
-    private var _binding: FragmentSevenDaysForecastBinding? = null
+class SearchedPlaceForeCastFragment : Fragment(R.layout.fragment_searched_place_forecast) {
+    private var _binding: FragmentSearchedPlaceForecastBinding? = null
     private val binding get() = _binding!!
 
-    private val args: SevenDaysForecastFragmentArgs by navArgs()
+    private lateinit var adapter: SearchedPlaceForeCastHourlyWeatherAdapter
 
-    private lateinit var adapter: SevenDaysForecastHourlyWeatherAdapter
+    private val args: SearchedPlaceForeCastFragmentArgs by navArgs()
 
-    private val viewModel: SevenDaysForecastViewModel by viewModels {
+    private val viewModel: SearchedPlaceForeCastViewModel by viewModels {
         requireContext().appComponent.viewModelFavtory()
     }
 
@@ -37,78 +37,78 @@ class SevenDaysForecastFragment : Fragment(R.layout.fragment_seven_days_forecast
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSevenDaysForecastBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchedPlaceForecastBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val placeId = args.placeId
+        val placeInfo = args.placeInfo
         viewModel.onEvent(
-            SevenDaysForecastEvent.ChangeCurrentSelectedPlaceId(
-                newPlaceId = placeId
+            SearchedPlaceForeCastEvent.ChangePlaceInfo(
+                place = placeInfo
             )
         )
 
         val layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        adapter = SevenDaysForecastHourlyWeatherAdapter()
+        adapter = SearchedPlaceForeCastHourlyWeatherAdapter()
         binding.reused.fragmentSevenDaysForecastRvHourlyWeather.adapter = adapter
         binding.reused.fragmentSevenDaysForecastRvHourlyWeather.layoutManager = layoutManager
         binding.reused.fragmentSevenDaysForecastRvHourlyWeather.addItemDecoration(
             MarginItemDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing))
         )
 
-        binding.fragmentSevenDaysForecastToolbar.setNavigationOnClickListener {
+        binding.fragmentSearchedPlaceForecastToolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
 
         binding.reused.todayBtn.setOnClickListener {
             viewModel.onEvent(
-                SevenDaysForecastEvent.SelectedDayIndexChanged(
+                SearchedPlaceForeCastEvent.SelectedDayIndexChanged(
                     newIndex = 0
                 )
             )
         }
         binding.reused.tomorrowBtn.setOnClickListener {
             viewModel.onEvent(
-                SevenDaysForecastEvent.SelectedDayIndexChanged(
+                SearchedPlaceForeCastEvent.SelectedDayIndexChanged(
                     newIndex = 1
                 )
             )
         }
         binding.reused.afterTomorrowBtn.setOnClickListener {
             viewModel.onEvent(
-                SevenDaysForecastEvent.SelectedDayIndexChanged(
+                SearchedPlaceForeCastEvent.SelectedDayIndexChanged(
                     newIndex = 2
                 )
             )
         }
         binding.reused.inTwoDaysBtn.setOnClickListener {
             viewModel.onEvent(
-                SevenDaysForecastEvent.SelectedDayIndexChanged(
+                SearchedPlaceForeCastEvent.SelectedDayIndexChanged(
                     newIndex = 3
                 )
             )
         }
         binding.reused.inThreeDaysBtn.setOnClickListener {
             viewModel.onEvent(
-                SevenDaysForecastEvent.SelectedDayIndexChanged(
+                SearchedPlaceForeCastEvent.SelectedDayIndexChanged(
                     newIndex = 4
                 )
             )
         }
         binding.reused.inFourDaysBtn.setOnClickListener {
             viewModel.onEvent(
-                SevenDaysForecastEvent.SelectedDayIndexChanged(
+                SearchedPlaceForeCastEvent.SelectedDayIndexChanged(
                     newIndex = 5
                 )
             )
         }
         binding.reused.inFiveDaysBtn.setOnClickListener {
             viewModel.onEvent(
-                SevenDaysForecastEvent.SelectedDayIndexChanged(
+                SearchedPlaceForeCastEvent.SelectedDayIndexChanged(
                     newIndex = 6
                 )
             )
@@ -118,7 +118,7 @@ class SevenDaysForecastFragment : Fragment(R.layout.fragment_seven_days_forecast
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collectLatest { state ->
                     binding.apply {
-                        fragmentSevenDaysForecastToolbar.title = state.toolbarTitle
+                        fragmentSearchedPlaceForecastToolbar.title = state.toolbarTitle
                         reused.fragmentSevenDaysForecastTvDate.text = state.selectedDate
                         reused.fragmentSevenDaysForecastTvMaxTemperature.text =
                             state.selectedMaxTemperature
