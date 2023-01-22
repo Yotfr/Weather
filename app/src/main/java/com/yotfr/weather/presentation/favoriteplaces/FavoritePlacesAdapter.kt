@@ -59,14 +59,16 @@ class FavoritePlacesAdapter : ListAdapter<FavoritePlaceInfo, FavoritePlacesAdapt
             binding.apply {
                 itemFavoritePlaceInfoTvPlaceName.text = placeInfo.placeName
                 itemFavoritePlaceInfoTvCountryName.text = placeInfo.countryName
-                itemFavoritePlaceInfoIvWeatherType.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        context,
-                        placeInfo.weatherInfo.currentWeatherData.weatherType.iconRes
+                placeInfo.weatherInfo?.let { weatherInfo ->
+                    itemFavoritePlaceInfoIvWeatherType.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            context,
+                            weatherInfo.currentWeatherData.weatherType.iconRes
+                        )
                     )
-                )
-                itemFavoritePlaceInfoTvTemperature.text = placeInfo.weatherInfo.currentWeatherData
-                    .temperature.toString()
+                    itemFavoritePlaceInfoTvTemperature.text = weatherInfo.currentWeatherData
+                        .temperature.toString()
+                }
                 itemFavoritePlaceInfo.setOnClickListener {
                     delegate?.placeClicked(
                         placeId = placeInfo.id

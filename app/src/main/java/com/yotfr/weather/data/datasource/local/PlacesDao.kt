@@ -16,7 +16,7 @@ interface PlacesDao {
     suspend fun addFavoritePlace(favoritePlaceEntity: FavoritePlaceEntity): Long
 
     @Query("SELECT * FROM place")
-    suspend fun getAllFavoritePlaces(): List<PlaceWithWeatherCache>
+    fun getAllFavoritePlaces(): Flow<List<PlaceWithWeatherCache>>
 
     @Transaction
     @Query("SELECT * FROM place WHERE id = :placeId")

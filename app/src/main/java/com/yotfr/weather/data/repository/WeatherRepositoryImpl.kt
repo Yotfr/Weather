@@ -23,7 +23,6 @@ class WeatherRepositoryImpl @Inject constructor(
             longitude = longitude,
             timezone = timeZone
         )
-        Log.d("TEST","fetched data $fetchedData")
         weatherCacheDao.insertWeatherCache(
             weatherData = fetchedData.mapToWeatherCacheEntity(
                 placeId = placeId

@@ -28,12 +28,15 @@ class GetWeatherInfoForFavoritePlace(
                 val favoritePlaceInfo = placesRepository.getFavoritePlaceByPlaceId(
                     placeId = favoritePlaceId
                 )
-                // emit loading state with old cached data
-                emit(
-                    Response.Loading(
-                        data = favoritePlaceInfo
+                if (favoritePlaceInfo.weatherInfo != null) {
+                    // emit loading state with old cached data
+                    emit(
+                        Response.Loading(
+                            data = favoritePlaceInfo
+                        )
                     )
-                )
+                }
+
                 // update weather cache for this place
                 weatherRepository.updateWeatherCacheForFavoritePlace(
                     placeId = favoritePlaceInfo.id,
@@ -61,14 +64,17 @@ class GetWeatherInfoForFavoritePlace(
                     }
                 }
             }
-            // Get favorite place by id one more time (with updated cache) and emit success with it
-            emit(
-                Response.Success(
-                    data = placesRepository.getFavoritePlaceByPlaceId(
-                        placeId = favoritePlaceId
+            val place = placesRepository.getFavoritePlaceByPlaceId(
+                placeId = favoritePlaceId
+            )
+            if (place.weatherInfo != null) {
+                // Get favorite place by id one more time (with updated cache) and emit success with it
+                emit(
+                    Response.Success(
+                        data = place
                     )
                 )
-            )
+            }
         } else {
             // In case place is current place by geolocation
             locationTracker.getCurrentLocation()?.let { location ->
@@ -88,14 +94,19 @@ class GetWeatherInfoForFavoritePlace(
                     timeZone = TimeZone.getDefault().id
                 )
 
-                // Get favorite place by id one more time (with updated cache) and emit success with it
-                emit(
-                    Response.Success(
-                        data = placesRepository.getFavoritePlaceByPlaceId(
-                            placeId = -2L
+                val place = placesRepository.getFavoritePlaceByPlaceId(
+                    placeId = -2L
+                )
+                if (place.weatherInfo != null) {
+                    // Get favorite place by id one more time (with updated cache) and emit success with it
+                    emit(
+                        Response.Success(
+                            data = placesRepository.getFavoritePlaceByPlaceId(
+                                placeId = -2L
+                            )
                         )
                     )
-                )
+                }
             } ?: kotlin.run {
                 // Case not found location
                 emit(

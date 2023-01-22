@@ -53,6 +53,9 @@ class CurrentDayForecastViewModel @Inject constructor(
     }
 
     private fun processSuccessState(data: FavoritePlaceInfo) {
+        if (data.weatherInfo == null) {
+            throw IllegalArgumentException("Weather info cannot be null in loading or success state")
+        }
         _state.update { state ->
             state.copy(
                 isLoading = true,
@@ -79,6 +82,9 @@ class CurrentDayForecastViewModel @Inject constructor(
     }
 
     private fun processLoadingStateWithData(data: FavoritePlaceInfo) {
+        if (data.weatherInfo == null) {
+            throw IllegalArgumentException("Weather info cannot be null in loading or success state")
+        }
         _state.update { state ->
             state.copy(
                 isLoading = true,

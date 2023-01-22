@@ -7,5 +7,5 @@ data class FavoritePlaceInfo(
     val longitude: Double,
     val countryName: String,
     val timeZone: String,
-    val weatherInfo: WeatherInfo
+    val weatherInfo: WeatherInfo?
 )

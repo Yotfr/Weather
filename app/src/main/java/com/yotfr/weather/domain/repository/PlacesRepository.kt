@@ -9,7 +9,7 @@ interface PlacesRepository {
 
     suspend fun getPlacesThatMatchesQuery(searchQuery: String): Flow<Response<List<PlaceInfo>>>
 
-    suspend fun getFavoritePlaces(): List<FavoritePlaceInfo>
+    suspend fun getFavoritePlaces(): Flow<List<FavoritePlaceInfo>>
 
     suspend fun addFavoritePlace(place: PlaceInfo): Long
 

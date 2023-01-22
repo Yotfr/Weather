@@ -11,5 +11,5 @@ data class PlaceWithWeatherCache(
         parentColumn = "id",
         entityColumn = "placeId"
     )
-    val weatherCacheEntity: WeatherCacheEntity
+    val weatherCacheEntity: WeatherCacheEntity?
 )

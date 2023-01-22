@@ -14,7 +14,7 @@ fun PlaceWithWeatherCache.mapToFavoritePlaceInfo(): FavoritePlaceInfo {
         longitude = favoritePlaceEntity.longitude,
         countryName = favoritePlaceEntity.countryName,
         timeZone = favoritePlaceEntity.timeZone,
-        weatherInfo = weatherCacheEntity.mapToWeatherInfo()
+        weatherInfo = weatherCacheEntity?.mapToWeatherInfo()
     )
 }
 
