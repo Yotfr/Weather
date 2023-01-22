@@ -1,6 +1,7 @@
 package com.yotfr.weather.presentation.currentdayforecast
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.yotfr.weather.R
 import com.yotfr.weather.appComponent
 import com.yotfr.weather.databinding.FragmentCurrentDayForecastBinding
-import com.yotfr.weather.presentation.utils.LocationInfo
 import com.yotfr.weather.presentation.utils.MarginItemDecoration
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -46,6 +46,7 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("placeId")?.observe(
             viewLifecycleOwner
         ) { placeId ->
+            Log.d("KEYTEST", placeId)
             viewModel.onEvent(
                 CurrentDayForecastEvent.ChangeCurrentSelectedPlaceId(
                     newPlaceId = placeId.toLong()
@@ -80,6 +81,7 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
                                 )
                             )
                         }
+                        fragmentSevenDaysForecastToolbar.title = state.toolbarTitle
                         fragmentCurrentWeatherInfoTvWeatherType.text = state.currentWeatherTypeDescription
                         fragmentCurrentWeatherInfoTvCurrentTemperature.text = state.currentTemperature
                         fragmentCurrentWeatherInfoTvApparentTemperature.text = state.currentApparentTemperature
@@ -94,8 +96,9 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
 
         binding.fragmentCurrentWeatherInfoBtnSevenDaysForecast.setOnClickListener {
             val action = CurrentDayForecastFragmentDirections.actionWeatherInfoFragmentToSevenDaysForecastFragment(
-                locationInfo = LocationInfo()
+                placeId = viewModel.currentSelectedPlaceId.value
             )
+            Log.d("TEST","navigated with ${viewModel.currentSelectedPlaceId.value}")
             findNavController().navigate(action)
         }
     }

@@ -14,7 +14,4 @@ interface WeatherCacheDao {
 
     @Query("DELETE FROM weathercache WHERE placeId = :placeId")
     suspend fun deleteWeatherCache(placeId: Long)
-
-    @Query("SELECT * FROM daily")
-    suspend fun getWeatherCache(): List<WeatherCacheEntity>
 }

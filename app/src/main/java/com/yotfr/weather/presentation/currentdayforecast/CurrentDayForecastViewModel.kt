@@ -2,7 +2,9 @@ package com.yotfr.weather.presentation.currentdayforecast
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.usecases.GetWeatherInfoForFavoritePlace
+import com.yotfr.weather.domain.util.Response
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -19,45 +21,102 @@ class CurrentDayForecastViewModel @Inject constructor(
     private val _state = MutableStateFlow(CurrentDayForecastState())
     val state = _state.asStateFlow()
 
-    private val _currentSelectedPlaceId = MutableStateFlow(0L)
+    private val _currentSelectedPlaceId = MutableStateFlow(-2L)
+    val currentSelectedPlaceId = _currentSelectedPlaceId.asStateFlow()
 
     init {
         viewModelScope.launch {
-            getWeatherInfoForFavoritePlace(
-                favoritePlaceId = _currentSelectedPlaceId.value
-            ).collectLatest { placeInfo ->
-                _state.update { state ->
-                    state.copy(
-                        isLoading = false,
-                        currentTime = placeInfo.weatherInfo.currentWeatherData.time.format(
-                            DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
-                        ),
-                        currentWeatherTypeIconRes = placeInfo.weatherInfo.currentWeatherData.weatherType.iconRes,
-                        currentWeatherTypeDescription = placeInfo.weatherInfo.currentWeatherData.weatherType.weatherDesc,
-                        currentTemperature = placeInfo.weatherInfo.currentWeatherData.temperature.toString(),
-                        currentHumidity = placeInfo.weatherInfo.currentWeatherData.humidity.toString(),
-                        currentPressure = placeInfo.weatherInfo.currentWeatherData.pressure.toString(),
-                        currentWindSpeed = placeInfo.weatherInfo.currentWeatherData.windSpeed.toString(),
-                        currentApparentTemperature = placeInfo.weatherInfo.currentWeatherData.apparentTemperature.toString(),
-                        sunriseTime = placeInfo.weatherInfo.todaySunrise.format(
-                            DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
-                        ),
-                        sunsetTime = placeInfo.weatherInfo.todaySunset.format(
-                            DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
-                        ),
-                        hourlyWeatherList = placeInfo.weatherInfo.fromCurrentTimeHourlyWeatherData
-                    )
+            _currentSelectedPlaceId.collectLatest { placeId ->
+                getWeatherInfoForFavoritePlace(
+                    favoritePlaceId = placeId
+                ).collectLatest { response ->
+                    when (response) {
+                        is Response.Loading -> {
+                            if (response.data == null) {
+                                processLoadingStateWithoutData()
+                            } else {
+                                processLoadingStateWithData(response.data)
+                            }
+                        }
+                        is Response.Success -> {
+                            if (response.data != null) {
+                                processSuccessState(response.data)
+                            }
+                        }
+                        is Response.Exception -> {
+                            // TODO exception state
+                        }
+                    }
                 }
             }
         }
     }
 
+    private fun processSuccessState(data: FavoritePlaceInfo) {
+        _state.update { state ->
+            state.copy(
+                isLoading = true,
+                currentTime = data.weatherInfo.currentWeatherData.time.format(
+                    DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+                ),
+                toolbarTitle = data.placeName,
+                currentWeatherTypeIconRes = data.weatherInfo.currentWeatherData.weatherType.iconRes,
+                currentWeatherTypeDescription = data.weatherInfo.currentWeatherData.weatherType.weatherDesc,
+                currentTemperature = data.weatherInfo.currentWeatherData.temperature.toString(),
+                currentHumidity = data.weatherInfo.currentWeatherData.humidity.toString(),
+                currentPressure = data.weatherInfo.currentWeatherData.pressure.toString(),
+                currentWindSpeed = data.weatherInfo.currentWeatherData.windSpeed.toString(),
+                currentApparentTemperature = data.weatherInfo.currentWeatherData.apparentTemperature.toString(),
+                sunriseTime = data.weatherInfo.todaySunrise.format(
+                    DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+                ),
+                sunsetTime = data.weatherInfo.todaySunset.format(
+                    DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+                ),
+                hourlyWeatherList = data.weatherInfo.fromCurrentTimeHourlyWeatherData
+            )
+        }
+    }
+
+    private fun processLoadingStateWithData(data: FavoritePlaceInfo) {
+        _state.update { state ->
+            state.copy(
+                isLoading = true,
+                currentTime = data.weatherInfo.currentWeatherData.time.format(
+                    DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+                ),
+                toolbarTitle = data.placeName,
+                currentWeatherTypeIconRes = data.weatherInfo.currentWeatherData.weatherType.iconRes,
+                currentWeatherTypeDescription = data.weatherInfo.currentWeatherData.weatherType.weatherDesc,
+                currentTemperature = data.weatherInfo.currentWeatherData.temperature.toString(),
+                currentHumidity = data.weatherInfo.currentWeatherData.humidity.toString(),
+                currentPressure = data.weatherInfo.currentWeatherData.pressure.toString(),
+                currentWindSpeed = data.weatherInfo.currentWeatherData.windSpeed.toString(),
+                currentApparentTemperature = data.weatherInfo.currentWeatherData.apparentTemperature.toString(),
+                sunriseTime = data.weatherInfo.todaySunrise.format(
+                    DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+                ),
+                sunsetTime = data.weatherInfo.todaySunset.format(
+                    DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+                ),
+                hourlyWeatherList = data.weatherInfo.fromCurrentTimeHourlyWeatherData
+            )
+        }
+    }
+
+    private fun processLoadingStateWithoutData() {
+        _state.update { state ->
+            state.copy(
+                isLoading = true
+            )
+        }
+    }
+
     fun onEvent(event: CurrentDayForecastEvent) {
-        when(event) {
+        when (event) {
             is CurrentDayForecastEvent.ChangeCurrentSelectedPlaceId -> {
                 _currentSelectedPlaceId.value = event.newPlaceId
             }
         }
     }
-
 }

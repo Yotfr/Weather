@@ -1,6 +1,7 @@
 package com.yotfr.weather.presentation.favoriteplaces
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,10 +46,12 @@ class FavoritePlacesFragment : Fragment(R.layout.fragment_favorite_places) {
         adapter.attachDelegate(
             object : FavoritePlacesDelegate {
                 override fun placeClicked(placeId: Long) {
+                    Log.d("KEYTEST","clicked")
                     findNavController().previousBackStackEntry?.savedStateHandle?.set(
                         "placeId",
                         placeId.toString()
                     )
+                    Log.d("KEYTEST","set")
                     findNavController().popBackStack()
                 }
             }

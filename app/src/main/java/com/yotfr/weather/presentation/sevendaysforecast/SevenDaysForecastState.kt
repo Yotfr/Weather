@@ -6,6 +6,7 @@ import com.yotfr.weather.domain.model.HourlyWeatherData
 data class SevenDaysForecastState(
     val isLoading: Boolean = false,
     val selectedDate: String? = null,
+    val toolbarTitle: String = "",
     val selectedMaxTemperature: String = "",
     val selectedMinTemperature: String = "",
     @DrawableRes val selectedWeatherType: Int? = null,

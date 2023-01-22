@@ -11,17 +11,6 @@ import dagger.Provides
 class UseCasesModule {
 
     @Provides
-    fun provideLoadWeatherInfoUseCase(
-        weatherRepository: WeatherRepository,
-        locationTracker: LocationTracker
-    ): LoadWeatherInfoUseCase {
-        return LoadWeatherInfoUseCase(
-            weatherRepository = weatherRepository,
-            locationTracker = locationTracker
-        )
-    }
-
-    @Provides
     fun provideSearchPlaceUseCase(
         placesRepository: PlacesRepository
     ): SearchPlacesUseCase {

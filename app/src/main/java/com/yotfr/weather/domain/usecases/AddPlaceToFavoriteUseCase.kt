@@ -9,9 +9,11 @@ class AddPlaceToFavoriteUseCase(
     private val weatherRepository: WeatherRepository
 ) {
     suspend operator fun invoke(place: PlaceInfo) {
+        // Add searched place to favorite place table
         val placeId = placesRepository.addFavoritePlace(
             place = place
         )
+        // Fetch weather data for this place and cache it
         weatherRepository.fetchAndCacheWeatherDataForPlaceId(
             placeId = placeId,
             latitude = place.latitude,

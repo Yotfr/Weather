@@ -1,6 +1,7 @@
 package com.yotfr.weather.presentation.sevendaysforecast
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yotfr.weather.R
 import com.yotfr.weather.appComponent
@@ -22,6 +24,8 @@ import kotlinx.coroutines.launch
 class SevenDaysForecastFragment : Fragment(R.layout.fragment_seven_days_forecast) {
     private var _binding: FragmentSevenDaysForecastBinding? = null
     private val binding get() = _binding!!
+
+    private val args: SevenDaysForecastFragmentArgs by navArgs()
 
     private lateinit var adapter: SevenDaysForecastHourlyWeatherAdapter
 
@@ -40,6 +44,14 @@ class SevenDaysForecastFragment : Fragment(R.layout.fragment_seven_days_forecast
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val placeId = args.placeId
+        Log.d("TEST","placeId $placeId")
+        viewModel.onEvent(
+            SevenDaysForecastEvent.ChangeCurrentSelectedPlaceId(
+                newPlaceId = placeId
+            )
+        )
 
         val layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -108,6 +120,7 @@ class SevenDaysForecastFragment : Fragment(R.layout.fragment_seven_days_forecast
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collectLatest { state ->
                     binding.apply {
+                        fragmentSevenDaysForecastToolbar.title = state.toolbarTitle
                         fragmentSevenDaysForecastTvDate.text = state.selectedDate
                         fragmentSevenDaysForecastTvMaxTemperature.text =
                             state.selectedMaxTemperature

@@ -59,9 +59,6 @@ class LocationInfoAdapter : ListAdapter<PlaceInfo, LocationInfoAdapter.LocationI
                 btnAddFavorite.setOnClickListener {
                     delegate?.addPlaceClicked(place = placeInfo)
                 }
-                constraint.setOnClickListener {
-                    delegate?.placeClicked(place = placeInfo)
-                }
             }
         }
     }

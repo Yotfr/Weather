@@ -1,6 +1,8 @@
 package com.yotfr.weather.data.repository
 
 import com.yotfr.weather.data.datasource.local.PlacesDao
+import com.yotfr.weather.data.datasource.local.entities.FavoritePlaceEntity
+import com.yotfr.weather.data.datasource.remote.GetPlaceNameApi
 import com.yotfr.weather.data.datasource.remote.PlacesApi
 import com.yotfr.weather.data.util.mapToFavoritePlaceEntity
 import com.yotfr.weather.data.util.mapToFavoritePlaceInfo
@@ -12,20 +14,21 @@ import com.yotfr.weather.domain.util.Cause
 import com.yotfr.weather.domain.util.Response
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
 import java.io.IOException
+import java.util.TimeZone
 import javax.inject.Inject
 
 class PlacesRepositoryImpl @Inject constructor(
     private val placesApi: PlacesApi,
-    private val placesDao: PlacesDao
+    private val placesDao: PlacesDao,
+    private val getPlaceNameApi: GetPlaceNameApi
 ) : PlacesRepository {
 
     override suspend fun getPlacesThatMatchesQuery(searchQuery: String): Flow<Response<List<PlaceInfo>>> =
         flow {
             try {
-                emit(Response.Loading<List<PlaceInfo>>())
+                emit(Response.Loading())
                 val queryResult = placesApi.getPlacesWithCoordinates(
                     searchQuery = searchQuery
                 )
@@ -39,12 +42,16 @@ class PlacesRepositoryImpl @Inject constructor(
                         when (e.code()) {
                             400 -> emit(
                                 Response.Exception(
-                                    cause = Cause.UnknownException(e.message)
+                                    cause = Cause.UnknownException(
+                                        message = e.message
+                                    )
                                 )
                             )
                             else -> emit(
                                 Response.Exception(
-                                    cause = Cause.UnknownException(e.message)
+                                    cause = Cause.UnknownException(
+                                        message = e.message
+                                    )
                                 )
                             )
                         }
@@ -59,7 +66,9 @@ class PlacesRepositoryImpl @Inject constructor(
                     else -> {
                         emit(
                             Response.Exception(
-                                cause = Cause.UnknownException(e.message)
+                                cause = Cause.UnknownException(
+                                    message = e.message
+                                )
                             )
                         )
                     }
@@ -67,11 +76,9 @@ class PlacesRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getFavoritePlaces(): Flow<List<FavoritePlaceInfo>> {
-        return placesDao.getAllFavoritePlaces().map { placesList ->
-            placesList.map { place ->
-                place.mapToFavoritePlaceInfo()
-            }
+    override suspend fun getFavoritePlaces(): List<FavoritePlaceInfo> {
+        return placesDao.getAllFavoritePlaces().map {
+            it.mapToFavoritePlaceInfo()
         }
     }
 
@@ -81,9 +88,25 @@ class PlacesRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getFavoritePlaceByPlaceId(placeId: Long): Flow<FavoritePlaceInfo> {
-        return placesDao.getFavoritePlaceByPlaceId(placeId).map {
-            it.mapToFavoritePlaceInfo()
-        }
+    override suspend fun getFavoritePlaceByPlaceId(placeId: Long): FavoritePlaceInfo {
+        return placesDao.getFavoritePlaceByPlaceId(placeId).mapToFavoritePlaceInfo()
+    }
+
+    override suspend fun updateCurrentPlaceInfo(latitude: Double, longitude: Double) {
+        val place = getPlaceNameApi.getPlaceNameByCoordinates(
+            latitude = latitude,
+            longitude = longitude
+        )
+
+        placesDao.addFavoritePlace(
+            favoritePlaceEntity = FavoritePlaceEntity(
+                id = -2L,
+                placeName = place.city,
+                latitude = latitude,
+                longitude = longitude,
+                countryName = place.countryName,
+                timeZone = TimeZone.getDefault().id
+            )
+        )
     }
 }

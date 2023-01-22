@@ -37,11 +37,13 @@ class SearchPlacesViewModel @Inject constructor(
                                     }
                                 }
                                 is Response.Success -> {
-                                    _state.update {
-                                        it.copy(
-                                            isLoading = false,
-                                            rvList = response.data
-                                        )
+                                    if (response.data != null) {
+                                        _state.update {
+                                            it.copy(
+                                                isLoading = false,
+                                                rvList = response.data
+                                            )
+                                        }
                                     }
                                 }
                                 is Response.Exception -> {

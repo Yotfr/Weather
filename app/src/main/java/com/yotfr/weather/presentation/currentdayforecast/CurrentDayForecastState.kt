@@ -6,6 +6,7 @@ import com.yotfr.weather.domain.model.HourlyWeatherData
 data class CurrentDayForecastState(
     val isLoading: Boolean = false,
     val currentTime: String = "",
+    val toolbarTitle: String = "",
     @DrawableRes val currentWeatherTypeIconRes: Int ? = null,
     val currentWeatherTypeDescription: String = "",
     val currentTemperature: String = "",

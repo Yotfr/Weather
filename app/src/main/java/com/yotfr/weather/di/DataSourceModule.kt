@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.yotfr.weather.data.datasource.local.WeatherCacheDao
 import com.yotfr.weather.data.datasource.local.AppDataBase
 import com.yotfr.weather.data.datasource.local.PlacesDao
+import com.yotfr.weather.data.datasource.remote.GetPlaceNameApi
 import com.yotfr.weather.data.datasource.remote.PlacesApi
 import com.yotfr.weather.data.datasource.remote.WeatherApi
 import dagger.Module
@@ -16,6 +17,7 @@ import javax.inject.Singleton
 
 private const val WEATHER_BASE_URL = "https://api.open-meteo.com/"
 private const val LOCATION_BASE_URL = "https://geocoding-api.open-meteo.com/"
+private const val REVERSE_GEOCODING_BASE_URL = "https://api.bigdatacloud.net/"
 
 @Module
 class DataSourceModule {
@@ -35,6 +37,16 @@ class DataSourceModule {
     fun provideLocationApi(): PlacesApi {
         return Retrofit.Builder()
             .baseUrl(LOCATION_BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetPlaceNameApi(): GetPlaceNameApi {
+        return Retrofit.Builder()
+            .baseUrl(REVERSE_GEOCODING_BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create()

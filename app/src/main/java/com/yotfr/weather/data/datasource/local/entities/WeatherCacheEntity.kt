@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "weathercache")
 data class WeatherCacheEntity(
-    @PrimaryKey val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long,
     val dailyTime: List<String>,
     val dailyWeatherCodes: List<Int>,
     val dailyMaxTemperature: List<Double>,
