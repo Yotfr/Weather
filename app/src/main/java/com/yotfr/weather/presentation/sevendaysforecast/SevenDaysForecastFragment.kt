@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.yotfr.weather.R
 import com.yotfr.weather.appComponent
 import com.yotfr.weather.databinding.FragmentSevenDaysForecastBinding
+import com.yotfr.weather.presentation.currentdayforecast.CurrentDayForecastFragmentDirections
 import com.yotfr.weather.presentation.utils.MarginItemDecoration
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -62,6 +63,16 @@ class SevenDaysForecastFragment : Fragment(R.layout.fragment_seven_days_forecast
 
         binding.fragmentSevenDaysForecastToolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
+        }
+        binding.fragmentSevenDaysForecastToolbar.setOnMenuItemClickListener { menuItem ->
+            when(menuItem.itemId) {
+                R.id.settings -> {
+                    val action = SevenDaysForecastFragmentDirections.actionSevenDaysForecastFragmentToSettingsFragment()
+                    findNavController().navigate(action)
+                    true
+                }
+                else -> false
+            }
         }
 
         binding.reused.todayBtn.setOnClickListener {

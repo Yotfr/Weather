@@ -13,6 +13,8 @@ interface WeatherApi {
     suspend fun getWeatherData(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("timezone") timezone: String
+        @Query("timezone") timezone: String,
+        @Query("temperature_unit") temperatureUnits: String,
+        @Query("windspeed_unit") windSpeedUnits: String
     ): WeatherDto
 }

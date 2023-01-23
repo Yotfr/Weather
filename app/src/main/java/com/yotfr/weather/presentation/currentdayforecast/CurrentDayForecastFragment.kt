@@ -67,6 +67,17 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
             val action = CurrentDayForecastFragmentDirections.actionWeatherInfoFragmentToFavoritePlacesFragment()
             findNavController().navigate(action)
         }
+        binding.fragmentSevenDaysForecastToolbar.setOnMenuItemClickListener { menuItem ->
+            when(menuItem.itemId) {
+                R.id.settings -> {
+                    val action = CurrentDayForecastFragmentDirections.actionWeatherInfoFragmentToSettingsFragment()
+                    findNavController().navigate(action)
+                    true
+                }
+                else -> false
+            }
+        }
+
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

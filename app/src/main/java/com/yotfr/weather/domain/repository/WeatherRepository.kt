@@ -8,14 +8,18 @@ interface WeatherRepository {
         placeId: Long,
         latitude: Double,
         longitude: Double,
-        timeZone: String
+        timeZone: String,
+        temperatureUnits: String,
+        windSpeedUnits: String
     )
 
     suspend fun updateWeatherCacheForFavoritePlace(
         placeId: Long,
         latitude: Double,
         longitude: Double,
-        timeZone: String
+        timeZone: String,
+        temperatureUnits: String,
+        windSpeedUnits: String
     )
 
     suspend fun deleteWeatherDataForFavoritePlace(
@@ -25,6 +29,8 @@ interface WeatherRepository {
     suspend fun getWeatherDataForSearchedPlace(
         latitude: Double,
         longitude: Double,
-        timeZone: String
+        timeZone: String,
+        temperatureUnits: String,
+        windSpeedUnits: String
     ): WeatherInfo
 }

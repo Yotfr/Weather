@@ -1,5 +1,6 @@
 package com.yotfr.weather.presentation.currentdayforecast
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
@@ -30,6 +31,7 @@ class CurrentDayForecastViewModel @Inject constructor(
                 getWeatherInfoForFavoritePlace(
                     favoritePlaceId = placeId
                 ).collectLatest { response ->
+                    Log.d("TEST","$response")
                     when (response) {
                         is Response.Loading -> {
                             if (response.data == null) {

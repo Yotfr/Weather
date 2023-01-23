@@ -11,4 +11,18 @@
     <string name="search">Search</string>
 
     <string name="add_to_favorite">Add to favorite</string>
+
+    <string name="temperature_units">Temperature units</string>
+    <string name="wind_speed_units">Wind speed units</string>
+
+    <string name="celsius">C</string>
+    <string name="fahrenheit">F</string>
+    
+    <string name="kmh">kmh</string>
+    <string name="ms">ms</string>
+    <string name="mph">mph</string>
+    <string name="kn">kn</string>
+
+    <string name="settings">Settings</string>
+    
 </resources>

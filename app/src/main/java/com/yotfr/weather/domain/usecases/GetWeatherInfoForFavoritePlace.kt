@@ -3,11 +3,11 @@ package com.yotfr.weather.domain.usecases
 import com.yotfr.weather.domain.location.LocationTracker
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.repository.PlacesRepository
+import com.yotfr.weather.domain.repository.SettingsRepository
 import com.yotfr.weather.domain.repository.WeatherRepository
 import com.yotfr.weather.domain.util.Cause
 import com.yotfr.weather.domain.util.Response
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import okio.IOException
 import retrofit2.HttpException
 import java.util.TimeZone
@@ -15,7 +15,8 @@ import java.util.TimeZone
 class GetWeatherInfoForFavoritePlace(
     private val weatherRepository: WeatherRepository,
     private val locationTracker: LocationTracker,
-    private val placesRepository: PlacesRepository
+    private val placesRepository: PlacesRepository,
+    private val settingsRepository: SettingsRepository
 ) {
     suspend operator fun invoke(favoritePlaceId: Long?): Flow<Response<FavoritePlaceInfo>> = flow {
         // emit loading state
@@ -37,12 +38,17 @@ class GetWeatherInfoForFavoritePlace(
                     )
                 }
 
+                val temperatureUnits = settingsRepository.getTemperatureUnits(overload = true)
+                val windSpeedUnits = settingsRepository.getWindSpeedUnits(overload = true)
+
                 // update weather cache for this place
                 weatherRepository.updateWeatherCacheForFavoritePlace(
                     placeId = favoritePlaceInfo.id,
                     latitude = favoritePlaceInfo.latitude,
                     longitude = favoritePlaceInfo.longitude,
-                    timeZone = favoritePlaceInfo.timeZone
+                    timeZone = favoritePlaceInfo.timeZone,
+                    temperatureUnits = temperatureUnits.stringName,
+                    windSpeedUnits = windSpeedUnits.stringName
                 )
             } catch (e: Exception) {
                 when (e) {
@@ -86,12 +92,17 @@ class GetWeatherInfoForFavoritePlace(
                     longitude = location.longitude
                 )
 
+                val temperatureUnits = settingsRepository.getTemperatureUnits(overload = true)
+                val windSpeedUnits = settingsRepository.getWindSpeedUnits(overload = true)
+
                 // Update weather cache for this place
                 weatherRepository.updateWeatherCacheForFavoritePlace(
                     placeId = -2L,
                     latitude = location.latitude,
                     longitude = location.longitude,
-                    timeZone = TimeZone.getDefault().id
+                    timeZone = TimeZone.getDefault().id,
+                    temperatureUnits = temperatureUnits.stringName,
+                    windSpeedUnits = windSpeedUnits.stringName
                 )
 
                 val place = placesRepository.getFavoritePlaceByPlaceId(

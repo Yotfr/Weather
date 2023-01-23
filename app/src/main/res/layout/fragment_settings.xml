@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/fragment_settings_toolbar"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/fragment_settings_temperature_units_tv"
+        android:text="@string/temperature_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/fragment_settings_toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/medium_spacing"
+        android:layout_marginVertical="@dimen/medium_spacing"/>
+
+    <TextView
+        android:id="@+id/fragment_settings_wind_speed_units_tv"
+        android:text="@string/wind_speed_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/fragment_settings_temperature_units_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/medium_spacing"
+        android:layout_marginVertical="@dimen/medium_spacing"/>
+
+    <TextView
+        android:id="@+id/fragment_settings_temperature_units_value_tv"
+        app:layout_constraintTop_toBottomOf="@id/fragment_settings_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginVertical="@dimen/medium_spacing"
+        android:layout_marginEnd="@dimen/medium_spacing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="C"/>
+
+    <TextView
+        android:id="@+id/fragment_settings_wind_speed_units_value_tv"
+        app:layout_constraintTop_toBottomOf="@id/fragment_settings_temperature_units_value_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginVertical="@dimen/medium_spacing"
+        android:layout_marginEnd="@dimen/medium_spacing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Km/h"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

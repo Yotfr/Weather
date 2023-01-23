@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/kmh"
+        android:title="@string/kmh"/>
+    <item
+        android:id="@+id/ms"
+        android:title="@string/ms"/>
+    <item
+        android:id="@+id/mph"
+        android:title="@string/mph"/>
+    <item
+        android:id="@+id/kn"
+        android:title="@string/kn"/>
+</menu>

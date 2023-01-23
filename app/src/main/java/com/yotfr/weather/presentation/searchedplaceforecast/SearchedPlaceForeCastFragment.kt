@@ -63,6 +63,17 @@ class SearchedPlaceForeCastFragment : Fragment(R.layout.fragment_searched_place_
         binding.fragmentSearchedPlaceForecastToolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
+        binding.fragmentSearchedPlaceForecastToolbar.setOnMenuItemClickListener { menuItem ->
+            when(menuItem.itemId) {
+                R.id.fragment_searched_places_toolbar_favorite -> {
+                    viewModel.onEvent(
+                        SearchedPlaceForeCastEvent.AddPlaceToFavorite
+                    )
+                    true
+                }
+                else -> false
+            }
+        }
 
         binding.reused.todayBtn.setOnClickListener {
             viewModel.onEvent(

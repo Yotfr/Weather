@@ -7,6 +7,7 @@ import com.yotfr.weather.presentation.searchplaces.SearchPlacesViewModel
 import com.yotfr.weather.presentation.sevendaysforecast.SevenDaysForecastViewModel
 import com.yotfr.weather.presentation.currentdayforecast.CurrentDayForecastViewModel
 import com.yotfr.weather.presentation.searchedplaceforecast.SearchedPlaceForeCastViewModel
+import com.yotfr.weather.presentation.settings.SettingsViewModel
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -37,4 +38,6 @@ interface AppComponent {
     fun sevenDaysForecastViewModel(): SevenDaysForecastViewModel
 
     fun searchedPlaceForecastViewModel(): SearchedPlaceForeCastViewModel
+
+    fun settingsViewModel(): SettingsViewModel
 }

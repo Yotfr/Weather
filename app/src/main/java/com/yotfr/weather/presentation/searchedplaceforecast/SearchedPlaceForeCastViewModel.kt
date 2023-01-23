@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.model.PlaceInfo
+import com.yotfr.weather.domain.usecases.AddPlaceToFavoriteUseCase
 import com.yotfr.weather.domain.usecases.GetWeatherDataForSearchedPlace
 import com.yotfr.weather.domain.util.Response
 import com.yotfr.weather.presentation.sevendaysforecast.SevenDaysForecastState
@@ -14,11 +15,14 @@ import java.util.*
 import javax.inject.Inject
 
 class SearchedPlaceForeCastViewModel @Inject constructor(
-    private val getWeatherDataForSearchedPlace: GetWeatherDataForSearchedPlace
+    private val getWeatherDataForSearchedPlace: GetWeatherDataForSearchedPlace,
+    private val addPlaceToFavoriteUseCase: AddPlaceToFavoriteUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SevenDaysForecastState())
     val state = _state.asStateFlow()
+
+    private val placeInfo = MutableStateFlow<PlaceInfo?>(null)
 
     private val _selectedIndex = MutableStateFlow(0)
     val selectedIndex = _selectedIndex.asStateFlow()
@@ -452,12 +456,22 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
     fun onEvent(event: SearchedPlaceForeCastEvent) {
         when (event) {
             is SearchedPlaceForeCastEvent.ChangePlaceInfo -> {
+                placeInfo.value = event.place
                 loadWeatherData(
                     place = event.place
                 )
             }
             is SearchedPlaceForeCastEvent.SelectedDayIndexChanged -> {
                 _selectedIndex.value = event.newIndex
+            }
+            is SearchedPlaceForeCastEvent.AddPlaceToFavorite -> {
+                viewModelScope.launch {
+                    placeInfo.value?.let { placeInfo ->
+                        addPlaceToFavoriteUseCase(
+                            place = placeInfo
+                        )
+                    }
+                }
             }
         }
     }

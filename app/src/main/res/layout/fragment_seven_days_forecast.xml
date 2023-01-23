@@ -12,6 +12,7 @@
             android:id="@+id/fragment_seven_days_forecast_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:menu="@menu/fragment_seven_days_forecast_toolbar_menu"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_arrow_back" />
 

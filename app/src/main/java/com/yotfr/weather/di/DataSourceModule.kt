@@ -1,6 +1,12 @@
 package com.yotfr.weather.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.yotfr.weather.data.datasource.local.WeatherCacheDao
 import com.yotfr.weather.data.datasource.local.AppDataBase
@@ -10,6 +16,9 @@ import com.yotfr.weather.data.datasource.remote.PlacesApi
 import com.yotfr.weather.data.datasource.remote.WeatherApi
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
@@ -18,6 +27,7 @@ import javax.inject.Singleton
 private const val WEATHER_BASE_URL = "https://api.open-meteo.com/"
 private const val LOCATION_BASE_URL = "https://geocoding-api.open-meteo.com/"
 private const val REVERSE_GEOCODING_BASE_URL = "https://api.bigdatacloud.net/"
+private const val SETTINGS_PREFERENCES = "SETTINGS_PREFERENCES"
 
 @Module
 class DataSourceModule {
@@ -70,5 +80,17 @@ class DataSourceModule {
     @Provides
     fun providePlacesDao(appDataBase: AppDataBase): PlacesDao {
         return appDataBase.placesDao
+    }
+
+    @Singleton
+    @Provides
+    fun providePreferencesDataStore(context: Context): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { emptyPreferences() }
+            ),
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = { context.preferencesDataStoreFile(SETTINGS_PREFERENCES) }
+        )
     }
 }

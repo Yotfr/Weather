@@ -2,6 +2,7 @@ package com.yotfr.weather.di
 
 import com.yotfr.weather.domain.location.LocationTracker
 import com.yotfr.weather.domain.repository.PlacesRepository
+import com.yotfr.weather.domain.repository.SettingsRepository
 import com.yotfr.weather.domain.repository.WeatherRepository
 import com.yotfr.weather.domain.usecases.*
 import dagger.Module
@@ -22,11 +23,13 @@ class UseCasesModule {
     @Provides
     fun provideAddPlaceToFavoriteUseCase(
         placesRepository: PlacesRepository,
-        weatherRepository: WeatherRepository
+        weatherRepository: WeatherRepository,
+        settingsRepository: SettingsRepository
     ): AddPlaceToFavoriteUseCase {
         return AddPlaceToFavoriteUseCase(
             placesRepository = placesRepository,
-            weatherRepository = weatherRepository
+            weatherRepository = weatherRepository,
+            settingsRepository = settingsRepository
         )
     }
 
@@ -41,10 +44,12 @@ class UseCasesModule {
 
     @Provides
     fun getWeatherDataForSearchedPlaceUseCase(
-        weatherRepository: WeatherRepository
+        weatherRepository: WeatherRepository,
+        settingsRepository: SettingsRepository
     ): GetWeatherDataForSearchedPlace {
         return GetWeatherDataForSearchedPlace(
-            weatherRepository = weatherRepository
+            weatherRepository = weatherRepository,
+            settingsRepository = settingsRepository
         )
     }
 
@@ -60,15 +65,53 @@ class UseCasesModule {
     }
 
     @Provides
+    fun getTemperatureUnitsUseCase(
+        settingsRepository: SettingsRepository
+    ): GetTemperatureUnitUseCase {
+        return GetTemperatureUnitUseCase(
+            settingsRepository = settingsRepository
+        )
+    }
+
+    @Provides
+    fun getWindSpeedUnitsUseCase(
+        settingsRepository: SettingsRepository
+    ): GetWindSpeedUnitUseCase {
+        return GetWindSpeedUnitUseCase(
+            settingsRepository = settingsRepository
+        )
+    }
+
+    @Provides
+    fun updateTemperatureUnitsUseCase(
+        settingsRepository: SettingsRepository
+    ): UpdateTemperatureUnitUseCase {
+        return UpdateTemperatureUnitUseCase(
+            settingsRepository = settingsRepository
+        )
+    }
+
+    @Provides
+    fun updateWindSpeedUnitsUseCase(
+        settingsRepository: SettingsRepository
+    ): UpdateWindSpeedUnitsUseCase {
+        return UpdateWindSpeedUnitsUseCase(
+            settingsRepository = settingsRepository
+        )
+    }
+
+    @Provides
     fun provideGetWeatherInfoForFavoritePlace(
         weatherRepository: WeatherRepository,
         locationTracker: LocationTracker,
-        placesRepository: PlacesRepository
+        placesRepository: PlacesRepository,
+        settingsRepository: SettingsRepository
     ): GetWeatherInfoForFavoritePlace {
         return GetWeatherInfoForFavoritePlace(
             weatherRepository = weatherRepository,
             locationTracker = locationTracker,
-            placesRepository = placesRepository
+            placesRepository = placesRepository,
+            settingsRepository = settingsRepository
         )
     }
 }

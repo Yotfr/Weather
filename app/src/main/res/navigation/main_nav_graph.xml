@@ -15,6 +15,9 @@
         <action
             android:id="@+id/action_weatherInfoFragment_to_sevenDaysForecastFragment"
             app:destination="@id/sevenDaysForecastFragment" />
+        <action
+            android:id="@+id/action_weatherInfoFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/favoritePlacesFragment"
@@ -39,6 +42,9 @@
         <argument
             android:name="placeId"
             app:argType="long" />
+        <action
+            android:id="@+id/action_sevenDaysForecastFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchedPlaceForeCastFragment"
@@ -48,4 +54,8 @@
             android:name="placeInfo"
             app:argType="com.yotfr.weather.domain.model.PlaceInfo" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.yotfr.weather.presentation.settings.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>

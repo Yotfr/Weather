@@ -17,12 +17,16 @@ class WeatherRepositoryImpl @Inject constructor(
         placeId: Long,
         latitude: Double,
         longitude: Double,
-        timeZone: String
+        timeZone: String,
+        temperatureUnits: String,
+        windSpeedUnits: String
     ) {
         val fetchedData = weatherApi.getWeatherData(
             latitude = latitude,
             longitude = longitude,
-            timezone = timeZone
+            timezone = timeZone,
+            temperatureUnits = temperatureUnits,
+            windSpeedUnits = windSpeedUnits
         )
         weatherCacheDao.insertWeatherCache(
             weatherData = fetchedData.mapToWeatherCacheEntity(
@@ -38,12 +42,16 @@ class WeatherRepositoryImpl @Inject constructor(
     override suspend fun getWeatherDataForSearchedPlace(
         latitude: Double,
         longitude: Double,
-        timeZone: String
+        timeZone: String,
+        temperatureUnits: String,
+        windSpeedUnits: String
     ): WeatherInfo {
         return weatherApi.getWeatherData(
             latitude = latitude,
             longitude = longitude,
-            timezone = timeZone
+            timezone = timeZone,
+            temperatureUnits = temperatureUnits,
+            windSpeedUnits = windSpeedUnits
         ).mapToWeatherInfo()
     }
 
@@ -51,12 +59,16 @@ class WeatherRepositoryImpl @Inject constructor(
         placeId: Long,
         latitude: Double,
         longitude: Double,
-        timeZone: String
+        timeZone: String,
+        temperatureUnits: String,
+        windSpeedUnits: String
     ) {
         val fetchedData = weatherApi.getWeatherData(
             latitude = latitude,
             longitude = longitude,
-            timezone = timeZone
+            timezone = timeZone,
+            temperatureUnits = temperatureUnits,
+            windSpeedUnits = windSpeedUnits
         )
         weatherCacheDao.deleteWeatherCache(
             placeId = placeId
