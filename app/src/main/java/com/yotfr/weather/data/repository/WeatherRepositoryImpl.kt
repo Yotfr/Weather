@@ -52,7 +52,9 @@ class WeatherRepositoryImpl @Inject constructor(
             timezone = timeZone,
             temperatureUnits = temperatureUnits,
             windSpeedUnits = windSpeedUnits
-        ).mapToWeatherInfo()
+        ).mapToWeatherInfo(
+            timeZone = timeZone
+        )
     }
 
     override suspend fun updateWeatherCacheForFavoritePlace(

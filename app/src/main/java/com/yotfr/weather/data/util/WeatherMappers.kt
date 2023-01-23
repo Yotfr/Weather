@@ -6,6 +6,7 @@ import com.yotfr.weather.domain.model.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.TimeZone.*
 
 /**
  * @param[index] is an hour of week
@@ -21,7 +22,7 @@ private data class IndexedDailyWeatherData(
     val data: DailyWeatherData
 )
 
-fun WeatherDto.mapToWeatherInfo(): WeatherInfo {
+fun WeatherDto.mapToWeatherInfo(timeZone: String): WeatherInfo {
     val indexedHourlyWeatherData = hourlyWeatherData.time.mapIndexed { index, time ->
 
         val temperature = hourlyWeatherData.temperatures[index]
@@ -31,9 +32,9 @@ fun WeatherDto.mapToWeatherInfo(): WeatherInfo {
         val humidity = hourlyWeatherData.humidities[index]
         val apparentTemperature = hourlyWeatherData.apparentTemperature[index]
         val parsedTime = LocalDateTime.parse(time, DateTimeFormatter.ISO_DATE_TIME)
-        val sunriseTime = dailyWeatherData.sunrise[index/24]
+        val sunriseTime = dailyWeatherData.sunrise[index / 24]
         val parsedSunriseTime = LocalDateTime.parse(sunriseTime, DateTimeFormatter.ISO_DATE_TIME)
-        val sunsetTime = dailyWeatherData.sunset[index/24]
+        val sunsetTime = dailyWeatherData.sunset[index / 24]
         val parsedSunsetTime = LocalDateTime.parse(sunsetTime, DateTimeFormatter.ISO_DATE_TIME)
         val isDayTime = parsedTime in parsedSunriseTime..parsedSunsetTime
 
@@ -91,7 +92,9 @@ fun WeatherDto.mapToWeatherInfo(): WeatherInfo {
         values.value[0].data
     }
 
-    val currentTime = LocalDateTime.now()
+    val currentTime = LocalDateTime.now(
+        getTimeZone(timeZone).toZoneId()
+    )
     val currentWeatherData = mappedHourlyWeatherData[0]?.find { data ->
         val hour = if (currentTime.minute < 30) {
             currentTime.hour
@@ -140,7 +143,7 @@ fun WeatherDto.mapToWeatherInfo(): WeatherInfo {
     )
 }
 
-fun WeatherCacheEntity.mapToWeatherInfo(): WeatherInfo {
+fun WeatherCacheEntity.mapToWeatherInfo(timeZone: String): WeatherInfo {
     val indexedHourlyWeatherData = hourlyTime.mapIndexed { index, time ->
 
         val temperature = hourlyTemperatures[index]
@@ -210,7 +213,9 @@ fun WeatherCacheEntity.mapToWeatherInfo(): WeatherInfo {
         values.value[0].data
     }
 
-    val currentTime = LocalDateTime.now()
+    val currentTime = LocalDateTime.now(
+        getTimeZone(timeZone).toZoneId()
+    )
     val currentWeatherData = mappedHourlyWeatherData[0]?.find { data ->
         val hour = if (currentTime.minute < 30) {
             currentTime.hour

@@ -6,7 +6,9 @@ import com.yotfr.weather.data.datasource.remote.dto.PlaceDataDto
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.model.PlaceInfo
 
-fun PlaceWithWeatherCache.mapToFavoritePlaceInfo(): FavoritePlaceInfo {
+fun PlaceWithWeatherCache.mapToFavoritePlaceInfo(
+    timeZone:String
+): FavoritePlaceInfo {
     return FavoritePlaceInfo(
         id = favoritePlaceEntity.id,
         placeName = favoritePlaceEntity.placeName,
@@ -14,7 +16,9 @@ fun PlaceWithWeatherCache.mapToFavoritePlaceInfo(): FavoritePlaceInfo {
         longitude = favoritePlaceEntity.longitude,
         countryName = favoritePlaceEntity.countryName,
         timeZone = favoritePlaceEntity.timeZone,
-        weatherInfo = weatherCacheEntity?.mapToWeatherInfo()
+        weatherInfo = weatherCacheEntity?.mapToWeatherInfo(
+            timeZone = timeZone
+        )
     )
 }
 

@@ -14,7 +14,6 @@ import com.yotfr.weather.domain.util.Cause
 import com.yotfr.weather.domain.util.Response
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
 import java.io.IOException
@@ -81,7 +80,9 @@ class PlacesRepositoryImpl @Inject constructor(
     override suspend fun getFavoritePlaces(): Flow<List<FavoritePlaceInfo>> {
         return placesDao.getAllFavoritePlaces().map {
             it.map {
-                it.mapToFavoritePlaceInfo()
+                it.mapToFavoritePlaceInfo(
+                    timeZone = it.favoritePlaceEntity.timeZone
+                )
             }
         }
     }
@@ -93,7 +94,10 @@ class PlacesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getFavoritePlaceByPlaceId(placeId: Long): FavoritePlaceInfo {
-        return placesDao.getFavoritePlaceByPlaceId(placeId).mapToFavoritePlaceInfo()
+        val place = placesDao.getFavoritePlaceByPlaceId(placeId)
+        return place.mapToFavoritePlaceInfo(
+            timeZone = place.favoritePlaceEntity.timeZone
+        )
     }
 
     override suspend fun deleteFavoritePlace(place: FavoritePlaceInfo) {
