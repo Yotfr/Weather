@@ -2,6 +2,7 @@ package com.yotfr.weather.presentation.searchplaces
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yotfr.weather.domain.model.PlaceInfo
 import com.yotfr.weather.domain.usecases.AddPlaceToFavoriteUseCase
 import com.yotfr.weather.domain.usecases.SearchPlacesUseCase
 import com.yotfr.weather.domain.util.Response
@@ -41,7 +42,7 @@ class SearchPlacesViewModel @Inject constructor(
                                         _state.update {
                                             it.copy(
                                                 isLoading = false,
-                                                rvList = response.data
+                                                rvList = response.data as List<PlaceInfo>
                                             )
                                         }
                                     }

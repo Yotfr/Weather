@@ -1,6 +1,5 @@
 package com.yotfr.weather.presentation.favoriteplaces
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.usecases.DeleteFavoritePlaceUseCase

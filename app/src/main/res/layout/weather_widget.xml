@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center"
+    android:background="@color/md_theme_light_primary">
+
+    <TextView
+        android:id="@+id/widget_place_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Samara"/>
+
+    <TextView
+        android:id="@+id/widget_current_temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/medium_spacing"
+        tools:text="18C"/>
+
+    <ImageView
+        android:id="@+id/widget_weather_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:src="@drawable/ic_cloudy" />
+
+</LinearLayout>

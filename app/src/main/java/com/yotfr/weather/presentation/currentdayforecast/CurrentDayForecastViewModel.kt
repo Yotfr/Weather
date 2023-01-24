@@ -1,6 +1,5 @@
 package com.yotfr.weather.presentation.currentdayforecast
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
@@ -31,18 +30,17 @@ class CurrentDayForecastViewModel @Inject constructor(
                 getWeatherInfoForFavoritePlace(
                     favoritePlaceId = placeId
                 ).collectLatest { response ->
-                    Log.d("TEST","$response")
                     when (response) {
                         is Response.Loading -> {
                             if (response.data == null) {
                                 processLoadingStateWithoutData()
                             } else {
-                                processLoadingStateWithData(response.data)
+                                processLoadingStateWithData(response.data as FavoritePlaceInfo)
                             }
                         }
                         is Response.Success -> {
                             if (response.data != null) {
-                                processSuccessState(response.data)
+                                processSuccessState(response.data as FavoritePlaceInfo)
                             }
                         }
                         is Response.Exception -> {
@@ -55,60 +53,62 @@ class CurrentDayForecastViewModel @Inject constructor(
     }
 
     private fun processSuccessState(data: FavoritePlaceInfo) {
-        if (data.weatherInfo == null) {
+        data.weatherInfo?.let { weatherInfo ->
+            _state.update { state ->
+                state.copy(
+                    isLoading = true,
+                    currentTime = weatherInfo.currentWeatherData.time.format(
+                        DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+                    ),
+                    toolbarTitle = data.placeName,
+                    currentWeatherTypeIconRes = weatherInfo.currentWeatherData.weatherType.iconRes,
+                    currentWeatherTypeDescription = weatherInfo.currentWeatherData.weatherType.weatherDesc,
+                    currentTemperature = weatherInfo.currentWeatherData.temperature.toString(),
+                    currentHumidity = weatherInfo.currentWeatherData.humidity.toString(),
+                    currentPressure = weatherInfo.currentWeatherData.pressure.toString(),
+                    currentWindSpeed = weatherInfo.currentWeatherData.windSpeed.toString(),
+                    currentApparentTemperature = weatherInfo.currentWeatherData.apparentTemperature.toString(),
+                    sunriseTime = weatherInfo.todaySunrise.format(
+                        DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+                    ),
+                    sunsetTime = weatherInfo.todaySunset.format(
+                        DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+                    ),
+                    hourlyWeatherList = weatherInfo.fromCurrentTimeHourlyWeatherData
+                )
+            }
+        } ?: kotlin.run {
             throw IllegalArgumentException("Weather info cannot be null in loading or success state")
-        }
-        _state.update { state ->
-            state.copy(
-                isLoading = true,
-                currentTime = data.weatherInfo.currentWeatherData.time.format(
-                    DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
-                ),
-                toolbarTitle = data.placeName,
-                currentWeatherTypeIconRes = data.weatherInfo.currentWeatherData.weatherType.iconRes,
-                currentWeatherTypeDescription = data.weatherInfo.currentWeatherData.weatherType.weatherDesc,
-                currentTemperature = data.weatherInfo.currentWeatherData.temperature.toString(),
-                currentHumidity = data.weatherInfo.currentWeatherData.humidity.toString(),
-                currentPressure = data.weatherInfo.currentWeatherData.pressure.toString(),
-                currentWindSpeed = data.weatherInfo.currentWeatherData.windSpeed.toString(),
-                currentApparentTemperature = data.weatherInfo.currentWeatherData.apparentTemperature.toString(),
-                sunriseTime = data.weatherInfo.todaySunrise.format(
-                    DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
-                ),
-                sunsetTime = data.weatherInfo.todaySunset.format(
-                    DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
-                ),
-                hourlyWeatherList = data.weatherInfo.fromCurrentTimeHourlyWeatherData
-            )
         }
     }
 
     private fun processLoadingStateWithData(data: FavoritePlaceInfo) {
-        if (data.weatherInfo == null) {
+        data.weatherInfo?.let { weatherInfo ->
+            _state.update { state ->
+                state.copy(
+                    isLoading = true,
+                    currentTime = weatherInfo.currentWeatherData.time.format(
+                        DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+                    ),
+                    toolbarTitle = data.placeName,
+                    currentWeatherTypeIconRes = weatherInfo.currentWeatherData.weatherType.iconRes,
+                    currentWeatherTypeDescription = weatherInfo.currentWeatherData.weatherType.weatherDesc,
+                    currentTemperature = weatherInfo.currentWeatherData.temperature.toString(),
+                    currentHumidity = weatherInfo.currentWeatherData.humidity.toString(),
+                    currentPressure = weatherInfo.currentWeatherData.pressure.toString(),
+                    currentWindSpeed = weatherInfo.currentWeatherData.windSpeed.toString(),
+                    currentApparentTemperature = weatherInfo.currentWeatherData.apparentTemperature.toString(),
+                    sunriseTime = weatherInfo.todaySunrise.format(
+                        DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+                    ),
+                    sunsetTime = weatherInfo.todaySunset.format(
+                        DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+                    ),
+                    hourlyWeatherList = weatherInfo.fromCurrentTimeHourlyWeatherData
+                )
+            }
+        } ?: kotlin.run {
             throw IllegalArgumentException("Weather info cannot be null in loading or success state")
-        }
-        _state.update { state ->
-            state.copy(
-                isLoading = true,
-                currentTime = data.weatherInfo.currentWeatherData.time.format(
-                    DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
-                ),
-                toolbarTitle = data.placeName,
-                currentWeatherTypeIconRes = data.weatherInfo.currentWeatherData.weatherType.iconRes,
-                currentWeatherTypeDescription = data.weatherInfo.currentWeatherData.weatherType.weatherDesc,
-                currentTemperature = data.weatherInfo.currentWeatherData.temperature.toString(),
-                currentHumidity = data.weatherInfo.currentWeatherData.humidity.toString(),
-                currentPressure = data.weatherInfo.currentWeatherData.pressure.toString(),
-                currentWindSpeed = data.weatherInfo.currentWeatherData.windSpeed.toString(),
-                currentApparentTemperature = data.weatherInfo.currentWeatherData.apparentTemperature.toString(),
-                sunriseTime = data.weatherInfo.todaySunrise.format(
-                    DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
-                ),
-                sunsetTime = data.weatherInfo.todaySunset.format(
-                    DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
-                ),
-                hourlyWeatherList = data.weatherInfo.fromCurrentTimeHourlyWeatherData
-            )
         }
     }
 

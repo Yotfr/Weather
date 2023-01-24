@@ -36,12 +36,12 @@ class SevenDaysForecastViewModel @Inject constructor(
                             if (response.data == null) {
                                 processLoadingStateWithoutData()
                             } else {
-                                processLoadingStateWithData(response.data, index)
+                                processLoadingStateWithData(response.data as FavoritePlaceInfo, index)
                             }
                         }
                         is Response.Success -> {
                             if (response.data != null) {
-                                processSuccessState(response.data, index)
+                                processSuccessState(response.data as FavoritePlaceInfo, index)
                             }
                         }
                         is Response.Exception -> {
@@ -62,392 +62,394 @@ class SevenDaysForecastViewModel @Inject constructor(
     }
 
     private fun processLoadingStateWithData(data: FavoritePlaceInfo, index: Int) {
-        if (data.weatherInfo == null) {
+        data.weatherInfo?.let { weatherInfo ->
+            _state.update { state ->
+                state.copy(
+                    isLoading = false,
+                    toolbarTitle = data.placeName,
+                    selectedDate = weatherInfo
+                        .completeWeatherData[index]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    selectedMaxTemperature = weatherInfo
+                        .completeWeatherData[index]
+                        ?.dailyWeatherData
+                        ?.maxTemperature.toString(),
+                    selectedMinTemperature = weatherInfo
+                        .completeWeatherData[index]
+                        ?.dailyWeatherData
+                        ?.minTemperature.toString(),
+                    selectedWeatherType = weatherInfo
+                        .completeWeatherData[index]
+                        ?.dailyWeatherData
+                        ?.weatherType?.iconRes,
+                    sunriseTime = weatherInfo
+                        .completeWeatherData[index]
+                        ?.dailyWeatherData
+                        ?.sunrise?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    sunsetTime = weatherInfo
+                        .completeWeatherData[index]
+                        ?.dailyWeatherData
+                        ?.sunset?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    selectedDayHourlyWeatherList = weatherInfo
+                        .completeWeatherData[index]
+                        ?.hourlyWeatherData,
+                    todayDate = weatherInfo
+                        .completeWeatherData[0]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    todayMaxTemperature = weatherInfo
+                        .completeWeatherData[0]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    todayMinTemperature = weatherInfo
+                        .completeWeatherData[0]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    todayWeatherType = weatherInfo
+                        .completeWeatherData[0]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    tomorrowDate = weatherInfo
+                        .completeWeatherData[1]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    tomorrowMaxTemperature = weatherInfo
+                        .completeWeatherData[1]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    tomorrowMinTemperature = weatherInfo
+                        .completeWeatherData[1]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    tomorrowWeatherType = weatherInfo
+                        .completeWeatherData[1]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    afterTomorrowDate = weatherInfo
+                        .completeWeatherData[2]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    afterTomorrowMaxTemperature = weatherInfo
+                        .completeWeatherData[2]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    afterTomorrowMinTemperature = weatherInfo
+                        .completeWeatherData[2]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    afterTomorrowWeatherType = weatherInfo
+                        .completeWeatherData[2]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    afterTomorrowDayOfWeek = weatherInfo
+                        .completeWeatherData[2]
+                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                    inTwoDaysDate = weatherInfo
+                        .completeWeatherData[3]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    inTwoDaysMaxTemperature = weatherInfo
+                        .completeWeatherData[3]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    inTwoDaysMinTemperature = weatherInfo
+                        .completeWeatherData[3]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    inTwoDaysWeatherType = weatherInfo
+                        .completeWeatherData[3]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    inTwoDaysDayOfWeek = weatherInfo
+                        .completeWeatherData[3]
+                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                    inThreeDaysDate = weatherInfo
+                        .completeWeatherData[4]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    inThreeDaysMaxTemperature = weatherInfo
+                        .completeWeatherData[4]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    inThreeDaysMinTemperature = weatherInfo
+                        .completeWeatherData[4]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    inThreeDaysWeatherType = weatherInfo
+                        .completeWeatherData[4]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    inThreeDaysDayOfWeek = weatherInfo
+                        .completeWeatherData[4]
+                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                    inFourDaysDate = weatherInfo
+                        .completeWeatherData[5]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    inFourDaysMaxTemperature = weatherInfo
+                        .completeWeatherData[5]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    inFourDaysMinTemperature = weatherInfo
+                        .completeWeatherData[5]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    inFourDaysWeatherType = weatherInfo
+                        .completeWeatherData[5]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    inFourDaysDayOfWeek = weatherInfo
+                        .completeWeatherData[5]
+                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                    inFiveDaysDate = weatherInfo
+                        .completeWeatherData[6]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    inFiveDaysMaxTemperature = weatherInfo
+                        .completeWeatherData[6]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    inFiveDaysMinTemperature = weatherInfo
+                        .completeWeatherData[6]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    inFiveDaysWeatherType = weatherInfo
+                        .completeWeatherData[6]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    inFiveDaysDayOfWeek = weatherInfo
+                        .completeWeatherData[6]
+                        ?.dailyWeatherData?.time?.dayOfWeek.toString()
+                )
+            }
+        } ?: run {
             throw IllegalArgumentException("Weather info cannot be null in loading or success state")
-        }
-        _state.update { state ->
-            state.copy(
-                isLoading = false,
-                toolbarTitle = data.placeName,
-                selectedDate = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                selectedMaxTemperature = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.dailyWeatherData
-                    ?.maxTemperature.toString(),
-                selectedMinTemperature = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.dailyWeatherData
-                    ?.minTemperature.toString(),
-                selectedWeatherType = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.dailyWeatherData
-                    ?.weatherType?.iconRes,
-                sunriseTime = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.dailyWeatherData
-                    ?.sunrise?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                sunsetTime = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.dailyWeatherData
-                    ?.sunset?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                selectedDayHourlyWeatherList = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.hourlyWeatherData,
-                todayDate = data.weatherInfo
-                    .completeWeatherData[0]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                todayMaxTemperature = data.weatherInfo
-                    .completeWeatherData[0]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                todayMinTemperature = data.weatherInfo
-                    .completeWeatherData[0]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                todayWeatherType = data.weatherInfo
-                    .completeWeatherData[0]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                tomorrowDate = data.weatherInfo
-                    .completeWeatherData[1]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                tomorrowMaxTemperature = data.weatherInfo
-                    .completeWeatherData[1]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                tomorrowMinTemperature = data.weatherInfo
-                    .completeWeatherData[1]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                tomorrowWeatherType = data.weatherInfo
-                    .completeWeatherData[1]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                afterTomorrowDate = data.weatherInfo
-                    .completeWeatherData[2]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                afterTomorrowMaxTemperature = data.weatherInfo
-                    .completeWeatherData[2]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                afterTomorrowMinTemperature = data.weatherInfo
-                    .completeWeatherData[2]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                afterTomorrowWeatherType = data.weatherInfo
-                    .completeWeatherData[2]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                afterTomorrowDayOfWeek = data.weatherInfo
-                    .completeWeatherData[2]
-                    ?.dailyWeatherData?.time?.dayOfWeek.toString(),
-                inTwoDaysDate = data.weatherInfo
-                    .completeWeatherData[3]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                inTwoDaysMaxTemperature = data.weatherInfo
-                    .completeWeatherData[3]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                inTwoDaysMinTemperature = data.weatherInfo
-                    .completeWeatherData[3]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                inTwoDaysWeatherType = data.weatherInfo
-                    .completeWeatherData[3]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                inTwoDaysDayOfWeek = data.weatherInfo
-                    .completeWeatherData[3]
-                    ?.dailyWeatherData?.time?.dayOfWeek.toString(),
-                inThreeDaysDate = data.weatherInfo
-                    .completeWeatherData[4]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                inThreeDaysMaxTemperature = data.weatherInfo
-                    .completeWeatherData[4]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                inThreeDaysMinTemperature = data.weatherInfo
-                    .completeWeatherData[4]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                inThreeDaysWeatherType = data.weatherInfo
-                    .completeWeatherData[4]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                inThreeDaysDayOfWeek = data.weatherInfo
-                    .completeWeatherData[4]
-                    ?.dailyWeatherData?.time?.dayOfWeek.toString(),
-                inFourDaysDate = data.weatherInfo
-                    .completeWeatherData[5]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                inFourDaysMaxTemperature = data.weatherInfo
-                    .completeWeatherData[5]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                inFourDaysMinTemperature = data.weatherInfo
-                    .completeWeatherData[5]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                inFourDaysWeatherType = data.weatherInfo
-                    .completeWeatherData[5]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                inFourDaysDayOfWeek = data.weatherInfo
-                    .completeWeatherData[5]
-                    ?.dailyWeatherData?.time?.dayOfWeek.toString(),
-                inFiveDaysDate = data.weatherInfo
-                    .completeWeatherData[6]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                inFiveDaysMaxTemperature = data.weatherInfo
-                    .completeWeatherData[6]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                inFiveDaysMinTemperature = data.weatherInfo
-                    .completeWeatherData[6]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                inFiveDaysWeatherType = data.weatherInfo
-                    .completeWeatherData[6]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                inFiveDaysDayOfWeek = data.weatherInfo
-                    .completeWeatherData[6]
-                    ?.dailyWeatherData?.time?.dayOfWeek.toString()
-            )
         }
     }
 
     private fun processSuccessState(data: FavoritePlaceInfo, index: Int) {
-        if (data.weatherInfo == null) {
+        data.weatherInfo?.let { weatherInfo ->
+            _state.update { state ->
+                state.copy(
+                    isLoading = false,
+                    toolbarTitle = data.placeName,
+                    selectedDate = weatherInfo
+                        .completeWeatherData[index]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    selectedMaxTemperature = weatherInfo
+                        .completeWeatherData[index]
+                        ?.dailyWeatherData
+                        ?.maxTemperature.toString(),
+                    selectedMinTemperature = weatherInfo
+                        .completeWeatherData[index]
+                        ?.dailyWeatherData
+                        ?.minTemperature.toString(),
+                    selectedWeatherType = weatherInfo
+                        .completeWeatherData[index]
+                        ?.dailyWeatherData
+                        ?.weatherType?.iconRes,
+                    sunriseTime = weatherInfo
+                        .completeWeatherData[index]
+                        ?.dailyWeatherData
+                        ?.sunrise?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    sunsetTime = weatherInfo
+                        .completeWeatherData[index]
+                        ?.dailyWeatherData
+                        ?.sunset?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    selectedDayHourlyWeatherList = weatherInfo
+                        .completeWeatherData[index]
+                        ?.hourlyWeatherData,
+                    todayDate = weatherInfo
+                        .completeWeatherData[0]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    todayMaxTemperature = weatherInfo
+                        .completeWeatherData[0]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    todayMinTemperature = weatherInfo
+                        .completeWeatherData[0]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    todayWeatherType = weatherInfo
+                        .completeWeatherData[0]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    tomorrowDate = weatherInfo
+                        .completeWeatherData[1]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    tomorrowMaxTemperature = weatherInfo
+                        .completeWeatherData[1]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    tomorrowMinTemperature = weatherInfo
+                        .completeWeatherData[1]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    tomorrowWeatherType = weatherInfo
+                        .completeWeatherData[1]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    afterTomorrowDate = weatherInfo
+                        .completeWeatherData[2]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    afterTomorrowMaxTemperature = weatherInfo
+                        .completeWeatherData[2]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    afterTomorrowMinTemperature = weatherInfo
+                        .completeWeatherData[2]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    afterTomorrowWeatherType = weatherInfo
+                        .completeWeatherData[2]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    afterTomorrowDayOfWeek = weatherInfo
+                        .completeWeatherData[2]
+                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                    inTwoDaysDate = weatherInfo
+                        .completeWeatherData[3]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    inTwoDaysMaxTemperature = weatherInfo
+                        .completeWeatherData[3]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    inTwoDaysMinTemperature = weatherInfo
+                        .completeWeatherData[3]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    inTwoDaysWeatherType = weatherInfo
+                        .completeWeatherData[3]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    inTwoDaysDayOfWeek = weatherInfo
+                        .completeWeatherData[3]
+                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                    inThreeDaysDate = weatherInfo
+                        .completeWeatherData[4]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    inThreeDaysMaxTemperature = weatherInfo
+                        .completeWeatherData[4]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    inThreeDaysMinTemperature = weatherInfo
+                        .completeWeatherData[4]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    inThreeDaysWeatherType = weatherInfo
+                        .completeWeatherData[4]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    inThreeDaysDayOfWeek = weatherInfo
+                        .completeWeatherData[4]
+                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                    inFourDaysDate = weatherInfo
+                        .completeWeatherData[5]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    inFourDaysMaxTemperature = weatherInfo
+                        .completeWeatherData[5]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    inFourDaysMinTemperature = weatherInfo
+                        .completeWeatherData[5]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    inFourDaysWeatherType = weatherInfo
+                        .completeWeatherData[5]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    inFourDaysDayOfWeek = weatherInfo
+                        .completeWeatherData[5]
+                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                    inFiveDaysDate = weatherInfo
+                        .completeWeatherData[6]
+                        ?.dailyWeatherData
+                        ?.time?.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM d",
+                                Locale.getDefault()
+                            )
+                        ),
+                    inFiveDaysMaxTemperature = weatherInfo
+                        .completeWeatherData[6]
+                        ?.dailyWeatherData?.maxTemperature.toString(),
+                    inFiveDaysMinTemperature = weatherInfo
+                        .completeWeatherData[6]
+                        ?.dailyWeatherData?.minTemperature.toString(),
+                    inFiveDaysWeatherType = weatherInfo
+                        .completeWeatherData[6]
+                        ?.dailyWeatherData?.weatherType?.iconRes,
+                    inFiveDaysDayOfWeek = weatherInfo
+                        .completeWeatherData[6]
+                        ?.dailyWeatherData?.time?.dayOfWeek.toString()
+                )
+            }
+        } ?: run {
             throw IllegalArgumentException("Weather info cannot be null in loading or success state")
-        }
-        _state.update { state ->
-            state.copy(
-                isLoading = false,
-                toolbarTitle = data.placeName,
-                selectedDate = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                selectedMaxTemperature = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.dailyWeatherData
-                    ?.maxTemperature.toString(),
-                selectedMinTemperature = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.dailyWeatherData
-                    ?.minTemperature.toString(),
-                selectedWeatherType = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.dailyWeatherData
-                    ?.weatherType?.iconRes,
-                sunriseTime = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.dailyWeatherData
-                    ?.sunrise?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                sunsetTime = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.dailyWeatherData
-                    ?.sunset?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                selectedDayHourlyWeatherList = data.weatherInfo
-                    .completeWeatherData[index]
-                    ?.hourlyWeatherData,
-                todayDate = data.weatherInfo
-                    .completeWeatherData[0]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                todayMaxTemperature = data.weatherInfo
-                    .completeWeatherData[0]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                todayMinTemperature = data.weatherInfo
-                    .completeWeatherData[0]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                todayWeatherType = data.weatherInfo
-                    .completeWeatherData[0]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                tomorrowDate = data.weatherInfo
-                    .completeWeatherData[1]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                tomorrowMaxTemperature = data.weatherInfo
-                    .completeWeatherData[1]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                tomorrowMinTemperature = data.weatherInfo
-                    .completeWeatherData[1]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                tomorrowWeatherType = data.weatherInfo
-                    .completeWeatherData[1]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                afterTomorrowDate = data.weatherInfo
-                    .completeWeatherData[2]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                afterTomorrowMaxTemperature = data.weatherInfo
-                    .completeWeatherData[2]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                afterTomorrowMinTemperature = data.weatherInfo
-                    .completeWeatherData[2]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                afterTomorrowWeatherType = data.weatherInfo
-                    .completeWeatherData[2]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                afterTomorrowDayOfWeek = data.weatherInfo
-                    .completeWeatherData[2]
-                    ?.dailyWeatherData?.time?.dayOfWeek.toString(),
-                inTwoDaysDate = data.weatherInfo
-                    .completeWeatherData[3]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                inTwoDaysMaxTemperature = data.weatherInfo
-                    .completeWeatherData[3]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                inTwoDaysMinTemperature = data.weatherInfo
-                    .completeWeatherData[3]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                inTwoDaysWeatherType = data.weatherInfo
-                    .completeWeatherData[3]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                inTwoDaysDayOfWeek = data.weatherInfo
-                    .completeWeatherData[3]
-                    ?.dailyWeatherData?.time?.dayOfWeek.toString(),
-                inThreeDaysDate = data.weatherInfo
-                    .completeWeatherData[4]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                inThreeDaysMaxTemperature = data.weatherInfo
-                    .completeWeatherData[4]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                inThreeDaysMinTemperature = data.weatherInfo
-                    .completeWeatherData[4]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                inThreeDaysWeatherType = data.weatherInfo
-                    .completeWeatherData[4]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                inThreeDaysDayOfWeek = data.weatherInfo
-                    .completeWeatherData[4]
-                    ?.dailyWeatherData?.time?.dayOfWeek.toString(),
-                inFourDaysDate = data.weatherInfo
-                    .completeWeatherData[5]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                inFourDaysMaxTemperature = data.weatherInfo
-                    .completeWeatherData[5]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                inFourDaysMinTemperature = data.weatherInfo
-                    .completeWeatherData[5]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                inFourDaysWeatherType = data.weatherInfo
-                    .completeWeatherData[5]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                inFourDaysDayOfWeek = data.weatherInfo
-                    .completeWeatherData[5]
-                    ?.dailyWeatherData?.time?.dayOfWeek.toString(),
-                inFiveDaysDate = data.weatherInfo
-                    .completeWeatherData[6]
-                    ?.dailyWeatherData
-                    ?.time?.format(
-                        DateTimeFormatter.ofPattern(
-                            "MMMM d",
-                            Locale.getDefault()
-                        )
-                    ),
-                inFiveDaysMaxTemperature = data.weatherInfo
-                    .completeWeatherData[6]
-                    ?.dailyWeatherData?.maxTemperature.toString(),
-                inFiveDaysMinTemperature = data.weatherInfo
-                    .completeWeatherData[6]
-                    ?.dailyWeatherData?.minTemperature.toString(),
-                inFiveDaysWeatherType = data.weatherInfo
-                    .completeWeatherData[6]
-                    ?.dailyWeatherData?.weatherType?.iconRes,
-                inFiveDaysDayOfWeek = data.weatherInfo
-                    .completeWeatherData[6]
-                    ?.dailyWeatherData?.time?.dayOfWeek.toString()
-            )
         }
     }
 

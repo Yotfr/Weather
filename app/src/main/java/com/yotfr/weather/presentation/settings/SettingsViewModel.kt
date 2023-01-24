@@ -37,9 +37,9 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onEvent(event: SettingsEvent) {
-        when(event) {
+        when (event) {
             is SettingsEvent.TemperatureUnitsChanged -> {
-                Log.d("TEST","event with ${event.newTemperatureUnit}")
+                Log.d("TEST", "event with ${event.newTemperatureUnit}")
                 viewModelScope.launch {
                     updateTemperatureUnitUseCase(
                         temperatureUnit = event.newTemperatureUnit
@@ -47,14 +47,13 @@ class SettingsViewModel @Inject constructor(
                 }
             }
             is SettingsEvent.WindSpeedUnitsChanged -> {
-                Log.d("TEST","event with ${event.newWindSpeedUnits}")
+                Log.d("TEST", "event with ${event.newWindSpeedUnits}")
                 viewModelScope.launch {
                     updateWindSpeedUnitsUseCase(
                         windSpeedUnits = event.newWindSpeedUnits
                     )
                 }
             }
-
         }
     }
 }

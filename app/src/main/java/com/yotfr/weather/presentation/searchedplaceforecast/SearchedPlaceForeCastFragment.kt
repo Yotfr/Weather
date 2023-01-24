@@ -64,7 +64,7 @@ class SearchedPlaceForeCastFragment : Fragment(R.layout.fragment_searched_place_
             findNavController().popBackStack()
         }
         binding.fragmentSearchedPlaceForecastToolbar.setOnMenuItemClickListener { menuItem ->
-            when(menuItem.itemId) {
+            when (menuItem.itemId) {
                 R.id.fragment_searched_places_toolbar_favorite -> {
                     viewModel.onEvent(
                         SearchedPlaceForeCastEvent.AddPlaceToFavorite

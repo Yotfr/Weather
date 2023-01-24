@@ -1,7 +1,6 @@
 package com.yotfr.weather.presentation.currentdayforecast
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,7 +45,6 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("placeId")?.observe(
             viewLifecycleOwner
         ) { placeId ->
-            Log.d("KEYTEST", placeId)
             viewModel.onEvent(
                 CurrentDayForecastEvent.ChangeCurrentSelectedPlaceId(
                     newPlaceId = placeId.toLong()
@@ -68,7 +66,7 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
             findNavController().navigate(action)
         }
         binding.fragmentSevenDaysForecastToolbar.setOnMenuItemClickListener { menuItem ->
-            when(menuItem.itemId) {
+            when (menuItem.itemId) {
                 R.id.settings -> {
                     val action = CurrentDayForecastFragmentDirections.actionWeatherInfoFragmentToSettingsFragment()
                     findNavController().navigate(action)
@@ -77,7 +75,6 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
                 else -> false
             }
         }
-
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -109,7 +106,6 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
             val action = CurrentDayForecastFragmentDirections.actionWeatherInfoFragmentToSevenDaysForecastFragment(
                 placeId = viewModel.currentSelectedPlaceId.value
             )
-            Log.d("TEST","navigated with ${viewModel.currentSelectedPlaceId.value}")
             findNavController().navigate(action)
         }
     }
