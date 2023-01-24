@@ -1,6 +1,7 @@
 package com.yotfr.weather.presentation.currentdayforecast
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.yotfr.weather.domain.model.HourlyWeatherData
 
 data class CurrentDayForecastState(
@@ -8,7 +9,7 @@ data class CurrentDayForecastState(
     val currentTime: String = "",
     val toolbarTitle: String = "",
     @DrawableRes val currentWeatherTypeIconRes: Int ? = null,
-    val currentWeatherTypeDescription: String = "",
+    @StringRes val currentWeatherTypeDescription: Int? = null,
     val currentTemperature: String = "",
     val currentApparentTemperature: String = "",
     val currentPressure: String = "",

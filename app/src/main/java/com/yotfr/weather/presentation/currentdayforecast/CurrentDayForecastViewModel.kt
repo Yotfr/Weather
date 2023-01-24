@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.usecases.GetWeatherInfoForFavoritePlace
 import com.yotfr.weather.domain.util.Response
+import com.yotfr.weather.presentation.utils.getIconRes
+import com.yotfr.weather.presentation.utils.getWeatherDescStringRes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -61,8 +63,8 @@ class CurrentDayForecastViewModel @Inject constructor(
                         DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
                     ),
                     toolbarTitle = data.placeName,
-                    currentWeatherTypeIconRes = weatherInfo.currentWeatherData.weatherType.iconRes,
-                    currentWeatherTypeDescription = weatherInfo.currentWeatherData.weatherType.weatherDesc,
+                    currentWeatherTypeIconRes = weatherInfo.currentWeatherData.weatherType.getIconRes(),
+                    currentWeatherTypeDescription = weatherInfo.currentWeatherData.weatherType.getWeatherDescStringRes(),
                     currentTemperature = weatherInfo.currentWeatherData.temperature.toString(),
                     currentHumidity = weatherInfo.currentWeatherData.humidity.toString(),
                     currentPressure = weatherInfo.currentWeatherData.pressure.toString(),
@@ -91,8 +93,8 @@ class CurrentDayForecastViewModel @Inject constructor(
                         DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
                     ),
                     toolbarTitle = data.placeName,
-                    currentWeatherTypeIconRes = weatherInfo.currentWeatherData.weatherType.iconRes,
-                    currentWeatherTypeDescription = weatherInfo.currentWeatherData.weatherType.weatherDesc,
+                    currentWeatherTypeIconRes = weatherInfo.currentWeatherData.weatherType.getIconRes(),
+                    currentWeatherTypeDescription = weatherInfo.currentWeatherData.weatherType.getWeatherDescStringRes(),
                     currentTemperature = weatherInfo.currentWeatherData.temperature.toString(),
                     currentHumidity = weatherInfo.currentWeatherData.humidity.toString(),
                     currentPressure = weatherInfo.currentWeatherData.pressure.toString(),

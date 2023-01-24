@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.weather.databinding.ItemFavoritePlaceInfoBinding
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
+import com.yotfr.weather.presentation.utils.getIconRes
 
 interface FavoritePlacesDelegate {
     fun placeClicked(placeId: Long)
@@ -64,7 +65,7 @@ class FavoritePlacesAdapter : ListAdapter<FavoritePlaceInfo, FavoritePlacesAdapt
                     itemFavoritePlaceInfoIvWeatherType.setImageDrawable(
                         ContextCompat.getDrawable(
                             context,
-                            weatherInfo.currentWeatherData.weatherType.iconRes
+                            weatherInfo.currentWeatherData.weatherType.getIconRes()
                         )
                     )
                     itemFavoritePlaceInfoTvTemperature.text = weatherInfo.currentWeatherData

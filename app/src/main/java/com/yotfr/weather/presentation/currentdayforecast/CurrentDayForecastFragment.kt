@@ -42,15 +42,16 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("placeId")?.observe(
-            viewLifecycleOwner
-        ) { placeId ->
-            viewModel.onEvent(
-                CurrentDayForecastEvent.ChangeCurrentSelectedPlaceId(
-                    newPlaceId = placeId.toLong()
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("placeId")
+            ?.observe(
+                viewLifecycleOwner
+            ) { placeId ->
+                viewModel.onEvent(
+                    CurrentDayForecastEvent.ChangeCurrentSelectedPlaceId(
+                        newPlaceId = placeId.toLong()
+                    )
                 )
-            )
-        }
+            }
 
         val layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -62,13 +63,15 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
         )
 
         binding.fragmentSevenDaysForecastToolbar.setNavigationOnClickListener {
-            val action = CurrentDayForecastFragmentDirections.actionWeatherInfoFragmentToFavoritePlacesFragment()
+            val action =
+                CurrentDayForecastFragmentDirections.actionWeatherInfoFragmentToFavoritePlacesFragment()
             findNavController().navigate(action)
         }
         binding.fragmentSevenDaysForecastToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.settings -> {
-                    val action = CurrentDayForecastFragmentDirections.actionWeatherInfoFragmentToSettingsFragment()
+                    val action =
+                        CurrentDayForecastFragmentDirections.actionWeatherInfoFragmentToSettingsFragment()
                     findNavController().navigate(action)
                     true
                 }
@@ -90,9 +93,15 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
                             )
                         }
                         fragmentSevenDaysForecastToolbar.title = state.toolbarTitle
-                        fragmentCurrentWeatherInfoTvWeatherType.text = state.currentWeatherTypeDescription
-                        fragmentCurrentWeatherInfoTvCurrentTemperature.text = state.currentTemperature
-                        fragmentCurrentWeatherInfoTvApparentTemperature.text = state.currentApparentTemperature
+                        state.currentWeatherTypeDescription?.let {
+                            fragmentCurrentWeatherInfoTvWeatherType.text = resources.getString(
+                                it
+                            )
+                        }
+                        fragmentCurrentWeatherInfoTvCurrentTemperature.text =
+                            state.currentTemperature
+                        fragmentCurrentWeatherInfoTvApparentTemperature.text =
+                            state.currentApparentTemperature
                         fragmentCurrentWeatherInfoTvPressure.text = state.currentPressure
                         fragmentCurrentWeatherInfoTvHumidity.text = state.currentHumidity
                         fragmentCurrentWeatherInfoTvWindSpeed.text = state.currentWindSpeed
@@ -103,9 +112,10 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
         }
 
         binding.fragmentCurrentWeatherInfoBtnSevenDaysForecast.setOnClickListener {
-            val action = CurrentDayForecastFragmentDirections.actionWeatherInfoFragmentToSevenDaysForecastFragment(
-                placeId = viewModel.currentSelectedPlaceId.value
-            )
+            val action =
+                CurrentDayForecastFragmentDirections.actionWeatherInfoFragmentToSevenDaysForecastFragment(
+                    placeId = viewModel.currentSelectedPlaceId.value
+                )
             findNavController().navigate(action)
         }
     }

@@ -8,6 +8,7 @@ import com.yotfr.weather.domain.usecases.AddPlaceToFavoriteUseCase
 import com.yotfr.weather.domain.usecases.GetWeatherDataForSearchedPlace
 import com.yotfr.weather.domain.util.Response
 import com.yotfr.weather.presentation.sevendaysforecast.SevenDaysForecastState
+import com.yotfr.weather.presentation.utils.getIconRes
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
@@ -89,7 +90,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                     selectedWeatherType = weatherInfo
                         .completeWeatherData[index]
                         ?.dailyWeatherData
-                        ?.weatherType?.iconRes,
+                        ?.weatherType?.getIconRes(),
                     sunriseTime = weatherInfo
                         .completeWeatherData[index]
                         ?.dailyWeatherData
@@ -128,7 +129,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     todayWeatherType = weatherInfo
                         .completeWeatherData[0]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     tomorrowDate = weatherInfo
                         .completeWeatherData[1]
                         ?.dailyWeatherData
@@ -146,7 +147,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     tomorrowWeatherType = weatherInfo
                         .completeWeatherData[1]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     afterTomorrowDate = weatherInfo
                         .completeWeatherData[2]
                         ?.dailyWeatherData
@@ -164,7 +165,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     afterTomorrowWeatherType = weatherInfo
                         .completeWeatherData[2]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     afterTomorrowDayOfWeek = weatherInfo
                         .completeWeatherData[2]
                         ?.dailyWeatherData?.time?.dayOfWeek.toString(),
@@ -185,7 +186,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     inTwoDaysWeatherType = weatherInfo
                         .completeWeatherData[3]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inTwoDaysDayOfWeek = weatherInfo
                         .completeWeatherData[3]
                         ?.dailyWeatherData?.time?.dayOfWeek.toString(),
@@ -206,7 +207,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     inThreeDaysWeatherType = weatherInfo
                         .completeWeatherData[4]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inThreeDaysDayOfWeek = weatherInfo
                         .completeWeatherData[4]
                         ?.dailyWeatherData?.time?.dayOfWeek.toString(),
@@ -227,7 +228,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     inFourDaysWeatherType = weatherInfo
                         .completeWeatherData[5]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inFourDaysDayOfWeek = weatherInfo
                         .completeWeatherData[5]
                         ?.dailyWeatherData?.time?.dayOfWeek.toString(),
@@ -248,7 +249,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     inFiveDaysWeatherType = weatherInfo
                         .completeWeatherData[6]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inFiveDaysDayOfWeek = weatherInfo
                         .completeWeatherData[6]
                         ?.dailyWeatherData?.time?.dayOfWeek.toString()
@@ -285,7 +286,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                     selectedWeatherType = weatherInfo
                         .completeWeatherData[index]
                         ?.dailyWeatherData
-                        ?.weatherType?.iconRes,
+                        ?.weatherType?.getIconRes(),
                     sunriseTime = weatherInfo
                         .completeWeatherData[index]
                         ?.dailyWeatherData
@@ -324,7 +325,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     todayWeatherType = weatherInfo
                         .completeWeatherData[0]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     tomorrowDate = weatherInfo
                         .completeWeatherData[1]
                         ?.dailyWeatherData
@@ -342,7 +343,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     tomorrowWeatherType = weatherInfo
                         .completeWeatherData[1]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     afterTomorrowDate = weatherInfo
                         .completeWeatherData[2]
                         ?.dailyWeatherData
@@ -360,7 +361,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     afterTomorrowWeatherType = weatherInfo
                         .completeWeatherData[2]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     afterTomorrowDayOfWeek = weatherInfo
                         .completeWeatherData[2]
                         ?.dailyWeatherData?.time?.dayOfWeek.toString(),
@@ -381,7 +382,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     inTwoDaysWeatherType = weatherInfo
                         .completeWeatherData[3]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inTwoDaysDayOfWeek = weatherInfo
                         .completeWeatherData[3]
                         ?.dailyWeatherData?.time?.dayOfWeek.toString(),
@@ -402,7 +403,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     inThreeDaysWeatherType = weatherInfo
                         .completeWeatherData[4]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inThreeDaysDayOfWeek = weatherInfo
                         .completeWeatherData[4]
                         ?.dailyWeatherData?.time?.dayOfWeek.toString(),
@@ -423,7 +424,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     inFourDaysWeatherType = weatherInfo
                         .completeWeatherData[5]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inFourDaysDayOfWeek = weatherInfo
                         .completeWeatherData[5]
                         ?.dailyWeatherData?.time?.dayOfWeek.toString(),
@@ -444,7 +445,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                         ?.dailyWeatherData?.minTemperature.toString(),
                     inFiveDaysWeatherType = weatherInfo
                         .completeWeatherData[6]
-                        ?.dailyWeatherData?.weatherType?.iconRes,
+                        ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inFiveDaysDayOfWeek = weatherInfo
                         .completeWeatherData[6]
                         ?.dailyWeatherData?.time?.dayOfWeek.toString()

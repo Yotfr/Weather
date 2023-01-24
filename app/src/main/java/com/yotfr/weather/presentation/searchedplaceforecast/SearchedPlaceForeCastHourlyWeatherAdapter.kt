@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.weather.databinding.ItemHourlyWeatherBinding
 import com.yotfr.weather.domain.model.HourlyWeatherData
+import com.yotfr.weather.presentation.utils.getIconRes
 import java.time.format.DateTimeFormatter
 
 class SearchedPlaceForecastHourlyWeatherDiffUtilCallback : DiffUtil.ItemCallback<HourlyWeatherData>() {
@@ -52,7 +53,7 @@ class SearchedPlaceForeCastHourlyWeatherAdapter : ListAdapter<HourlyWeatherData,
                 itemHourlyWeatherIvWeatherType.setImageDrawable(
                     ContextCompat.getDrawable(
                         context,
-                        hourlyWeatherData.weatherType.iconRes
+                        hourlyWeatherData.weatherType.getIconRes()
                     )
                 )
             }
