@@ -5,6 +5,12 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 
+/**
+ * [ListConverters] is a class that contains type converters for room.
+ * This class was created in order to avoid additional mapping or complex database structure.
+ * Since the type of a large number of dto's fields is: List<T>. We can just convert this list
+ * to Json and and vice versa
+ */
 class ListConverters {
 
     private val moshi = Moshi.Builder().build()

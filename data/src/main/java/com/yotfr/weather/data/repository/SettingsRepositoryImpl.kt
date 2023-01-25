@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.yotfr.weather.domain.model.MeasuringUnits
 import com.yotfr.weather.domain.model.TemperatureUnits
 import com.yotfr.weather.domain.model.WindSpeedUnits
 import com.yotfr.weather.domain.repository.SettingsRepository
@@ -16,57 +17,60 @@ class SettingsRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : SettingsRepository {
 
-    override suspend fun updateTemperatureUnits(temperatureUnits: TemperatureUnits) {
+    override suspend fun updateTemperatureUnit(temperatureUnits: TemperatureUnits) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.TEMPERATURE_UNIT] = temperatureUnits.stringName
         }
     }
 
-    override fun getTemperatureUnits(): Flow<TemperatureUnits> {
-        val temperatureUnit = dataStore.data
-            .map { preferences ->
-                val temperature = preferences[PreferencesKeys.TEMPERATURE_UNIT]
-                TemperatureUnits.values().firstOrNull { it.stringName == temperature }
-                    ?: TemperatureUnits.CELSIUS
-            }
-        return temperatureUnit
-    }
-
-    override suspend fun updateWindSpeedUnits(windSpeedUnits: WindSpeedUnits) {
+    override suspend fun updateWindSpeedUnit(windSpeedUnits: WindSpeedUnits) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.WIND_SPEED_UNIT] = windSpeedUnits.stringName
         }
     }
 
-    override fun getWindSpeedUnits(): Flow<WindSpeedUnits> {
-        val windSpeedUnits = dataStore.data
+    override fun getMeasuringUnitsFlow(): Flow<MeasuringUnits> {
+        val measuringUnits = dataStore.data
             .map { preferences ->
-                val windSpeed = preferences[PreferencesKeys.WIND_SPEED_UNIT]
-                WindSpeedUnits.values().firstOrNull { it.stringName == windSpeed }
-                    ?: WindSpeedUnits.KMH
+
+                val temperatureString = preferences[PreferencesKeys.TEMPERATURE_UNIT]
+                val temperature = TemperatureUnits.values()
+                    .firstOrNull { it.stringName == temperatureString } ?: TemperatureUnits.CELSIUS
+
+                val windSpeedString = preferences[PreferencesKeys.WIND_SPEED_UNIT]
+                val windSpeed = WindSpeedUnits.values()
+                    .firstOrNull { it.stringName == windSpeedString } ?: WindSpeedUnits.KMH
+
+                MeasuringUnits(
+                    temperatureUnit = temperature,
+                    windSpeedUnit = windSpeed
+                )
             }
-        return windSpeedUnits
+        return measuringUnits
     }
 
-    override suspend fun getTemperatureUnits(asFlow: Boolean): TemperatureUnits {
-        return dataStore.data.map { preferences ->
-            val temperature = preferences[PreferencesKeys.TEMPERATURE_UNIT]
-            TemperatureUnits.values().firstOrNull { it.stringName == temperature }
-                ?: TemperatureUnits.CELSIUS
-        }.first()
-    }
+    override suspend fun getMeasuringUnitsValues(): MeasuringUnits {
+        val measuringUnits = dataStore.data
+            .map { preferences ->
 
-    override suspend fun getWindSpeedUnits(overload: Boolean): WindSpeedUnits {
-        return dataStore.data.map { preferences ->
-            val windSpeed = preferences[PreferencesKeys.WIND_SPEED_UNIT]
-            WindSpeedUnits.values().firstOrNull { it.stringName == windSpeed }
-                ?: WindSpeedUnits.KMH
-        }.first()
+                val temperatureString = preferences[PreferencesKeys.TEMPERATURE_UNIT]
+                val temperature = TemperatureUnits.values()
+                    .firstOrNull { it.stringName == temperatureString } ?: TemperatureUnits.CELSIUS
+
+                val windSpeedString = preferences[PreferencesKeys.WIND_SPEED_UNIT]
+                val windSpeed = WindSpeedUnits.values()
+                    .firstOrNull { it.stringName == windSpeedString } ?: WindSpeedUnits.KMH
+
+                MeasuringUnits(
+                    temperatureUnit = temperature,
+                    windSpeedUnit = windSpeed
+                )
+            }.first()
+        return measuringUnits
     }
 
     private object PreferencesKeys {
         val TEMPERATURE_UNIT = stringPreferencesKey("TEMPERATURE_UNIT")
         val WIND_SPEED_UNIT = stringPreferencesKey("WIND_SPEED_UNIT")
     }
-
 }

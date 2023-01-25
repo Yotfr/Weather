@@ -9,14 +9,16 @@ import java.time.format.DateTimeFormatter
 import java.util.TimeZone.*
 
 /**
- * @param[index] is an hour of week
- * @param[index] is a weather information for hour with [index]
+ * [IndexedWeatherData] helper class to get access to the index outside of .mapIndexed
  */
 private data class IndexedWeatherData(
     val index: Int,
     val data: HourlyWeatherData
 )
 
+/**
+ * [IndexedDailyWeatherData] helper class to get access to the index outside of .mapIndexed
+ */
 private data class IndexedDailyWeatherData(
     val index: Int,
     val data: DailyWeatherData
@@ -25,6 +27,12 @@ private data class IndexedDailyWeatherData(
 fun WeatherDto.mapToWeatherInfo(timeZone: String): WeatherInfo {
     val indexedHourlyWeatherData = hourlyWeatherData.time.mapIndexed { index, time ->
 
+        /*
+         For each dateTime in the list of dateTimes we get weather information in that dateTime
+         [sunriseTime] and [sunsetTime] divided by 24 because they refer to dailyWeatherData and
+         [dailyWeatherData.sunrise || sunset] contains only 7 elements
+         [isDayTime] required to determine day/night weatherTypes (e.g. ClearSkySun or ClearSkyMoon)
+         */
         val temperature = hourlyWeatherData.temperatures[index]
         val weatherCode = hourlyWeatherData.weatherCodes[index]
         val windSpeed = hourlyWeatherData.windSpeeds[index]
@@ -55,12 +63,17 @@ fun WeatherDto.mapToWeatherInfo(timeZone: String): WeatherInfo {
         )
     }
 
+    // Group weather data by days, and get rid of indexes
     val mappedHourlyWeatherData = indexedHourlyWeatherData.groupBy {
         it.index / 24
     }.mapValues { values ->
         values.value.map { it.data }
     }
 
+    /*
+     For each date in the list of dates we get weather information in that date,
+     group weather data by days, and get rid of indexes
+     */
     val mappedDailyWeatherData = dailyWeatherData.time.mapIndexed { index, time ->
 
         val parsedTime = LocalDate.parse(time, DateTimeFormatter.ISO_DATE)
@@ -92,9 +105,14 @@ fun WeatherDto.mapToWeatherInfo(timeZone: String): WeatherInfo {
         values.value[0].data
     }
 
+    // Get current zoned time
     val currentTime = LocalDateTime.now(
         getTimeZone(timeZone).toZoneId()
     )
+
+    /*
+     Get weather information of particular day
+     */
     val currentWeatherData = mappedHourlyWeatherData[0]?.find { data ->
         val hour = if (currentTime.minute < 30) {
             currentTime.hour
@@ -104,6 +122,9 @@ fun WeatherDto.mapToWeatherInfo(timeZone: String): WeatherInfo {
         "cannot find value for this key"
     )
 
+    /*
+    Get index of dateTime in dateTimes list that matches  current dateTime
+     */
     val initialIndex = indexedHourlyWeatherData.indexOfFirst { data ->
         val hour = if (currentTime.minute < 30) {
             currentTime.hour
@@ -111,6 +132,9 @@ fun WeatherDto.mapToWeatherInfo(timeZone: String): WeatherInfo {
         data.data.time.hour == hour
     }
 
+    /*
+    Get list of hourly weather information for the next 24 hours (from current zoned time)
+     */
     val fromCurrentTimeHourlyWeatherData = indexedHourlyWeatherData.subList(
         fromIndex = initialIndex,
         toIndex = initialIndex + 23
@@ -263,11 +287,6 @@ fun WeatherCacheEntity.mapToWeatherInfo(timeZone: String): WeatherInfo {
         todaySunset = todaySunset
     )
 }
-
-/**
- * Api returns weather information for hours of week without dividing into days, so we need to
- * divide index by 24
- */
 
 fun WeatherDto.mapToWeatherCacheEntity(
     placeId: Long

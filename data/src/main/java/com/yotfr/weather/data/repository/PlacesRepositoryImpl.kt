@@ -44,7 +44,7 @@ class PlacesRepositoryImpl @Inject constructor(
                             400 -> emit(
                                 Response.Exception(
                                     cause = Cause.UnknownException(
-                                        message = e.message
+                                        message = "Incorrect url"
                                     )
                                 )
                             )
@@ -78,27 +78,28 @@ class PlacesRepositoryImpl @Inject constructor(
         }
 
     override suspend fun getFavoritePlaces(): Flow<List<FavoritePlaceInfo>> {
-        return placesDao.getAllFavoritePlaces().map {
-            it.map {
-                it.mapToFavoritePlaceInfo(
-                    timeZone = it.favoritePlaceEntity.timeZone
+        return placesDao.getAllFavoritePlaces().map { placesWithCacheList ->
+            placesWithCacheList.map { placeWithCache ->
+                placeWithCache.mapToFavoritePlaceInfo(
+                    timeZone = placeWithCache.favoritePlaceEntity.timeZone
                 )
             }
         }
     }
 
     override suspend fun addFavoritePlace(place: PlaceInfo): Long {
-        return placesDao.addFavoritePlace(
+        return placesDao.insertFavoritePlace(
             favoritePlaceEntity = place.mapToFavoritePlaceEntity()
         )
     }
 
+    // Param [isCacheUpdated] determines whether the cache was updated at the time the function was called
     override suspend fun getFavoritePlace(
         placeId: Long,
         isCacheUpdated: Boolean
     ): Response<FavoritePlaceInfo> {
         try {
-            val placeEntity = placesDao.getFavoritePlaceByPlaceId(placeId)
+            val placeEntity = placesDao.getFavoritePlaceById(placeId)
             val mappedPlaceEntity = placeEntity.mapToFavoritePlaceInfo(
                 timeZone = placeEntity.favoritePlaceEntity.timeZone
             )
@@ -122,14 +123,17 @@ class PlacesRepositoryImpl @Inject constructor(
         placesDao.deleteFavoritePlace(place.mapToFavoritePlaceEntity())
     }
 
+    // Fetch and update information about the current user's location
     override suspend fun updateCurrentPlaceInfo(latitude: Double, longitude: Double): Response<FavoritePlaceInfo>? {
         try {
+            // Get information about the current user's location with reverse geocoding API
             val fetchedPlace = getPlaceNameApi.getPlaceNameByCoordinates(
                 latitude = latitude,
                 longitude = longitude
             )
 
-            placesDao.addFavoritePlace(
+            // Room insert onConflictStrategy = OnConflictStrategy.REPLACE
+            placesDao.insertFavoritePlace(
                 favoritePlaceEntity = FavoritePlaceEntity(
                     id = -2L,
                     placeName = fetchedPlace.city,

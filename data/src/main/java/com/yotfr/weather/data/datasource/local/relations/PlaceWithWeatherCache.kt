@@ -1,4 +1,4 @@
-package com.yotfr.weather.data.datasource.local.relation
+package com.yotfr.weather.data.datasource.local.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation

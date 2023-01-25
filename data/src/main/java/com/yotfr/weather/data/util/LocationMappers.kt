@@ -1,7 +1,7 @@
 package com.yotfr.weather.data.util
 
 import com.yotfr.weather.data.datasource.local.entities.FavoritePlaceEntity
-import com.yotfr.weather.data.datasource.local.relation.PlaceWithWeatherCache
+import com.yotfr.weather.data.datasource.local.relations.PlaceWithWeatherCache
 import com.yotfr.weather.data.datasource.remote.dto.PlaceDataDto
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.model.PlaceInfo

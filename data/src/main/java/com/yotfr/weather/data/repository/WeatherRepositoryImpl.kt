@@ -6,7 +6,6 @@ import com.yotfr.weather.data.util.mapToWeatherCacheEntity
 import com.yotfr.weather.data.util.mapToWeatherInfo
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.model.PlaceInfo
-import com.yotfr.weather.domain.model.WeatherInfo
 import com.yotfr.weather.domain.repository.WeatherRepository
 import com.yotfr.weather.domain.util.Cause
 import com.yotfr.weather.domain.util.Response
@@ -19,6 +18,10 @@ class WeatherRepositoryImpl @Inject constructor(
     private val weatherCacheDao: WeatherCacheDao
 ) : WeatherRepository {
 
+    /*
+     Fetch information about the weather in place with selected place id
+     and save it to the database
+     */
     override suspend fun createWeatherCacheForPlace(
         placeId: Long,
         latitude: Double,
@@ -41,10 +44,12 @@ class WeatherRepositoryImpl @Inject constructor(
         )
     }
 
+    // Delete weather cache related to selected placeId
     override suspend fun deleteWeatherDataRelatedToPlaceId(placeId: Long) {
         weatherCacheDao.deleteWeatherCache(placeId)
     }
 
+    // Fetch and return information about the weather in selected place
     override suspend fun getWeatherDataForSearchedPlace(
         placeInfo: PlaceInfo,
         temperatureUnits: String,
@@ -93,6 +98,10 @@ class WeatherRepositoryImpl @Inject constructor(
         }
     }
 
+    /*
+     Fetch information about the weather in place with selected place id
+     and update database data
+     */
     override suspend fun updateWeatherCacheRelatedToPlaceId(
         placeId: Long,
         latitude: Double,
@@ -112,7 +121,6 @@ class WeatherRepositoryImpl @Inject constructor(
             val mappedFetchedWeather = fetchedWeather.mapToWeatherCacheEntity(
                 placeId = placeId
             )
-
             weatherCacheDao.deleteWeatherCache(
                 placeId = placeId
             )
