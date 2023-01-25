@@ -25,8 +25,8 @@ class UseCasesModule {
         placesRepository: PlacesRepository,
         weatherRepository: WeatherRepository,
         settingsRepository: SettingsRepository
-    ): AddPlaceToFavoriteUseCase {
-        return AddPlaceToFavoriteUseCase(
+    ): AddFavoritePlaceUseCase {
+        return AddFavoritePlaceUseCase(
             placesRepository = placesRepository,
             weatherRepository = weatherRepository,
             settingsRepository = settingsRepository
@@ -36,8 +36,8 @@ class UseCasesModule {
     @Provides
     fun getFavoritePlacesUseCase(
         placesRepository: PlacesRepository
-    ): GetFavoritePlacesUseCase {
-        return GetFavoritePlacesUseCase(
+    ): GetAllFavoritePlacesUseCase {
+        return GetAllFavoritePlacesUseCase(
             placesRepository = placesRepository
         )
     }
@@ -106,8 +106,8 @@ class UseCasesModule {
         locationTracker: LocationTracker,
         placesRepository: PlacesRepository,
         settingsRepository: SettingsRepository
-    ): GetWeatherInfoForFavoritePlace {
-        return GetWeatherInfoForFavoritePlace(
+    ): GetFavoritePlaceWIthWeatherCache {
+        return GetFavoritePlaceWIthWeatherCache(
             weatherRepository = weatherRepository,
             locationTracker = locationTracker,
             placesRepository = placesRepository,

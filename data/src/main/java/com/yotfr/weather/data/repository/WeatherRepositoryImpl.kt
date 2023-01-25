@@ -19,7 +19,7 @@ class WeatherRepositoryImpl @Inject constructor(
     private val weatherCacheDao: WeatherCacheDao
 ) : WeatherRepository {
 
-    override suspend fun fetchAndCacheWeatherDataForPlaceId(
+    override suspend fun createWeatherCacheForPlace(
         placeId: Long,
         latitude: Double,
         longitude: Double,
@@ -41,7 +41,7 @@ class WeatherRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun deleteWeatherDataForFavoritePlace(placeId: Long) {
+    override suspend fun deleteWeatherDataRelatedToPlaceId(placeId: Long) {
         weatherCacheDao.deleteWeatherCache(placeId)
     }
 
@@ -93,7 +93,7 @@ class WeatherRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateWeatherCache(
+    override suspend fun updateWeatherCacheRelatedToPlaceId(
         placeId: Long,
         latitude: Double,
         longitude: Double,

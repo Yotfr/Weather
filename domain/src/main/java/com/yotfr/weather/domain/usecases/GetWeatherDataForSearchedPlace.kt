@@ -8,6 +8,10 @@ import com.yotfr.weather.domain.util.Response
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+/**
+ * [GetWeatherDataForSearchedPlace] returns information about the searched place and
+ * information about the weather in it
+ */
 class GetWeatherDataForSearchedPlace(
     private val weatherRepository: WeatherRepository,
     private val settingsRepository: SettingsRepository
@@ -15,14 +19,14 @@ class GetWeatherDataForSearchedPlace(
 
     suspend operator fun invoke(placeInfo: PlaceInfo): Flow<Response<FavoritePlaceInfo>> = flow {
         emit(Response.Loading())
+        // Get currently selected measuring units
+        val measuringUnits = settingsRepository.getMeasuringUnitsValues()
 
-        val temperatureUnits = settingsRepository.getTemperatureUnits(overload = true)
-        val windSpeedUnits = settingsRepository.getWindSpeedUnits(overload = true)
-
+        // Get weather data for selected place but not save it to the database
         val getWeatherDataResponse = weatherRepository.getWeatherDataForSearchedPlace(
             placeInfo = placeInfo,
-            temperatureUnits = temperatureUnits.stringName,
-            windSpeedUnits = windSpeedUnits.stringName
+            temperatureUnits = measuringUnits.temperatureUnit.stringName,
+            windSpeedUnits = measuringUnits.windSpeedUnit.stringName
         )
         emit(getWeatherDataResponse)
     }

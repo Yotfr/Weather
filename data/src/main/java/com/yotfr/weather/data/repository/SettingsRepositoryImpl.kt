@@ -48,7 +48,7 @@ class SettingsRepositoryImpl @Inject constructor(
         return windSpeedUnits
     }
 
-    override suspend fun getTemperatureUnits(overload: Boolean): TemperatureUnits {
+    override suspend fun getTemperatureUnits(asFlow: Boolean): TemperatureUnits {
         return dataStore.data.map { preferences ->
             val temperature = preferences[PreferencesKeys.TEMPERATURE_UNIT]
             TemperatureUnits.values().firstOrNull { it.stringName == temperature }

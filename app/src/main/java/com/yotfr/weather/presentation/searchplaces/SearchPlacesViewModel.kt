@@ -3,7 +3,7 @@ package com.yotfr.weather.presentation.searchplaces
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.model.PlaceInfo
-import com.yotfr.weather.domain.usecases.AddPlaceToFavoriteUseCase
+import com.yotfr.weather.domain.usecases.AddFavoritePlaceUseCase
 import com.yotfr.weather.domain.usecases.SearchPlacesUseCase
 import com.yotfr.weather.domain.util.Response
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class SearchPlacesViewModel @Inject constructor(
     private val searchPlacesUseCase: SearchPlacesUseCase,
-    private val addPlaceToFavoriteUseCase: AddPlaceToFavoriteUseCase
+    private val addFavoritePlaceUseCase: AddFavoritePlaceUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SearchPlacesState())
@@ -56,7 +56,7 @@ class SearchPlacesViewModel @Inject constructor(
             }
             is SearchPlacesEvent.AddPlaceToFavorite -> {
                 viewModelScope.launch {
-                    addPlaceToFavoriteUseCase(
+                    addFavoritePlaceUseCase(
                         place = event.place
                     )
                 }

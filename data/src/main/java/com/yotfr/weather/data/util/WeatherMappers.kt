@@ -75,7 +75,7 @@ fun WeatherDto.mapToWeatherInfo(timeZone: String): WeatherInfo {
         IndexedDailyWeatherData(
             index = index,
             data = DailyWeatherData(
-                time = parsedTime,
+                date = parsedTime,
                 weatherType = WeatherType.fromWMO(
                     code = weatherCode,
                     isDayTime = true
@@ -196,7 +196,7 @@ fun WeatherCacheEntity.mapToWeatherInfo(timeZone: String): WeatherInfo {
         IndexedDailyWeatherData(
             index = index,
             data = DailyWeatherData(
-                time = parsedTime,
+                date = parsedTime,
                 weatherType = WeatherType.fromWMO(
                     code = weatherCode,
                     isDayTime = true

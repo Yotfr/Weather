@@ -3,14 +3,14 @@ package com.yotfr.weather.presentation.favoriteplaces
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.usecases.DeleteFavoritePlaceUseCase
-import com.yotfr.weather.domain.usecases.GetFavoritePlacesUseCase
+import com.yotfr.weather.domain.usecases.GetAllFavoritePlacesUseCase
 import com.yotfr.weather.domain.usecases.GetTemperatureUnitUseCase
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FavoritePlacesViewModel @Inject constructor(
-    private val getFavoritePlacesUseCase: GetFavoritePlacesUseCase,
+    private val getAllFavoritePlacesUseCase: GetAllFavoritePlacesUseCase,
     private val deleteFavoritePlaceUseCase: DeleteFavoritePlaceUseCase,
     private val getTemperatureUnitUseCase: GetTemperatureUnitUseCase
 ) : ViewModel() {
@@ -33,7 +33,7 @@ class FavoritePlacesViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             combine(
-                getFavoritePlacesUseCase(),
+                getAllFavoritePlacesUseCase(),
                 getTemperatureUnitUseCase()
             ) { placeList, temperatureUnit ->
                 _state.update {

@@ -13,8 +13,10 @@ interface PlacesRepository {
 
     suspend fun addFavoritePlace(place: PlaceInfo): Long
 
+    // Fetch and update information about the current user's location
     suspend fun updateCurrentPlaceInfo(latitude: Double, longitude: Double): Response<FavoritePlaceInfo>?
 
+    // Param [isCacheUpdated] determines whether the cache was updated at the time the function was called
     suspend fun getFavoritePlace(placeId: Long, isCacheUpdated: Boolean): Response<FavoritePlaceInfo>
 
     suspend fun deleteFavoritePlace(place: FavoritePlaceInfo)

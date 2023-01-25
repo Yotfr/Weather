@@ -5,6 +5,9 @@ import com.yotfr.weather.domain.repository.PlacesRepository
 import com.yotfr.weather.domain.util.Response
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * [SearchPlacesUseCase] returns places whose names matching searchQuery
+ */
 class SearchPlacesUseCase(
     private val placesRepository: PlacesRepository
 ) {

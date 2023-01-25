@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.model.TemperatureUnits
 import com.yotfr.weather.domain.usecases.GetTemperatureUnitUseCase
-import com.yotfr.weather.domain.usecases.GetWeatherInfoForFavoritePlace
+import com.yotfr.weather.domain.usecases.GetFavoritePlaceWIthWeatherCache
 import com.yotfr.weather.domain.util.Response
 import com.yotfr.weather.presentation.utils.getIconRes
 import com.yotfr.weather.presentation.utils.toTemperatureUnitString
@@ -16,7 +16,7 @@ import java.util.*
 import javax.inject.Inject
 
 class SevenDaysForecastViewModel @Inject constructor(
-    private val getWeatherInfoForFavoritePlace: GetWeatherInfoForFavoritePlace,
+    private val getFavoritePlaceWIthWeatherCache: GetFavoritePlaceWIthWeatherCache,
     private val getTemperatureUnitUseCase: GetTemperatureUnitUseCase
 ) : ViewModel() {
 
@@ -36,7 +36,7 @@ class SevenDaysForecastViewModel @Inject constructor(
         viewModelScope.launch {
             _selectedPlaceId.collectLatest { placeId ->
                 combine(
-                    getWeatherInfoForFavoritePlace(
+                    getFavoritePlaceWIthWeatherCache(
                         favoritePlaceId = placeId
                     ),
                     getTemperatureUnitUseCase(),
@@ -93,7 +93,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                     selectedDate = weatherInfo
                         .completeWeatherData[index]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -139,7 +139,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                     todayDate = weatherInfo
                         .completeWeatherData[0]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -161,7 +161,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                     tomorrowDate = weatherInfo
                         .completeWeatherData[1]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -183,7 +183,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                     afterTomorrowDate = weatherInfo
                         .completeWeatherData[2]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -204,11 +204,11 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
                     afterTomorrowDayOfWeek = weatherInfo
                         .completeWeatherData[2]
-                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                        ?.dailyWeatherData?.date?.dayOfWeek.toString(),
                     inTwoDaysDate = weatherInfo
                         .completeWeatherData[3]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -229,11 +229,11 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inTwoDaysDayOfWeek = weatherInfo
                         .completeWeatherData[3]
-                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                        ?.dailyWeatherData?.date?.dayOfWeek.toString(),
                     inThreeDaysDate = weatherInfo
                         .completeWeatherData[4]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -254,11 +254,11 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inThreeDaysDayOfWeek = weatherInfo
                         .completeWeatherData[4]
-                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                        ?.dailyWeatherData?.date?.dayOfWeek.toString(),
                     inFourDaysDate = weatherInfo
                         .completeWeatherData[5]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -279,11 +279,11 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inFourDaysDayOfWeek = weatherInfo
                         .completeWeatherData[5]
-                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                        ?.dailyWeatherData?.date?.dayOfWeek.toString(),
                     inFiveDaysDate = weatherInfo
                         .completeWeatherData[6]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -304,7 +304,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inFiveDaysDayOfWeek = weatherInfo
                         .completeWeatherData[6]
-                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                        ?.dailyWeatherData?.date?.dayOfWeek.toString(),
                     temperatureUnit = temperatureUnit
                 )
             }
@@ -326,7 +326,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                     selectedDate = weatherInfo
                         .completeWeatherData[index]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -372,7 +372,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                     todayDate = weatherInfo
                         .completeWeatherData[0]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -394,7 +394,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                     tomorrowDate = weatherInfo
                         .completeWeatherData[1]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -416,7 +416,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                     afterTomorrowDate = weatherInfo
                         .completeWeatherData[2]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -437,11 +437,11 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
                     afterTomorrowDayOfWeek = weatherInfo
                         .completeWeatherData[2]
-                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                        ?.dailyWeatherData?.date?.dayOfWeek.toString(),
                     inTwoDaysDate = weatherInfo
                         .completeWeatherData[3]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -462,11 +462,11 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inTwoDaysDayOfWeek = weatherInfo
                         .completeWeatherData[3]
-                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                        ?.dailyWeatherData?.date?.dayOfWeek.toString(),
                     inThreeDaysDate = weatherInfo
                         .completeWeatherData[4]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -487,11 +487,11 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inThreeDaysDayOfWeek = weatherInfo
                         .completeWeatherData[4]
-                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                        ?.dailyWeatherData?.date?.dayOfWeek.toString(),
                     inFourDaysDate = weatherInfo
                         .completeWeatherData[5]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -512,11 +512,11 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inFourDaysDayOfWeek = weatherInfo
                         .completeWeatherData[5]
-                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                        ?.dailyWeatherData?.date?.dayOfWeek.toString(),
                     inFiveDaysDate = weatherInfo
                         .completeWeatherData[6]
                         ?.dailyWeatherData
-                        ?.time?.format(
+                        ?.date?.format(
                             DateTimeFormatter.ofPattern(
                                 "MMMM d",
                                 Locale.getDefault()
@@ -537,7 +537,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inFiveDaysDayOfWeek = weatherInfo
                         .completeWeatherData[6]
-                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                        ?.dailyWeatherData?.date?.dayOfWeek.toString(),
                     temperatureUnit = temperatureUnit
                 )
             }

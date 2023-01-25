@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
-import com.yotfr.weather.domain.usecases.GetWeatherInfoForFavoritePlace
+import com.yotfr.weather.domain.usecases.GetFavoritePlaceWIthWeatherCache
 import com.yotfr.weather.domain.util.Response
 import com.yotfr.weather.presentation.MainActivity
 import com.yotfr.weather.presentation.utils.getIconRes
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class WeatherWidgetProvider : AppWidgetProvider() {
 
     @Inject
-    lateinit var getWeatherInfoForFavoritePlace: GetWeatherInfoForFavoritePlace
+    lateinit var getFavoritePlaceWIthWeatherCache: GetFavoritePlaceWIthWeatherCache
 
     override fun onUpdate(
         context: Context,
@@ -45,7 +45,7 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                 weatherInfo = null
             )
             goAsync {
-                getWeatherInfoForFavoritePlace(-2L).collectLatest {
+                getFavoritePlaceWIthWeatherCache(-2L).collectLatest {
                     when (it) {
                         is Response.Loading -> {
                             if (it.data != null) {

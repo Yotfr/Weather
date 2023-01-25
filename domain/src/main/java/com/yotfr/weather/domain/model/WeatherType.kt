@@ -1,5 +1,9 @@
 package com.yotfr.weather.domain.model
 
+/**
+ * [WeatherType] contains all available types of weather and function which returns weather type
+ * based on WMO code
+ */
 sealed class WeatherType {
     object ClearSkySun : WeatherType()
     object ClearSkyMoon : WeatherType()

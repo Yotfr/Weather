@@ -6,7 +6,7 @@ import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.model.TemperatureUnits
 import com.yotfr.weather.domain.model.WindSpeedUnits
 import com.yotfr.weather.domain.usecases.GetTemperatureUnitUseCase
-import com.yotfr.weather.domain.usecases.GetWeatherInfoForFavoritePlace
+import com.yotfr.weather.domain.usecases.GetFavoritePlaceWIthWeatherCache
 import com.yotfr.weather.domain.usecases.GetWindSpeedUnitUseCase
 import com.yotfr.weather.domain.util.Response
 import com.yotfr.weather.presentation.utils.*
@@ -17,7 +17,7 @@ import java.util.*
 import javax.inject.Inject
 
 class CurrentDayForecastViewModel @Inject constructor(
-    private val getWeatherInfoForFavoritePlace: GetWeatherInfoForFavoritePlace,
+    private val getFavoritePlaceWIthWeatherCache: GetFavoritePlaceWIthWeatherCache,
     private val getWindSpeedUnitUseCase: GetWindSpeedUnitUseCase,
     private val getTemperatureUnitUseCase: GetTemperatureUnitUseCase
 ) : ViewModel() {
@@ -38,7 +38,7 @@ class CurrentDayForecastViewModel @Inject constructor(
                 combine(
                     getTemperatureUnitUseCase(),
                     getWindSpeedUnitUseCase(),
-                    getWeatherInfoForFavoritePlace(
+                    getFavoritePlaceWIthWeatherCache(
                         favoritePlaceId = placeId
                     )
                 ) { temperatureUnit, windSpeedUnit, weatherResponse ->

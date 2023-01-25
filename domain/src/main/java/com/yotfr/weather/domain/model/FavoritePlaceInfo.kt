@@ -1,5 +1,8 @@
 package com.yotfr.weather.domain.model
 
+/**
+ * [FavoritePlaceInfo] contains information about a favorite place
+ */
 data class FavoritePlaceInfo(
     val id: Long,
     val placeName: String,
