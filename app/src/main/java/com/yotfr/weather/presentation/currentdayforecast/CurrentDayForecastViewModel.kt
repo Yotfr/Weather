@@ -3,21 +3,23 @@ package com.yotfr.weather.presentation.currentdayforecast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
+import com.yotfr.weather.domain.model.TemperatureUnits
+import com.yotfr.weather.domain.model.WindSpeedUnits
+import com.yotfr.weather.domain.usecases.GetTemperatureUnitUseCase
 import com.yotfr.weather.domain.usecases.GetWeatherInfoForFavoritePlace
+import com.yotfr.weather.domain.usecases.GetWindSpeedUnitUseCase
 import com.yotfr.weather.domain.util.Response
-import com.yotfr.weather.presentation.utils.getIconRes
-import com.yotfr.weather.presentation.utils.getWeatherDescStringRes
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
+import com.yotfr.weather.presentation.utils.*
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
 class CurrentDayForecastViewModel @Inject constructor(
-    private val getWeatherInfoForFavoritePlace: GetWeatherInfoForFavoritePlace
+    private val getWeatherInfoForFavoritePlace: GetWeatherInfoForFavoritePlace,
+    private val getWindSpeedUnitUseCase: GetWindSpeedUnitUseCase,
+    private val getTemperatureUnitUseCase: GetTemperatureUnitUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CurrentDayForecastState())
@@ -27,56 +29,88 @@ class CurrentDayForecastViewModel @Inject constructor(
     val currentSelectedPlaceId = _currentSelectedPlaceId.asStateFlow()
 
     init {
+        getWeather()
+    }
+
+    private fun getWeather() {
         viewModelScope.launch {
             _currentSelectedPlaceId.collectLatest { placeId ->
-                getWeatherInfoForFavoritePlace(
-                    favoritePlaceId = placeId
-                ).collectLatest { response ->
-                    when (response) {
+                combine(
+                    getTemperatureUnitUseCase(),
+                    getWindSpeedUnitUseCase(),
+                    getWeatherInfoForFavoritePlace(
+                        favoritePlaceId = placeId
+                    )
+                ) { temperatureUnit, windSpeedUnit, weatherResponse ->
+                    when (weatherResponse) {
                         is Response.Loading -> {
-                            if (response.data == null) {
+                            if (weatherResponse.data == null) {
                                 processLoadingStateWithoutData()
                             } else {
-                                processLoadingStateWithData(response.data as FavoritePlaceInfo)
+                                processLoadingStateWithData(
+                                    weatherResponse.data as FavoritePlaceInfo,
+                                    temperatureUnit = temperatureUnit,
+                                    windSpeedUnit = windSpeedUnit
+                                )
                             }
                         }
                         is Response.Success -> {
-                            if (response.data != null) {
-                                processSuccessState(response.data as FavoritePlaceInfo)
+                            if (weatherResponse.data != null) {
+                                processSuccessState(
+                                    weatherResponse.data as FavoritePlaceInfo,
+                                    temperatureUnit = temperatureUnit,
+                                    windSpeedUnit = windSpeedUnit
+                                )
                             }
                         }
                         is Response.Exception -> {
                             // TODO exception state
                         }
                     }
-                }
+                }.collect()
             }
         }
     }
 
-    private fun processSuccessState(data: FavoritePlaceInfo) {
+    private fun processSuccessState(
+        data: FavoritePlaceInfo,
+        temperatureUnit: TemperatureUnits,
+        windSpeedUnit: WindSpeedUnits
+    ) {
         data.weatherInfo?.let { weatherInfo ->
             _state.update { state ->
                 state.copy(
-                    isLoading = true,
+                    isLoading = false,
                     currentTime = weatherInfo.currentWeatherData.time.format(
                         DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
                     ),
                     toolbarTitle = data.placeName,
                     currentWeatherTypeIconRes = weatherInfo.currentWeatherData.weatherType.getIconRes(),
                     currentWeatherTypeDescription = weatherInfo.currentWeatherData.weatherType.getWeatherDescStringRes(),
-                    currentTemperature = weatherInfo.currentWeatherData.temperature.toString(),
-                    currentHumidity = weatherInfo.currentWeatherData.humidity.toString(),
-                    currentPressure = weatherInfo.currentWeatherData.pressure.toString(),
-                    currentWindSpeed = weatherInfo.currentWeatherData.windSpeed.toString(),
-                    currentApparentTemperature = weatherInfo.currentWeatherData.apparentTemperature.toString(),
+                    currentTemperature = weatherInfo.currentWeatherData.temperature.toString()
+                        .toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
+                    currentHumidity = weatherInfo.currentWeatherData.humidity.toString()
+                        .toHumidityUnitString(),
+                    currentPressure = weatherInfo.currentWeatherData.pressure.toString()
+                        .toPressureUnitString(),
+                    currentWindSpeed = weatherInfo.currentWeatherData.windSpeed.toString()
+                        .toWindSpeedUnitString(
+                            windSpeedUnits = windSpeedUnit
+                        ),
+                    currentApparentTemperature = weatherInfo.currentWeatherData.apparentTemperature.toString()
+                        .toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     sunriseTime = weatherInfo.todaySunrise.format(
                         DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
                     ),
                     sunsetTime = weatherInfo.todaySunset.format(
                         DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
                     ),
-                    hourlyWeatherList = weatherInfo.fromCurrentTimeHourlyWeatherData
+                    hourlyWeatherList = weatherInfo.fromCurrentTimeHourlyWeatherData,
+                    temperatureUnits = temperatureUnit
                 )
             }
         } ?: kotlin.run {
@@ -84,7 +118,11 @@ class CurrentDayForecastViewModel @Inject constructor(
         }
     }
 
-    private fun processLoadingStateWithData(data: FavoritePlaceInfo) {
+    private fun processLoadingStateWithData(
+        data: FavoritePlaceInfo,
+        temperatureUnit: TemperatureUnits,
+        windSpeedUnit: WindSpeedUnits
+    ) {
         data.weatherInfo?.let { weatherInfo ->
             _state.update { state ->
                 state.copy(
@@ -95,18 +133,30 @@ class CurrentDayForecastViewModel @Inject constructor(
                     toolbarTitle = data.placeName,
                     currentWeatherTypeIconRes = weatherInfo.currentWeatherData.weatherType.getIconRes(),
                     currentWeatherTypeDescription = weatherInfo.currentWeatherData.weatherType.getWeatherDescStringRes(),
-                    currentTemperature = weatherInfo.currentWeatherData.temperature.toString(),
-                    currentHumidity = weatherInfo.currentWeatherData.humidity.toString(),
-                    currentPressure = weatherInfo.currentWeatherData.pressure.toString(),
-                    currentWindSpeed = weatherInfo.currentWeatherData.windSpeed.toString(),
-                    currentApparentTemperature = weatherInfo.currentWeatherData.apparentTemperature.toString(),
+                    currentTemperature = weatherInfo.currentWeatherData.temperature.toString()
+                        .toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
+                    currentHumidity = weatherInfo.currentWeatherData.humidity.toString()
+                        .toHumidityUnitString(),
+                    currentPressure = weatherInfo.currentWeatherData.pressure.toString()
+                        .toPressureUnitString(),
+                    currentWindSpeed = weatherInfo.currentWeatherData.windSpeed.toString()
+                        .toWindSpeedUnitString(
+                            windSpeedUnits = windSpeedUnit
+                        ),
+                    currentApparentTemperature = weatherInfo.currentWeatherData.apparentTemperature.toString()
+                        .toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     sunriseTime = weatherInfo.todaySunrise.format(
                         DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
                     ),
                     sunsetTime = weatherInfo.todaySunset.format(
                         DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
                     ),
-                    hourlyWeatherList = weatherInfo.fromCurrentTimeHourlyWeatherData
+                    hourlyWeatherList = weatherInfo.fromCurrentTimeHourlyWeatherData,
+                    temperatureUnits = temperatureUnit
                 )
             }
         } ?: kotlin.run {
@@ -126,6 +176,9 @@ class CurrentDayForecastViewModel @Inject constructor(
         when (event) {
             is CurrentDayForecastEvent.ChangeCurrentSelectedPlaceId -> {
                 _currentSelectedPlaceId.value = event.newPlaceId
+            }
+            CurrentDayForecastEvent.Swiped -> {
+                getWeather()
             }
         }
     }

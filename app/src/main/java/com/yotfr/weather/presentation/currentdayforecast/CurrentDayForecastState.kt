@@ -3,6 +3,7 @@ package com.yotfr.weather.presentation.currentdayforecast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.yotfr.weather.domain.model.HourlyWeatherData
+import com.yotfr.weather.domain.model.TemperatureUnits
 
 data class CurrentDayForecastState(
     val isLoading: Boolean = false,
@@ -17,5 +18,6 @@ data class CurrentDayForecastState(
     val currentWindSpeed: String = "",
     val sunriseTime: String = "",
     val sunsetTime: String = "",
-    val hourlyWeatherList: List<HourlyWeatherData> ? = emptyList()
+    val hourlyWeatherList: List<HourlyWeatherData> ? = emptyList(),
+    val temperatureUnits: TemperatureUnits = TemperatureUnits.CELSIUS
 )

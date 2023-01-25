@@ -4,16 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.usecases.DeleteFavoritePlaceUseCase
 import com.yotfr.weather.domain.usecases.GetFavoritePlacesUseCase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
+import com.yotfr.weather.domain.usecases.GetTemperatureUnitUseCase
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FavoritePlacesViewModel @Inject constructor(
     private val getFavoritePlacesUseCase: GetFavoritePlacesUseCase,
-    private val deleteFavoritePlaceUseCase: DeleteFavoritePlaceUseCase
+    private val deleteFavoritePlaceUseCase: DeleteFavoritePlaceUseCase,
+    private val getTemperatureUnitUseCase: GetTemperatureUnitUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(FavoritePlacesState())
@@ -33,14 +32,18 @@ class FavoritePlacesViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getFavoritePlacesUseCase().collectLatest { placeList ->
+            combine(
+                getFavoritePlacesUseCase(),
+                getTemperatureUnitUseCase()
+            ) { placeList, temperatureUnit ->
                 _state.update {
                     it.copy(
                         isLoading = false,
-                        rvList = placeList
+                        rvList = placeList,
+                        temperatureUnit = temperatureUnit
                     )
                 }
-            }
+            }.collect()
         }
     }
 }

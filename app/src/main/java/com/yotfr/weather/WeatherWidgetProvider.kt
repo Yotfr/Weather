@@ -10,6 +10,7 @@ import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.usecases.GetWeatherInfoForFavoritePlace
 import com.yotfr.weather.domain.util.Response
 import com.yotfr.weather.presentation.MainActivity
+import com.yotfr.weather.presentation.utils.getIconRes
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -48,12 +49,12 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                     when (it) {
                         is Response.Loading -> {
                             if (it.data != null) {
-                                placeInfo = it.data
+                                placeInfo = it.data as FavoritePlaceInfo
                             }
                         }
                         is Response.Success -> {
                             if (it.data != null) {
-                                placeInfo = it.data
+                                placeInfo = it.data as FavoritePlaceInfo
                             }
                         }
                         else -> {
@@ -72,8 +73,6 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                 delay(4000)
             }
 
-
-
             val views: RemoteViews = RemoteViews(
                 context.packageName,
                 R.layout.weather_widget
@@ -82,7 +81,7 @@ class WeatherWidgetProvider : AppWidgetProvider() {
                 this.setTextViewText(R.id.widget_current_temperature, placeInfo.weatherInfo?.currentWeatherData?.temperature.toString())
                 this.setImageViewResource(
                     R.id.widget_weather_type,
-                    placeInfo.weatherInfo?.currentWeatherData?.weatherType?.iconRes ?: R.drawable.ic_heavyrainy
+                    placeInfo.weatherInfo?.currentWeatherData?.weatherType?.getIconRes() ?: R.drawable.ic_heavyrainy
                 )
                 setOnClickPendingIntent(this.layoutId, pendingIntent)
             }

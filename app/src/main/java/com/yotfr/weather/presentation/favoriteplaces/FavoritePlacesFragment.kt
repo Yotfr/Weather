@@ -86,8 +86,11 @@ class FavoritePlacesFragment : Fragment(R.layout.fragment_favorite_places) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collectLatest {
-                    adapter.submitList(it.rvList)
+                viewModel.state.collectLatest { state ->
+                    adapter.submitList(state.rvList)
+                    adapter.attachTemperatureUnit(
+                        temperatureUnits = state.temperatureUnit
+                    )
                 }
             }
         }

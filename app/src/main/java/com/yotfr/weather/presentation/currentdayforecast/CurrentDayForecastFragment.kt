@@ -79,11 +79,17 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
             }
         }
 
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.onEvent(CurrentDayForecastEvent.Swiped)
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collectLatest { state ->
                     binding.apply {
-                        fragmentCurrentWeatherInfoTvCurrentTime.text = state.currentTime
+                        swipeRefresh.isRefreshing = state.isLoading
+                        val currentTimeString = resources.getString(R.string.today) + state.currentTime
+                        fragmentCurrentWeatherInfoTvCurrentTime.text = currentTimeString
                         state.currentWeatherTypeIconRes?.let {
                             fragmentCurrentWeatherInfoIvWeatherType.setImageDrawable(
                                 ContextCompat.getDrawable(
@@ -98,14 +104,22 @@ class CurrentDayForecastFragment : Fragment(R.layout.fragment_current_day_foreca
                                 it
                             )
                         }
+                        val sunriseString = resources.getString(R.string.sunrise_at) + state.sunriseTime
+                        val sunsetString = resources.getString(R.string.sunset_at) + state.sunsetTime
+                        fragmentCurrentWeatherInfoTvSunrise.text = sunriseString
+                        fragmentCurrentWeatherInfoTvSunset.text = sunsetString
                         fragmentCurrentWeatherInfoTvCurrentTemperature.text =
                             state.currentTemperature
-                        fragmentCurrentWeatherInfoTvApparentTemperature.text =
+                        val apparentTemperatureString = resources.getString(R.string.feels_like) +
                             state.currentApparentTemperature
+                        fragmentCurrentWeatherInfoTvApparentTemperature.text = apparentTemperatureString
                         fragmentCurrentWeatherInfoTvPressure.text = state.currentPressure
                         fragmentCurrentWeatherInfoTvHumidity.text = state.currentHumidity
                         fragmentCurrentWeatherInfoTvWindSpeed.text = state.currentWindSpeed
                         adapter.submitList(state.hourlyWeatherList)
+                        adapter.attachTemperatureUnit(
+                            temperatureUnits = state.temperatureUnits
+                        )
                     }
                 }
             }

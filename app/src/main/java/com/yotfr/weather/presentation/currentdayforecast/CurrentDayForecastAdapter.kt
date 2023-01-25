@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yotfr.weather.databinding.ItemHourlyWeatherBinding
 import com.yotfr.weather.domain.model.HourlyWeatherData
+import com.yotfr.weather.domain.model.TemperatureUnits
 import com.yotfr.weather.presentation.utils.getIconRes
+import com.yotfr.weather.presentation.utils.toTemperatureUnitString
 import java.time.format.DateTimeFormatter
 
 class HourlyWeatherDiffUtilCallback : DiffUtil.ItemCallback<HourlyWeatherData>() {
@@ -26,6 +28,12 @@ class HourlyWeatherAdapter : ListAdapter<HourlyWeatherData, HourlyWeatherAdapter
     HourlyWeatherDiffUtilCallback()
 ) {
 
+    private var temperatureUnit: TemperatureUnits? = null
+
+    fun attachTemperatureUnit(temperatureUnits: TemperatureUnits) {
+        this.temperatureUnit = temperatureUnits
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HourlyWeatherViewHolder {
         return HourlyWeatherViewHolder(
             binding = ItemHourlyWeatherBinding.inflate(
@@ -33,7 +41,8 @@ class HourlyWeatherAdapter : ListAdapter<HourlyWeatherData, HourlyWeatherAdapter
                 parent,
                 false
             ),
-            context = parent.context
+            context = parent.context,
+            temperatureUnits = temperatureUnit
         )
     }
 
@@ -43,13 +52,20 @@ class HourlyWeatherAdapter : ListAdapter<HourlyWeatherData, HourlyWeatherAdapter
 
     class HourlyWeatherViewHolder(
         private val binding: ItemHourlyWeatherBinding,
-        private val context: Context
+        private val context: Context,
+        private val temperatureUnits: TemperatureUnits?
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(hourlyWeatherData: HourlyWeatherData) {
             binding.apply {
                 itemHourlyWeatherTvTime.text =
                     hourlyWeatherData.time.format(DateTimeFormatter.ofPattern("HH:mm"))
-                itemHourlyWeatherTvTemperature.text = hourlyWeatherData.temperature.toString()
+                temperatureUnits?.let {
+                    itemHourlyWeatherTvTemperature.text = hourlyWeatherData.temperature.toString().toTemperatureUnitString(
+                        temperatureUnit = it
+                    )
+                } ?: run {
+                    itemHourlyWeatherTvTemperature.text = hourlyWeatherData.temperature.toString()
+                }
                 itemHourlyWeatherIvWeatherType.setImageDrawable(
                     ContextCompat.getDrawable(
                         context,

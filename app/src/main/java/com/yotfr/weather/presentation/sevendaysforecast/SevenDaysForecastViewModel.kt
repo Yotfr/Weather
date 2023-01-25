@@ -3,9 +3,12 @@ package com.yotfr.weather.presentation.sevendaysforecast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
+import com.yotfr.weather.domain.model.TemperatureUnits
+import com.yotfr.weather.domain.usecases.GetTemperatureUnitUseCase
 import com.yotfr.weather.domain.usecases.GetWeatherInfoForFavoritePlace
 import com.yotfr.weather.domain.util.Response
 import com.yotfr.weather.presentation.utils.getIconRes
+import com.yotfr.weather.presentation.utils.toTemperatureUnitString
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
@@ -13,7 +16,8 @@ import java.util.*
 import javax.inject.Inject
 
 class SevenDaysForecastViewModel @Inject constructor(
-    private val getWeatherInfoForFavoritePlace: GetWeatherInfoForFavoritePlace
+    private val getWeatherInfoForFavoritePlace: GetWeatherInfoForFavoritePlace,
+    private val getTemperatureUnitUseCase: GetTemperatureUnitUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SevenDaysForecastState())
@@ -25,24 +29,38 @@ class SevenDaysForecastViewModel @Inject constructor(
     private val _selectedPlaceId = MutableStateFlow(-2L)
 
     init {
+        getWeather()
+    }
+
+    private fun getWeather() {
         viewModelScope.launch {
             _selectedPlaceId.collectLatest { placeId ->
-                getWeatherInfoForFavoritePlace(
-                    favoritePlaceId = placeId
-                ).combine(
+                combine(
+                    getWeatherInfoForFavoritePlace(
+                        favoritePlaceId = placeId
+                    ),
+                    getTemperatureUnitUseCase(),
                     _selectedIndex
-                ) { response, index ->
-                    when (response) {
+                ) { weatherResponse, temperatureUnit, selectedIndex ->
+                    when (weatherResponse) {
                         is Response.Loading -> {
-                            if (response.data == null) {
+                            if (weatherResponse.data == null) {
                                 processLoadingStateWithoutData()
                             } else {
-                                processLoadingStateWithData(response.data as FavoritePlaceInfo, index)
+                                processLoadingStateWithData(
+                                    weatherResponse.data as FavoritePlaceInfo,
+                                    selectedIndex,
+                                    temperatureUnit = temperatureUnit
+                                )
                             }
                         }
                         is Response.Success -> {
-                            if (response.data != null) {
-                                processSuccessState(response.data as FavoritePlaceInfo, index)
+                            if (weatherResponse.data != null) {
+                                processSuccessState(
+                                    weatherResponse.data as FavoritePlaceInfo,
+                                    selectedIndex,
+                                    temperatureUnit = temperatureUnit
+                                )
                             }
                         }
                         is Response.Exception -> {
@@ -62,11 +80,15 @@ class SevenDaysForecastViewModel @Inject constructor(
         }
     }
 
-    private fun processLoadingStateWithData(data: FavoritePlaceInfo, index: Int) {
+    private fun processLoadingStateWithData(
+        data: FavoritePlaceInfo,
+        index: Int,
+        temperatureUnit: TemperatureUnits
+    ) {
         data.weatherInfo?.let { weatherInfo ->
             _state.update { state ->
                 state.copy(
-                    isLoading = false,
+                    isLoading = true,
                     toolbarTitle = data.placeName,
                     selectedDate = weatherInfo
                         .completeWeatherData[index]
@@ -80,11 +102,15 @@ class SevenDaysForecastViewModel @Inject constructor(
                     selectedMaxTemperature = weatherInfo
                         .completeWeatherData[index]
                         ?.dailyWeatherData
-                        ?.maxTemperature.toString(),
+                        ?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     selectedMinTemperature = weatherInfo
                         .completeWeatherData[index]
                         ?.dailyWeatherData
-                        ?.minTemperature.toString(),
+                        ?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     selectedWeatherType = weatherInfo
                         .completeWeatherData[index]
                         ?.dailyWeatherData
@@ -94,7 +120,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData
                         ?.sunrise?.format(
                             DateTimeFormatter.ofPattern(
-                                "MMMM d",
+                                "HH:mm",
                                 Locale.getDefault()
                             )
                         ),
@@ -103,7 +129,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData
                         ?.sunset?.format(
                             DateTimeFormatter.ofPattern(
-                                "MMMM d",
+                                "HH:mm",
                                 Locale.getDefault()
                             )
                         ),
@@ -121,10 +147,14 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     todayMaxTemperature = weatherInfo
                         .completeWeatherData[0]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     todayMinTemperature = weatherInfo
                         .completeWeatherData[0]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     todayWeatherType = weatherInfo
                         .completeWeatherData[0]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
@@ -139,10 +169,14 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     tomorrowMaxTemperature = weatherInfo
                         .completeWeatherData[1]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     tomorrowMinTemperature = weatherInfo
                         .completeWeatherData[1]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     tomorrowWeatherType = weatherInfo
                         .completeWeatherData[1]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
@@ -157,10 +191,14 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     afterTomorrowMaxTemperature = weatherInfo
                         .completeWeatherData[2]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     afterTomorrowMinTemperature = weatherInfo
                         .completeWeatherData[2]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     afterTomorrowWeatherType = weatherInfo
                         .completeWeatherData[2]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
@@ -178,10 +216,14 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     inTwoDaysMaxTemperature = weatherInfo
                         .completeWeatherData[3]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inTwoDaysMinTemperature = weatherInfo
                         .completeWeatherData[3]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inTwoDaysWeatherType = weatherInfo
                         .completeWeatherData[3]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
@@ -199,10 +241,14 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     inThreeDaysMaxTemperature = weatherInfo
                         .completeWeatherData[4]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inThreeDaysMinTemperature = weatherInfo
                         .completeWeatherData[4]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inThreeDaysWeatherType = weatherInfo
                         .completeWeatherData[4]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
@@ -220,10 +266,14 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     inFourDaysMaxTemperature = weatherInfo
                         .completeWeatherData[5]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inFourDaysMinTemperature = weatherInfo
                         .completeWeatherData[5]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inFourDaysWeatherType = weatherInfo
                         .completeWeatherData[5]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
@@ -241,16 +291,21 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     inFiveDaysMaxTemperature = weatherInfo
                         .completeWeatherData[6]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inFiveDaysMinTemperature = weatherInfo
                         .completeWeatherData[6]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inFiveDaysWeatherType = weatherInfo
                         .completeWeatherData[6]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inFiveDaysDayOfWeek = weatherInfo
                         .completeWeatherData[6]
-                        ?.dailyWeatherData?.time?.dayOfWeek.toString()
+                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                    temperatureUnit = temperatureUnit
                 )
             }
         } ?: run {
@@ -258,7 +313,11 @@ class SevenDaysForecastViewModel @Inject constructor(
         }
     }
 
-    private fun processSuccessState(data: FavoritePlaceInfo, index: Int) {
+    private fun processSuccessState(
+        data: FavoritePlaceInfo,
+        index: Int,
+        temperatureUnit: TemperatureUnits
+    ) {
         data.weatherInfo?.let { weatherInfo ->
             _state.update { state ->
                 state.copy(
@@ -276,11 +335,15 @@ class SevenDaysForecastViewModel @Inject constructor(
                     selectedMaxTemperature = weatherInfo
                         .completeWeatherData[index]
                         ?.dailyWeatherData
-                        ?.maxTemperature.toString(),
+                        ?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     selectedMinTemperature = weatherInfo
                         .completeWeatherData[index]
                         ?.dailyWeatherData
-                        ?.minTemperature.toString(),
+                        ?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     selectedWeatherType = weatherInfo
                         .completeWeatherData[index]
                         ?.dailyWeatherData
@@ -290,7 +353,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData
                         ?.sunrise?.format(
                             DateTimeFormatter.ofPattern(
-                                "MMMM d",
+                                "HH:mm",
                                 Locale.getDefault()
                             )
                         ),
@@ -299,7 +362,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ?.dailyWeatherData
                         ?.sunset?.format(
                             DateTimeFormatter.ofPattern(
-                                "MMMM d",
+                                "HH:mm",
                                 Locale.getDefault()
                             )
                         ),
@@ -317,10 +380,14 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     todayMaxTemperature = weatherInfo
                         .completeWeatherData[0]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     todayMinTemperature = weatherInfo
                         .completeWeatherData[0]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     todayWeatherType = weatherInfo
                         .completeWeatherData[0]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
@@ -335,10 +402,14 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     tomorrowMaxTemperature = weatherInfo
                         .completeWeatherData[1]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     tomorrowMinTemperature = weatherInfo
                         .completeWeatherData[1]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     tomorrowWeatherType = weatherInfo
                         .completeWeatherData[1]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
@@ -353,10 +424,14 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     afterTomorrowMaxTemperature = weatherInfo
                         .completeWeatherData[2]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     afterTomorrowMinTemperature = weatherInfo
                         .completeWeatherData[2]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     afterTomorrowWeatherType = weatherInfo
                         .completeWeatherData[2]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
@@ -374,10 +449,14 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     inTwoDaysMaxTemperature = weatherInfo
                         .completeWeatherData[3]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inTwoDaysMinTemperature = weatherInfo
                         .completeWeatherData[3]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inTwoDaysWeatherType = weatherInfo
                         .completeWeatherData[3]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
@@ -395,10 +474,14 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     inThreeDaysMaxTemperature = weatherInfo
                         .completeWeatherData[4]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inThreeDaysMinTemperature = weatherInfo
                         .completeWeatherData[4]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inThreeDaysWeatherType = weatherInfo
                         .completeWeatherData[4]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
@@ -416,10 +499,14 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     inFourDaysMaxTemperature = weatherInfo
                         .completeWeatherData[5]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inFourDaysMinTemperature = weatherInfo
                         .completeWeatherData[5]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inFourDaysWeatherType = weatherInfo
                         .completeWeatherData[5]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
@@ -437,16 +524,21 @@ class SevenDaysForecastViewModel @Inject constructor(
                         ),
                     inFiveDaysMaxTemperature = weatherInfo
                         .completeWeatherData[6]
-                        ?.dailyWeatherData?.maxTemperature.toString(),
+                        ?.dailyWeatherData?.maxTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inFiveDaysMinTemperature = weatherInfo
                         .completeWeatherData[6]
-                        ?.dailyWeatherData?.minTemperature.toString(),
+                        ?.dailyWeatherData?.minTemperature.toString().toTemperatureUnitString(
+                            temperatureUnit = temperatureUnit
+                        ),
                     inFiveDaysWeatherType = weatherInfo
                         .completeWeatherData[6]
                         ?.dailyWeatherData?.weatherType?.getIconRes(),
                     inFiveDaysDayOfWeek = weatherInfo
                         .completeWeatherData[6]
-                        ?.dailyWeatherData?.time?.dayOfWeek.toString()
+                        ?.dailyWeatherData?.time?.dayOfWeek.toString(),
+                    temperatureUnit = temperatureUnit
                 )
             }
         } ?: run {
@@ -461,6 +553,9 @@ class SevenDaysForecastViewModel @Inject constructor(
             }
             is SevenDaysForecastEvent.ChangeCurrentSelectedPlaceId -> {
                 _selectedPlaceId.value = event.newPlaceId
+            }
+            SevenDaysForecastEvent.Swiped -> {
+                getWeather()
             }
         }
     }

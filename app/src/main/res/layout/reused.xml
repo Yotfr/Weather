@@ -80,7 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/small_spacing"
         android:layout_marginTop="@dimen/medium_spacing"
-        android:background="@drawable/rounded_stroke_shape"
+        android:background="@color/seven_days_selected"
         android:paddingHorizontal="@dimen/medium_spacing"
         android:paddingVertical="@dimen/small_spacing"
         app:layout_constraintTop_toBottomOf="@id/fragment_seven_days_forecast_rv_hourly_weather">
@@ -146,7 +146,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/small_spacing"
         android:layout_marginTop="@dimen/medium_spacing"
-        android:background="@drawable/rounded_stroke_shape"
+        android:background="@color/seven_days_selected"
         android:paddingHorizontal="@dimen/medium_spacing"
         android:paddingVertical="@dimen/small_spacing"
         app:layout_constraintTop_toBottomOf="@id/today_item">

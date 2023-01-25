@@ -25,6 +25,10 @@
 
     <string name="settings">Settings</string>
 
+    <string name="feels_like">Feels like</string>
+    <string name="sunset_at">Sunset at:</string>
+    <string name="sunrise_at">Sunrise at:</string>
+
     <string name="weather_desc_clear_sky">Clear sky</string>
     <string name="weather_desc_mainly_clear">Mainly clear</string>
     <string name="weather_desc_partly_cloudy">Partly cloudy</string>

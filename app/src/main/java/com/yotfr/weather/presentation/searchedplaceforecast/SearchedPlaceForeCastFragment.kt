@@ -146,6 +146,9 @@ class SearchedPlaceForeCastFragment : Fragment(R.layout.fragment_searched_place_
                         reused.fragmentSevenDaysForecastTvSunrise.text = state.sunriseTime
                         reused.fragmentSevenDaysForecastTvSunset.text = state.sunsetTime
                         adapter.submitList(state.selectedDayHourlyWeatherList)
+                        adapter.attachTemperatureUnit(
+                            temperatureUnits = state.temperatureUnits
+                        )
                         reused.todayItemDate.text = state.todayDate
                         reused.todayItemMaxTemperature.text = state.todayMaxTemperature
                         reused.todayItemMinTemperature.text = state.todayMinTemperature

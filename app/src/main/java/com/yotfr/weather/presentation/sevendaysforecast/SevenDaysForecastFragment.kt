@@ -74,6 +74,12 @@ class SevenDaysForecastFragment : Fragment(R.layout.fragment_seven_days_forecast
             }
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.onEvent(
+                SevenDaysForecastEvent.Swiped
+            )
+        }
+
         binding.reused.todayBtn.setOnClickListener {
             viewModel.onEvent(
                 SevenDaysForecastEvent.SelectedDayIndexChanged(
@@ -128,6 +134,7 @@ class SevenDaysForecastFragment : Fragment(R.layout.fragment_seven_days_forecast
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collectLatest { state ->
                     binding.apply {
+                        swipeRefreshLayout.isRefreshing = state.isLoading
                         fragmentSevenDaysForecastToolbar.title = state.toolbarTitle
                         reused.fragmentSevenDaysForecastTvDate.text = state.selectedDate
                         reused.fragmentSevenDaysForecastTvMaxTemperature.text =
@@ -142,9 +149,14 @@ class SevenDaysForecastFragment : Fragment(R.layout.fragment_seven_days_forecast
                                 )
                             )
                         }
-                        reused.fragmentSevenDaysForecastTvSunrise.text = state.sunriseTime
-                        reused.fragmentSevenDaysForecastTvSunset.text = state.sunsetTime
+                        val sunriseString = resources.getString(R.string.sunrise_at) + state.sunriseTime
+                        val sunsetString = resources.getString(R.string.sunset_at) + state.sunsetTime
+                        reused.fragmentSevenDaysForecastTvSunrise.text = sunriseString
+                        reused.fragmentSevenDaysForecastTvSunset.text = sunsetString
                         adapter.submitList(state.selectedDayHourlyWeatherList)
+                        adapter.attachTemperatureUnit(
+                            temperatureUnits = state.temperatureUnit
+                        )
                         reused.todayItemDate.text = state.todayDate
                         reused.todayItemMaxTemperature.text = state.todayMaxTemperature
                         reused.todayItemMinTemperature.text = state.todayMinTemperature

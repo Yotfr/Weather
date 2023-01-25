@@ -2,6 +2,7 @@ package com.yotfr.weather.presentation.sevendaysforecast
 
 import androidx.annotation.DrawableRes
 import com.yotfr.weather.domain.model.HourlyWeatherData
+import com.yotfr.weather.domain.model.TemperatureUnits
 
 data class SevenDaysForecastState(
     val isLoading: Boolean = false,
@@ -45,5 +46,6 @@ data class SevenDaysForecastState(
     val inFiveDaysMaxTemperature: String = "",
     val inFiveDaysMinTemperature: String = "",
     val inFiveDaysDayOfWeek: String = "",
-    @DrawableRes val inFiveDaysWeatherType: Int? = null
+    @DrawableRes val inFiveDaysWeatherType: Int? = null,
+    val temperatureUnit: TemperatureUnits = TemperatureUnits.CELSIUS
 )
