@@ -79,6 +79,12 @@ class PlacesRepositoryImpl @Inject constructor(
             }
         }
 
+    override suspend fun checkIfFavoritePlaceExistsInDatabase(placeId: Long): Boolean {
+        return placesDao.isFavoritePlaceExists(
+            placeId = placeId
+        )
+    }
+
     override suspend fun updateFavoritePlaceInfo(placeId: Long): Response<List<FavoritePlaceInfo>>? {
         try {
             val fetchedPlace = placesApi.getPlaceById(

@@ -9,7 +9,6 @@ import com.yotfr.weather.databinding.ItemSearchedPlaceInfoBinding
 import com.yotfr.weather.domain.model.PlaceInfo
 
 interface SearchedPlacesDelegate {
-    fun addPlaceClicked(place: PlaceInfo)
     fun placeClicked(place: PlaceInfo)
 }
 
@@ -56,9 +55,6 @@ class LocationInfoAdapter : ListAdapter<PlaceInfo, LocationInfoAdapter.LocationI
             binding.apply {
                 itemLocationInfoTvPlaceName.text = placeInfo.placeName
                 itemLocationInfoTvCountryName.text = placeInfo.countryName
-                btnAddFavorite.setOnClickListener {
-                    delegate?.addPlaceClicked(place = placeInfo)
-                }
                 rootView.setOnClickListener {
                     delegate?.placeClicked(
                         place = placeInfo

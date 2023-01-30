@@ -5,6 +5,7 @@ import com.yotfr.weather.domain.model.HourlyWeatherData
 import com.yotfr.weather.domain.model.TemperatureUnits
 
 data class SearchedPlaceForeCastState(
+    val isInDatabase: Boolean = false,
     val isLoading: Boolean = false,
     val selectedDate: String? = null,
     val toolbarTitle: String = "",

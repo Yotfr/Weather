@@ -96,6 +96,15 @@ class UseCasesModule {
     }
 
     @Provides
+    fun provideCheckIfPlaceExistsInDatabaseUseCase(
+        placesRepository: PlacesRepository
+    ): CheckIfPlaceExistsInDatabaseUseCase {
+        return CheckIfPlaceExistsInDatabaseUseCase(
+            placesRepository = placesRepository
+        )
+    }
+
+    @Provides
     fun provideGetWeatherInfoForFavoritePlace(
         weatherRepository: WeatherRepository,
         locationTracker: LocationTracker,

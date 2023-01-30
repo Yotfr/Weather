@@ -21,5 +21,7 @@ interface PlacesRepository {
 
     suspend fun deleteFavoritePlace(place: FavoritePlaceInfo)
 
+    suspend fun checkIfFavoritePlaceExistsInDatabase(placeId: Long): Boolean
+
     suspend fun updateFavoritePlaceInfo(placeId: Long): Response<List<FavoritePlaceInfo>>?
 }

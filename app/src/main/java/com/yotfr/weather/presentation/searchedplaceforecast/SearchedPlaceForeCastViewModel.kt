@@ -5,9 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.model.PlaceInfo
 import com.yotfr.weather.domain.model.TemperatureUnits
-import com.yotfr.weather.domain.usecases.AddFavoritePlaceUseCase
-import com.yotfr.weather.domain.usecases.GetMeasuringUnitsUseCase
-import com.yotfr.weather.domain.usecases.GetWeatherDataForSearchedPlace
+import com.yotfr.weather.domain.usecases.*
 import com.yotfr.weather.domain.util.Response
 import com.yotfr.weather.presentation.utils.getIconRes
 import com.yotfr.weather.presentation.utils.toTemperatureUnitString
@@ -20,13 +18,17 @@ import javax.inject.Inject
 class SearchedPlaceForeCastViewModel @Inject constructor(
     private val getWeatherDataForSearchedPlace: GetWeatherDataForSearchedPlace,
     private val addFavoritePlaceUseCase: AddFavoritePlaceUseCase,
-    private val getMeasuringUnitsUseCase: GetMeasuringUnitsUseCase
+    private val getMeasuringUnitsUseCase: GetMeasuringUnitsUseCase,
+    private val checkIfPlaceExistsInDatabaseUseCase: CheckIfPlaceExistsInDatabaseUseCase,
+    private val deleteFavoritePlaceUseCase: DeleteFavoritePlaceUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SearchedPlaceForeCastState())
     val state = _state.asStateFlow()
 
     private val placeInfo = MutableStateFlow<PlaceInfo?>(null)
+
+    private val favoritePlaceInfo = MutableStateFlow<FavoritePlaceInfo?>(null)
 
     private val _selectedIndex = MutableStateFlow(0)
     val selectedIndex = _selectedIndex.asStateFlow()
@@ -54,6 +56,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                     }
                     is Response.Success -> {
                         if (weatherResponse.data != null) {
+                            favoritePlaceInfo.value = weatherResponse.data
                             processSuccessState(
                                 weatherResponse.data as FavoritePlaceInfo,
                                 index,
@@ -554,12 +557,32 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
             is SearchedPlaceForeCastEvent.SelectedDayIndexChanged -> {
                 _selectedIndex.value = event.newIndex
             }
-            is SearchedPlaceForeCastEvent.AddPlaceToFavorite -> {
+            is SearchedPlaceForeCastEvent.StarPressed -> {
                 viewModelScope.launch {
-                    placeInfo.value?.let { placeInfo ->
-                        addFavoritePlaceUseCase(
-                            place = placeInfo
+                    if (favoritePlaceInfo.value != null && placeInfo.value != null) {
+                        val isInDb = checkIfPlaceExistsInDatabaseUseCase(
+                            placeId = placeInfo.value!!.id
                         )
+
+                        if (isInDb) {
+                            deleteFavoritePlaceUseCase(
+                                place = favoritePlaceInfo.value!!
+                            )
+                            _state.update {
+                                it.copy(
+                                    isInDatabase = false
+                                )
+                            }
+                        } else {
+                            addFavoritePlaceUseCase(
+                                place = placeInfo.value!!
+                            )
+                            _state.update {
+                                it.copy(
+                                    isInDatabase = true
+                                )
+                            }
+                        }
                     }
                 }
             }

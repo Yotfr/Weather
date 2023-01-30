@@ -67,7 +67,7 @@ class SearchedPlaceForeCastFragment : Fragment(R.layout.fragment_searched_place_
             when (menuItem.itemId) {
                 R.id.fragment_searched_places_toolbar_favorite -> {
                     viewModel.onEvent(
-                        SearchedPlaceForeCastEvent.AddPlaceToFavorite
+                        SearchedPlaceForeCastEvent.StarPressed
                     )
                     true
                 }
@@ -129,6 +129,17 @@ class SearchedPlaceForeCastFragment : Fragment(R.layout.fragment_searched_place_
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collectLatest { state ->
                     binding.apply {
+                        if (state.isInDatabase) {
+                            binding.fragmentSearchedPlaceForecastToolbar.menu.clear()
+                            binding.fragmentSearchedPlaceForecastToolbar.inflateMenu(
+                                R.menu.fragment_searched_places_toolbar_menu_checked
+                            )
+                        } else {
+                            binding.fragmentSearchedPlaceForecastToolbar.menu.clear()
+                            binding.fragmentSearchedPlaceForecastToolbar.inflateMenu(
+                                R.menu.fragment_searched_places_toolbar_menu
+                            )
+                        }
                         fragmentSearchedPlaceForecastToolbar.title = state.toolbarTitle
                         reused.fragmentSevenDaysForecastTvDate.text = state.selectedDate
                         reused.fragmentSevenDaysForecastTvMaxTemperature.text =
@@ -173,8 +184,10 @@ class SearchedPlaceForeCastFragment : Fragment(R.layout.fragment_searched_place_
                         }
                         reused.afterTomorrowItemDate.text = state.afterTomorrowDate
                         reused.afterTomorrowDayOfWeek.text = state.afterTomorrowDayOfWeek
-                        reused.afterTomorrowItemMaxTemperature.text = state.afterTomorrowMaxTemperature
-                        reused.afterTomorrowItemMinTemperature.text = state.afterTomorrowMinTemperature
+                        reused.afterTomorrowItemMaxTemperature.text =
+                            state.afterTomorrowMaxTemperature
+                        reused.afterTomorrowItemMinTemperature.text =
+                            state.afterTomorrowMinTemperature
                         state.afterTomorrowWeatherType?.let { resId ->
                             reused.afterTomorrowItemIvWeatherType.setImageDrawable(
                                 ContextCompat.getDrawable(

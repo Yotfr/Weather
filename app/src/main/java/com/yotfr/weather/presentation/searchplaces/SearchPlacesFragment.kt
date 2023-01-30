@@ -49,13 +49,6 @@ class SearchPlacesFragment : Fragment(R.layout.fragment_search_places) {
         locationInfoAdapter = LocationInfoAdapter()
         locationInfoAdapter.attachDelegate(
             delegate = object : SearchedPlacesDelegate {
-                override fun addPlaceClicked(place: PlaceInfo) {
-                    viewModel.onEvent(
-                        SearchPlacesEvent.AddPlaceToFavorite(
-                            place = place
-                        )
-                    )
-                }
                 override fun placeClicked(place: PlaceInfo) {
                     val action = SearchPlacesFragmentDirections.actionSearchPlacesFragmentToSearchedPlaceForeCastFragment(
                         placeInfo = place
