@@ -9,7 +9,7 @@ interface PlacesRepository {
 
     suspend fun getPlacesThatMatchesQuery(searchQuery: String): Flow<Response<List<PlaceInfo>>>
 
-    suspend fun getFavoritePlaces(): Flow<List<FavoritePlaceInfo>>
+    suspend fun getFavoritePlaces(isUpdated: Boolean): Response<List<FavoritePlaceInfo>>
 
     suspend fun addFavoritePlace(place: PlaceInfo): Long
 
@@ -20,4 +20,6 @@ interface PlacesRepository {
     suspend fun getFavoritePlace(placeId: Long, isCacheUpdated: Boolean): Response<FavoritePlaceInfo>
 
     suspend fun deleteFavoritePlace(place: FavoritePlaceInfo)
+
+    suspend fun updateFavoritePlaceInfo(placeId: Long): Response<List<FavoritePlaceInfo>>?
 }

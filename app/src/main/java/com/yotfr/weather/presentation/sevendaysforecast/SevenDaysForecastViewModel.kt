@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.model.TemperatureUnits
-import com.yotfr.weather.domain.usecases.GetTemperatureUnitUseCase
 import com.yotfr.weather.domain.usecases.GetFavoritePlaceWIthWeatherCache
+import com.yotfr.weather.domain.usecases.GetMeasuringUnitsUseCase
 import com.yotfr.weather.domain.util.Response
 import com.yotfr.weather.presentation.utils.getIconRes
 import com.yotfr.weather.presentation.utils.toTemperatureUnitString
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class SevenDaysForecastViewModel @Inject constructor(
     private val getFavoritePlaceWIthWeatherCache: GetFavoritePlaceWIthWeatherCache,
-    private val getTemperatureUnitUseCase: GetTemperatureUnitUseCase
+    private val getMeasuringUnitsUseCase: GetMeasuringUnitsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SevenDaysForecastState())
@@ -39,9 +39,9 @@ class SevenDaysForecastViewModel @Inject constructor(
                     getFavoritePlaceWIthWeatherCache(
                         favoritePlaceId = placeId
                     ),
-                    getTemperatureUnitUseCase(),
+                    getMeasuringUnitsUseCase(),
                     _selectedIndex
-                ) { weatherResponse, temperatureUnit, selectedIndex ->
+                ) { weatherResponse, measuringUnits, selectedIndex ->
                     when (weatherResponse) {
                         is Response.Loading -> {
                             if (weatherResponse.data == null) {
@@ -50,7 +50,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                                 processLoadingStateWithData(
                                     weatherResponse.data as FavoritePlaceInfo,
                                     selectedIndex,
-                                    temperatureUnit = temperatureUnit
+                                    temperatureUnit = measuringUnits.temperatureUnit
                                 )
                             }
                         }
@@ -59,7 +59,7 @@ class SevenDaysForecastViewModel @Inject constructor(
                                 processSuccessState(
                                     weatherResponse.data as FavoritePlaceInfo,
                                     selectedIndex,
-                                    temperatureUnit = temperatureUnit
+                                    temperatureUnit = measuringUnits.temperatureUnit
                                 )
                             }
                         }

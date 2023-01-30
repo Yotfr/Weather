@@ -54,3 +54,14 @@ fun PlaceDataDto.mapToPlaceInfo(): PlaceInfo {
         timeZone = timeZone
     )
 }
+
+fun PlaceDataDto.mapToFavoritePlaceEntity(): FavoritePlaceEntity {
+    return FavoritePlaceEntity(
+        id = id,
+        placeName = placeName,
+        latitude = latitude,
+        longitude = longitude,
+        countryName = countryName,
+        timeZone = timeZone
+    )
+}

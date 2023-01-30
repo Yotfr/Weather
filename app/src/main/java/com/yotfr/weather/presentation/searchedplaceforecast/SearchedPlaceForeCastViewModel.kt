@@ -6,7 +6,7 @@ import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.model.PlaceInfo
 import com.yotfr.weather.domain.model.TemperatureUnits
 import com.yotfr.weather.domain.usecases.AddFavoritePlaceUseCase
-import com.yotfr.weather.domain.usecases.GetTemperatureUnitUseCase
+import com.yotfr.weather.domain.usecases.GetMeasuringUnitsUseCase
 import com.yotfr.weather.domain.usecases.GetWeatherDataForSearchedPlace
 import com.yotfr.weather.domain.util.Response
 import com.yotfr.weather.presentation.utils.getIconRes
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class SearchedPlaceForeCastViewModel @Inject constructor(
     private val getWeatherDataForSearchedPlace: GetWeatherDataForSearchedPlace,
     private val addFavoritePlaceUseCase: AddFavoritePlaceUseCase,
-    private val getTemperatureUnitUseCase: GetTemperatureUnitUseCase
+    private val getMeasuringUnitsUseCase: GetMeasuringUnitsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SearchedPlaceForeCastState())
@@ -37,9 +37,9 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                 getWeatherDataForSearchedPlace(
                     placeInfo = placeInfo
                 ),
-                getTemperatureUnitUseCase(),
+                getMeasuringUnitsUseCase(),
                 _selectedIndex
-            ) { weatherResponse, temperatureUnit, index ->
+            ) { weatherResponse, measuringUnits, index ->
                 when (weatherResponse) {
                     is Response.Loading -> {
                         if (weatherResponse.data == null) {
@@ -48,7 +48,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                             processLoadingStateWithData(
                                 weatherResponse.data as FavoritePlaceInfo,
                                 index,
-                                temperatureUnit
+                                measuringUnits.temperatureUnit
                             )
                         }
                     }
@@ -57,7 +57,7 @@ class SearchedPlaceForeCastViewModel @Inject constructor(
                             processSuccessState(
                                 weatherResponse.data as FavoritePlaceInfo,
                                 index,
-                                temperatureUnit
+                                measuringUnits.temperatureUnit
                             )
                         }
                     }

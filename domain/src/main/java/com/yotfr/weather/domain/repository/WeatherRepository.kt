@@ -45,4 +45,5 @@ interface WeatherRepository {
         temperatureUnits: String,
         windSpeedUnits: String
     ): Response<FavoritePlaceInfo>
+
 }

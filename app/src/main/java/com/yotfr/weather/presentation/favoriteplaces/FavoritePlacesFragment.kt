@@ -41,6 +41,12 @@ class FavoritePlacesFragment : Fragment(R.layout.fragment_favorite_places) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.swipeLayout.setOnRefreshListener {
+            viewModel.onEvent(
+                FavoritePlacesEvent.Swiped
+            )
+        }
+
         val layoutManager = LinearLayoutManager(requireContext())
         adapter = FavoritePlacesAdapter()
         adapter.attachDelegate(
@@ -87,6 +93,7 @@ class FavoritePlacesFragment : Fragment(R.layout.fragment_favorite_places) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collectLatest { state ->
+                    binding.swipeLayout.isRefreshing = state.isLoading
                     adapter.submitList(state.rvList)
                     adapter.attachTemperatureUnit(
                         temperatureUnits = state.temperatureUnit

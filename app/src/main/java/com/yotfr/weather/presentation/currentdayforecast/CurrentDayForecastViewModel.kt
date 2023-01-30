@@ -5,9 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.yotfr.weather.domain.model.FavoritePlaceInfo
 import com.yotfr.weather.domain.model.TemperatureUnits
 import com.yotfr.weather.domain.model.WindSpeedUnits
-import com.yotfr.weather.domain.usecases.GetTemperatureUnitUseCase
 import com.yotfr.weather.domain.usecases.GetFavoritePlaceWIthWeatherCache
-import com.yotfr.weather.domain.usecases.GetWindSpeedUnitUseCase
+import com.yotfr.weather.domain.usecases.GetMeasuringUnitsUseCase
 import com.yotfr.weather.domain.util.Response
 import com.yotfr.weather.presentation.utils.*
 import kotlinx.coroutines.flow.*
@@ -18,8 +17,7 @@ import javax.inject.Inject
 
 class CurrentDayForecastViewModel @Inject constructor(
     private val getFavoritePlaceWIthWeatherCache: GetFavoritePlaceWIthWeatherCache,
-    private val getWindSpeedUnitUseCase: GetWindSpeedUnitUseCase,
-    private val getTemperatureUnitUseCase: GetTemperatureUnitUseCase
+    private val getMeasuringUnitsUseCase: GetMeasuringUnitsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CurrentDayForecastState())
@@ -36,12 +34,11 @@ class CurrentDayForecastViewModel @Inject constructor(
         viewModelScope.launch {
             _currentSelectedPlaceId.collectLatest { placeId ->
                 combine(
-                    getTemperatureUnitUseCase(),
-                    getWindSpeedUnitUseCase(),
+                    getMeasuringUnitsUseCase(),
                     getFavoritePlaceWIthWeatherCache(
                         favoritePlaceId = placeId
                     )
-                ) { temperatureUnit, windSpeedUnit, weatherResponse ->
+                ) { measuringUnits, weatherResponse ->
                     when (weatherResponse) {
                         is Response.Loading -> {
                             if (weatherResponse.data == null) {
@@ -49,8 +46,8 @@ class CurrentDayForecastViewModel @Inject constructor(
                             } else {
                                 processLoadingStateWithData(
                                     weatherResponse.data as FavoritePlaceInfo,
-                                    temperatureUnit = temperatureUnit,
-                                    windSpeedUnit = windSpeedUnit
+                                    temperatureUnit = measuringUnits.temperatureUnit,
+                                    windSpeedUnit = measuringUnits.windSpeedUnit
                                 )
                             }
                         }
@@ -58,8 +55,8 @@ class CurrentDayForecastViewModel @Inject constructor(
                             if (weatherResponse.data != null) {
                                 processSuccessState(
                                     weatherResponse.data as FavoritePlaceInfo,
-                                    temperatureUnit = temperatureUnit,
-                                    windSpeedUnit = windSpeedUnit
+                                    temperatureUnit = measuringUnits.temperatureUnit,
+                                    windSpeedUnit = measuringUnits.windSpeedUnit
                                 )
                             }
                         }

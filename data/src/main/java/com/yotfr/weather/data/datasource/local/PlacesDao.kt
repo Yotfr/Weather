@@ -8,7 +8,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.yotfr.weather.data.datasource.local.entities.FavoritePlaceEntity
 import com.yotfr.weather.data.datasource.local.relations.PlaceWithWeatherCache
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PlacesDao {
@@ -17,7 +16,7 @@ interface PlacesDao {
     suspend fun insertFavoritePlace(favoritePlaceEntity: FavoritePlaceEntity): Long
 
     @Query("SELECT * FROM place")
-    fun getAllFavoritePlaces(): Flow<List<PlaceWithWeatherCache>>
+    fun getAllFavoritePlaces(): List<PlaceWithWeatherCache>
 
     @Transaction
     @Query("SELECT * FROM place WHERE id = :placeId")

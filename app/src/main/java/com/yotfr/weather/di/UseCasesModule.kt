@@ -35,10 +35,14 @@ class UseCasesModule {
 
     @Provides
     fun getFavoritePlacesUseCase(
-        placesRepository: PlacesRepository
+        placesRepository: PlacesRepository,
+        weatherRepository: WeatherRepository,
+        settingsRepository: SettingsRepository
     ): GetAllFavoritePlacesUseCase {
         return GetAllFavoritePlacesUseCase(
-            placesRepository = placesRepository
+            placesRepository = placesRepository,
+            weatherRepository = weatherRepository,
+            settingsRepository = settingsRepository
         )
     }
 
@@ -65,28 +69,19 @@ class UseCasesModule {
     }
 
     @Provides
-    fun getTemperatureUnitsUseCase(
-        settingsRepository: SettingsRepository
-    ): GetTemperatureUnitUseCase {
-        return GetTemperatureUnitUseCase(
-            settingsRepository = settingsRepository
-        )
-    }
-
-    @Provides
-    fun getWindSpeedUnitsUseCase(
-        settingsRepository: SettingsRepository
-    ): GetWindSpeedUnitUseCase {
-        return GetWindSpeedUnitUseCase(
-            settingsRepository = settingsRepository
-        )
-    }
-
-    @Provides
     fun updateTemperatureUnitsUseCase(
         settingsRepository: SettingsRepository
     ): UpdateTemperatureUnitUseCase {
         return UpdateTemperatureUnitUseCase(
+            settingsRepository = settingsRepository
+        )
+    }
+
+    @Provides
+    fun provideGetMeasutingUnitsUseCase(
+        settingsRepository: SettingsRepository
+    ): GetMeasuringUnitsUseCase {
+        return GetMeasuringUnitsUseCase(
             settingsRepository = settingsRepository
         )
     }

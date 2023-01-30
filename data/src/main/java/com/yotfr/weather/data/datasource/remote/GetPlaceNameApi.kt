@@ -10,6 +10,6 @@ interface GetPlaceNameApi {
     suspend fun getPlaceNameByCoordinates(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("localityLanguage") language: String = "en"
+        @Query("localityLanguage") language: String
     ): PlaceName
 }

@@ -4,4 +4,5 @@ import com.yotfr.weather.domain.model.FavoritePlaceInfo
 
 sealed interface FavoritePlacesEvent {
     data class DeleteFavoritePlace(val placeInfo: FavoritePlaceInfo) : FavoritePlacesEvent
+    object Swiped : FavoritePlacesEvent
 }
